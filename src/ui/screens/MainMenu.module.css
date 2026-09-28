@@ -47,14 +47,15 @@
   text-shadow: 1px 1px 0 var(--bg);
 }
 
-/* Gilt rule under the subtitle, like the section titles in the room panels. */
+/* Pixel gilt rule under the subtitle (the top bar's edge tile, a stud every 64px). */
 .subtitle::after {
   content: '';
   display: block;
-  width: 180px;
-  height: 1px;
+  width: 192px;
+  height: 6px;
   margin: 14px auto 0;
-  background: linear-gradient(90deg, transparent, rgb(216 183 110 / 60%), transparent);
+  background: url('../../assets/ui/topbar-edge.png') 0 0 / 64px 10px repeat-x;
+  image-rendering: pixelated;
 }
 
 .buttons {

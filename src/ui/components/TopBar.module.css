@@ -6,15 +6,24 @@
   align-items: center;
   gap: 18px;
   padding: 8px 16px;
-  /* Stone lintel with a gilt rule along its lower edge. */
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 4%), transparent 60%),
-    linear-gradient(180deg, rgb(33 30 37 / 97%), rgb(20 18 23 / 97%));
-  border-bottom: 1px solid #0b0a0d;
-  box-shadow:
-    0 1px 0 rgb(184 154 94 / 32%),
-    0 6px 18px rgb(0 0 0 / 50%);
+  /* Stone lintel: flat d2 with a 2px lit top line. */
+  background: linear-gradient(180deg, var(--border) 0 2px, var(--panel) 2px);
+  border-bottom: 1px solid var(--bg);
   flex-wrap: wrap;
+}
+
+/* Pixel edge (ui/topbar-edge.png, a 32x5 tile): d0 line, gilt rule with a stud every 64px,
+   d0 line, then two rows of hard drop shadow over the scene below. */
+.bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% - 6px);
+  height: 10px;
+  background: url('../../assets/ui/topbar-edge.png') left top / 64px 10px repeat-x;
+  image-rendering: pixelated;
+  pointer-events: none;
 }
 
 .who {
@@ -53,24 +62,20 @@
   flex-wrap: wrap;
 }
 
+/* Relics sit in pixel sockets (ui/socket.png, 15px grid at 2x). */
 .relic {
   width: 30px;
   height: 30px;
   display: grid;
   place-items: center;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 38%, #2c2732, #141216 72%);
-  border: 1.5px solid #0b0a0d;
-  box-shadow: 0 0 0 1px rgb(184 154 94 / 60%);
+  background: url('../../assets/ui/socket.png') center / 30px 30px no-repeat;
+  image-rendering: pixelated;
   font-size: 16px;
   cursor: help;
-  transition: box-shadow 0.15s;
 }
 
 .relic:hover {
-  box-shadow:
-    0 0 0 1px var(--light),
-    0 0 10px rgb(243 210 122 / 35%);
+  background-image: url('../../assets/ui/socket-hover.png');
 }
 
 .spacer {

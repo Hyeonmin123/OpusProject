@@ -169,7 +169,7 @@
   color: var(--text-dim);
 }
 
-/* The hand rests on a dark stone ledge with a gilt rule running behind the cards. */
+/* The hand rests on a dark stone ledge with a pixel gilt rule running behind the cards. */
 .handArea {
   grid-area: hand;
   position: relative;
@@ -193,15 +193,10 @@
   left: 3%;
   right: 3%;
   top: 38%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(184 154 94 / 40%) 18%,
-    rgb(216 183 110 / 60%) 50%,
-    rgb(184 154 94 / 40%) 82%,
-    transparent
-  );
+  height: 6px;
+  background: url('../../assets/ui/topbar-edge.png') left top / 64px 10px repeat-x;
+  image-rendering: pixelated;
+  opacity: 0.6;
   pointer-events: none;
 }
 
