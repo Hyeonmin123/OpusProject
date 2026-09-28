@@ -30,8 +30,8 @@ export function MainMenu() {
         <img
           className={styles.keyArt}
           src={KEY_ART}
-          width={240}
-          height={248}
+          width={87}
+          height={144}
           alt=""
           aria-hidden
           draggable={false}

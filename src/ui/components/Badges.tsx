@@ -27,13 +27,13 @@ export function StatusBadges({ statuses }: { statuses: StatusMap }) {
   );
 }
 
-/** Figma icon per intent kind; `special` keeps its emoji (no art yet). */
+/** Icon per intent kind; `special` keeps its emoji (no art yet). */
 const INTENT_ART: Partial<Record<IntentKind, string>> = {
   attack: ICONS.attack,
   defend: ICONS.block,
   buff: ICONS.intentBuff,
   debuff: ICONS.intentDebuff,
-  hidden: ICONS.shadow,
+  hidden: ICONS.hidden,
 };
 
 const INTENT_EMOJI: Record<IntentKind, string> = {

@@ -83,6 +83,22 @@
     radial-gradient(ellipse at 50% 50%, rgb(0 0 0 / 30%) 10%, rgb(0 0 0 / 85%) 85%);
 }
 
+/* Carry the field's darkness on into the hand's ledge, so the scene art doesn't show a lit
+   band between the dimmed field and the cards. */
+.light-dim .handArea {
+  background: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 38%),
+    rgb(10 9 12 / 65%) 38%,
+    rgb(10 9 12 / 88%) 70%,
+    rgb(10 9 12 / 94%)
+  );
+}
+
+.light-dark .handArea {
+  background: linear-gradient(180deg, rgb(0 0 0 / 74%), rgb(10 9 12 / 90%) 45%, rgb(10 9 12 / 96%));
+}
+
 .blackoutBanner {
   position: absolute;
   top: 12px;

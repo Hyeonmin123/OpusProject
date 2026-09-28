@@ -12,8 +12,10 @@ run low and the dark hides what the enemies are about to do. Let it go out and y
 that hit harder but burn it (see [The candle system](#the-candle-촛불-system)).
 
 > Status: **first playable scaffold.** A full run (Act 1 → Act 3 → victory/defeat summary) can be
-> played start-to-finish. Art comes from the project's Figma file (icons, portraits, key art,
-> scene backgrounds and UI chrome); some relic and node glyphs are still emoji. UI text is Korean.
+> played start-to-finish. Portraits, key art, gameplay and status icons and scene backgrounds are
+> palette-locked pixel art (see [Art pipeline](#art-pipeline)); the stone-and-gilt UI chrome and
+> card frame ornaments are still the Figma vector art, and some relic and node glyphs are still
+> emoji. UI text is Korean.
 
 ## Quick start
 
@@ -190,10 +192,30 @@ irrelevant or impossible to sustain fail CI.
   key, together with small lifetime stats (runs, wins, best floor). `SAVE_VERSION` in
   `engine/run.ts` discards incompatible saves after breaking changes.
 - **Theming.** All colors live as CSS custom properties in `styles/global.css`, and components use
-  CSS Modules. Figma art is registered in `ui/art.ts`: icons, portraits, key art and the full-bleed
+  CSS Modules. All art is registered in `ui/art.ts`: icons, portraits, key art and the full-bleed
   scene backgrounds (`SCENES`, drawn by `components/Backdrop` behind each screen). The shared
   chrome (`.panel` stone slabs with a gilt 9-slice frame, `.btn` plaques, the room-panel crest)
   lives in `global.css` and uses `assets/ui/*.svg`.
+
+### Art pipeline
+
+The pixel art starts as Gemini image exports, kept unprocessed in `art-src/gemini/`.
+`python3 scripts/pixelart/process.py [name ...]` (Pillow + numpy) rebuilds the PNGs in
+`src/assets/` from them:
+
+1. repaints Gemini's sparkle watermark from the surrounding pixels,
+2. for sprites, removes the checkerboard "transparency" baked into the exports and crops to the
+   subject,
+3. applies the per-asset fixes (recolours, and the hand-built redraws in
+   `scripts/pixelart/redraw.py`),
+4. reduces to a real pixel grid (per-cell palette mode that keeps 1px outlines), and
+5. snaps every pixel to the locked 24-colour palette in `scripts/pixelart/pxlib.py` (the slime gets
+   two extra sage steps; scenes also use midpoints between neighbouring palette steps so
+   stonework keeps its texture), then exports the grid upscaled 4× with nearest-neighbour.
+
+Grids are chosen so pixels land on whole CSS pixels: portraits 52px and boss portraits 66px (2× in
+their frames), icons and status icons 32px, scenes 256×144. The UI draws them with
+`image-rendering: pixelated` wherever they are shown larger than their grid.
 
 ### Tests
 
@@ -237,7 +259,9 @@ irrelevant or impossible to sustain fail CI.
 
 - **Acts 2 and 3 content depth**: they reuse the Act 1 monster roster with more HP and starting
   Strength. Only their bosses (_뼈의 여왕_, _심연의 눈_) are unique.
-- **Art, animation and sound**: relics, map-node and a few UI glyphs are still emoji. Animation is
+- **Art, animation and sound**: relics, map-node and a few UI glyphs are still emoji, and the UI
+  chrome, card frame ornaments, map chart and buff/debuff intent glyphs are still Figma vector
+  art rather than pixel art. Animation is
   limited to small CSS transitions (hits, intents, card hover/deal-in, targeting, turn change).
   There is no sound.
 - **Balance**: the numbers are a first pass. The greedy test bot reaches Act 2 in roughly a quarter

@@ -1,63 +1,74 @@
 /**
- * Art registry: every Figma-exported asset the UI uses, keyed by what it depicts.
- * Source file: "끝없는 지하실 — Art Assets" (https://www.figma.com/design/SP8IxP7Nwge0zkGVkRNB8C).
+ * Art registry: every image asset the UI uses, keyed by what it depicts.
+ *
+ * Pixel art (portraits, key art, gameplay and status icons, scene backgrounds) is generated from
+ * the Gemini exports in `art-src/gemini/` by `scripts/pixelart/process.py`: palette-locked,
+ * reduced to a real low-res grid and exported nearest-neighbour upscaled. Render it with
+ * `image-rendering: pixelated` wherever it is drawn larger than its grid.
+ *
+ * The remaining SVGs (intent buff/debuff and generic status glyphs, the map chart, the card
+ * frame ornaments and the stone-and-gilt UI chrome) come from the project's Figma file
+ * "끝없는 지하실 — Art Assets" (https://www.figma.com/design/SP8IxP7Nwge0zkGVkRNB8C).
  * Components fall back to the emoji in `data/` when an entry is missing.
  */
-import keyArt from '../assets/art/keyart.svg';
-import bgAct1 from '../assets/bg/act1.svg';
-import bgAct2 from '../assets/bg/act2.svg';
-import bgAct3 from '../assets/bg/act3.svg';
-import bgEvent from '../assets/bg/event.svg';
+import keyArt from '../assets/art/keyart.png';
+import bgAct1 from '../assets/bg/act1.png';
+import bgAct2 from '../assets/bg/act2.png';
+import bgAct3 from '../assets/bg/act3.png';
+import bgEvent from '../assets/bg/event.png';
 import mapChart from '../assets/bg/map-chart.svg';
-import bgMenu from '../assets/bg/menu.svg';
-import bgRest from '../assets/bg/rest.svg';
-import bgShop from '../assets/bg/shop.svg';
-import bgWall from '../assets/bg/wall.svg';
-import candle from '../assets/icons/candle.svg';
-import candleOut from '../assets/icons/candle-out.svg';
-import energy from '../assets/icons/energy.svg';
+import bgMap from '../assets/bg/map.png';
+import bgMenu from '../assets/bg/menu.png';
+import bgRest from '../assets/bg/rest.png';
+import bgShop from '../assets/bg/shop.png';
+import candle from '../assets/icons/candle.png';
+import candleOut from '../assets/icons/candle-out.png';
+import energy from '../assets/icons/energy.png';
+import hidden from '../assets/icons/hidden.png';
 import intentBuff from '../assets/icons/intent-buff.svg';
 import intentDebuff from '../assets/icons/intent-debuff.svg';
-import light from '../assets/icons/light.svg';
-import power from '../assets/icons/power.svg';
-import shadow from '../assets/icons/shadow.svg';
-import shield from '../assets/icons/shield.svg';
+import light from '../assets/icons/light.png';
+import power from '../assets/icons/power.png';
+import shadow from '../assets/icons/shadow.png';
+import shield from '../assets/icons/shield.png';
 import status from '../assets/icons/status.svg';
-import sword from '../assets/icons/sword.svg';
-import abyssalEye from '../assets/portraits/abyssalEye.svg';
-import bat from '../assets/portraits/bat.svg';
-import boneQueen from '../assets/portraits/boneQueen.svg';
-import cultist from '../assets/portraits/cultist.svg';
-import fallenKnight from '../assets/portraits/fallenKnight.svg';
-import gargoyle from '../assets/portraits/gargoyle.svg';
-import rat from '../assets/portraits/rat.svg';
-import rottingGolem from '../assets/portraits/rottingGolem.svg';
-import skeleton from '../assets/portraits/skeleton.svg';
-import slime from '../assets/portraits/slime.svg';
-import warrior from '../assets/portraits/warrior.svg';
-import dexterity from '../assets/status/dexterity.svg';
-import frail from '../assets/status/frail.svg';
-import kindle from '../assets/status/kindle.svg';
-import metallicize from '../assets/status/metallicize.svg';
-import ritual from '../assets/status/ritual.svg';
-import strength from '../assets/status/strength.svg';
-import thorns from '../assets/status/thorns.svg';
-import vulnerable from '../assets/status/vulnerable.svg';
-import weak from '../assets/status/weak.svg';
+import sword from '../assets/icons/sword.png';
+import abyssalEye from '../assets/portraits/abyssalEye.png';
+import bat from '../assets/portraits/bat.png';
+import boneQueen from '../assets/portraits/boneQueen.png';
+import cultist from '../assets/portraits/cultist.png';
+import fallenKnight from '../assets/portraits/fallenKnight.png';
+import gargoyle from '../assets/portraits/gargoyle.png';
+import rat from '../assets/portraits/rat.png';
+import rottingGolem from '../assets/portraits/rottingGolem.png';
+import skeleton from '../assets/portraits/skeleton.png';
+import slime from '../assets/portraits/slime.png';
+import warrior from '../assets/portraits/warrior.png';
+import dexterity from '../assets/status/dexterity.png';
+import frail from '../assets/status/frail.png';
+import kindle from '../assets/status/kindle.png';
+import metallicize from '../assets/status/metallicize.png';
+import ritual from '../assets/status/ritual.png';
+import strength from '../assets/status/strength.png';
+import thorns from '../assets/status/thorns.png';
+import vulnerable from '../assets/status/vulnerable.png';
+import weak from '../assets/status/weak.png';
 import type { CardType, StatusId } from '../types';
 
+/** The main menu's candle, lifted out of the archway key art (the archway is `SCENES.menu`). */
 export const KEY_ART = keyArt;
 
 /**
- * Full-bleed scene backgrounds (Figma page "Backgrounds", 1920×1080, same flat-fill + lit-contour
- * language as the portraits). Deliberately low-contrast: foreground UI sits on top of them.
- * The gilt panel frame and crest (Figma page "UI Chrome") are CSS-only chrome and are referenced
- * from `styles/global.css` (assets/ui/*.svg) the same way the card frames are.
+ * Full-bleed scene backgrounds (256×144 pixel grid, 16:9), drawn by `components/Backdrop`
+ * behind each screen with a darkening scrim so foreground UI stays readable.
+ * The gilt panel frame and crest are CSS-only chrome and are referenced from
+ * `styles/global.css` (assets/ui/*.svg) the same way the card frames are.
  */
 export const SCENES = {
+  /** Candle-lit archway; the menu sits in its dark doorway. */
   menu: bgMenu,
-  /** Generic chamber wall: map, rewards, run summary. */
-  wall: bgWall,
+  /** Stone wall with candle sconces: map, rewards, run summary. */
+  wall: bgMap,
   act1: bgAct1,
   act2: bgAct2,
   act3: bgAct3,
@@ -76,7 +87,7 @@ export function combatScene(act: number): SceneId {
 /** Dark vellum chart the map's node graph is drawn on (2× of the 444×850 map). */
 export const MAP_CHART = mapChart;
 
-/** Core UI icons (24×24 grid, readable at 14–32px). */
+/** Core UI icons (32×32 pixel grid, readable at 14–32px). */
 export const ICONS = {
   energy,
   candle,
@@ -87,6 +98,8 @@ export const ICONS = {
   shadow,
   power,
   status,
+  /** An enemy intent hidden by the dark. */
+  hidden,
   intentBuff,
   intentDebuff,
 } as const;
@@ -111,7 +124,10 @@ export const CARD_TYPE_ICONS: Record<CardType, string> = {
   status,
 };
 
-/** Portraits by player class / enemy def id. Variants (e.g. 동굴 박쥐 A/B) share one. */
+/**
+ * Portraits by player class / enemy def id (52×52 grid, bosses 66×66: 2× in their frames).
+ * Variants (e.g. 동굴 박쥐 A/B) share one.
+ */
 export const PORTRAITS: Record<string, string> = {
   warrior,
   rat,

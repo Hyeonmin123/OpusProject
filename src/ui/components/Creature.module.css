@@ -115,11 +115,14 @@
   pointer-events: none;
 }
 
+/* Pixel-art portraits: the grid (52px, bosses 66px) is exactly half the frame's inner size,
+   so nearest-neighbour scaling keeps every pixel a crisp 2×2 block. */
 .art {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  image-rendering: pixelated;
   user-select: none;
 }
 

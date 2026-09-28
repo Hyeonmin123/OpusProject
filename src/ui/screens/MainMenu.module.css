@@ -15,13 +15,15 @@
   text-align: center;
 }
 
-/* Candle-in-the-archway key art (Figma: art/keyart). */
+/* The key art's candle (pixel art, 48px-tall grid shown at 3x), standing in the doorway of
+   the archway backdrop. */
 .keyArt {
   display: block;
-  width: min(220px, 60vw);
-  height: auto;
+  width: auto;
+  height: 144px;
   margin-bottom: -6px;
-  filter: drop-shadow(0 0 22px rgb(240 184 74 / 18%));
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 22px rgb(240 184 74 / 30%));
   user-select: none;
 }
 
