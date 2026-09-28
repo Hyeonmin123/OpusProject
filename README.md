@@ -12,9 +12,10 @@ run low and the dark hides what the enemies are about to do. Let it go out and y
 that hit harder but burn it (see [The candle system](#the-candle-촛불-system)).
 
 > Status: **first playable scaffold.** A full run (Act 1 → Act 3 → victory/defeat summary) can be
-> played start-to-finish. Portraits, key art, gameplay and status icons, scene backgrounds, the
-> stone-and-gilt UI chrome and the card frame ornaments are palette-locked pixel art (see
-> [Art pipeline](#art-pipeline)), and all text is set in the Galmuri pixel font
+> played start-to-finish. Portraits, key art, gameplay and status icons and scene backgrounds are
+> palette-locked pixel art, and so is all of the UI chrome (buttons, panels, card faces, gauges,
+> the top bar and the scene scrims), designed in a Figma pixel UI kit (see
+> [Art pipeline](#art-pipeline)); all text is set in the Galmuri pixel font
 > ([Typography](#typography)). Some relic and node glyphs are still emoji. UI text is Korean.
 
 ## Quick start
@@ -194,8 +195,9 @@ irrelevant or impossible to sustain fail CI.
 - **Theming.** All colors live as CSS custom properties in `styles/global.css`, and components use
   CSS Modules. All art is registered in `ui/art.ts`: icons, portraits, key art and the full-bleed
   scene backgrounds (`SCENES`, drawn by `components/Backdrop` behind each screen). The shared
-  chrome (`.panel` stone slabs with a gilt 9-slice frame, `.btn` plaques, the room-panel crest)
-  lives in `global.css` and uses the pixel-art `assets/ui/*.png`.
+  chrome (`.panel` / `.panel-sm` stone slabs, `.btn` plaques) lives in `global.css`, the rest in
+  the component stylesheets, all as pixel-art `assets/ui/*.png` (see [UI chrome](#ui-chrome)).
+  No stylesheet uses a CSS gradient or a blurred shadow.
 
 ### Art pipeline
 
@@ -217,23 +219,52 @@ Grids are chosen so pixels land on whole CSS pixels: portraits 52px and boss por
 their frames), icons and status icons 32px, scenes 256×144. The UI draws them with
 `image-rendering: pixelated` wherever they are shown larger than their grid.
 
-The UI chrome has no source image: `python3 scripts/pixelart/chrome.py` draws it directly on its
-final grid, in the same locked palette (the primary button's bronze is one of the scene
-palette's midpoints), and exports it at 2×, so it is shown 1:1:
+#### UI chrome
 
-- 9-slice `border-image` frames: the `.panel` stone slab with chamfered corners and gilt corner
-  caps (`ui/panel-frame.png`), a compact slab for small panels and banners (`ui/panel-small.png`,
-  the global `.panel-sm` class), the targeting reticle, the button plaques (default, hover,
-  pressed; primary, danger and the violet reveal button) and the HP / candle gauge troughs.
-- Sprites: the room-panel crest, the block shield, relic sockets, the energy orb, cost gem and
-  candle-flame medallions, the top bar's gilt edge tile and the large buttons' diamonds.
-- Card corner ornaments (`art/frame-{light,shadow}[-small].png`): full overlays of the card's
-  inner box at both card sizes, gilt brackets and sparkles for light cards, a violet thorn vine
-  for shadow cards.
+The chrome is designed as pixel art in the Figma file
+[Endless Cellar — Pixel UI Kit](https://www.figma.com/design/m2OXVtN1pXojVj6c7EKelg): a Style
+Guide page (grid, rules, the palette as variables, the dither ramp) and one page per family
+(Buttons, Panels & Frames, Card Chrome, Bars & Gauges, Top Bar, Scrims & Shading). Every asset
+is a component drawn 1 Figma unit = 1 art pixel, one vector layer per colour bound to the
+"Pixel palette" variables: the locked palette of `pxlib.py` (22 colours) plus a few 50/50
+midpoints of two locked steps (the same rule as the scene palette). 9-slice components are split
+into nine regions with stretch constraints, so resizing an instance in Figma previews exactly
+what the CSS `border-image` does. Each page's "Export sheet" frame exports at 2x, so every art
+pixel is 2×2 CSS px, the scale of the portraits and icons, and the CSS shows the PNGs 1:1.
 
-Soft CSS effects around the chrome follow the same rule: shadows and glows are hard 2–6px
-offsets or rings, gauge fills are flat bands with 2px notches, and hover and pressed states
-move whole pixels (cards lift without scaling).
+`scripts/pixelart/uikit.py` holds the drawings the kit was seeded from and the round trip:
+
+- `uikit.py seed` writes `build/uikit/figma/*.js`, use_figma scripts (`figma_seed.js` plus a
+  batch of pixel data) that build or rebuild a page's components in the Figma file.
+- `uikit.py import <sheet.png ...>` takes the sheets exported from Figma, crops each component
+  by its sheet position, checks every pixel against the palette and the 2×2 grid, and writes
+  `src/assets/ui/` (card faces in `ui/card/`, the corner ornaments in `art/`).
+- `uikit.py check` re-verifies the committed PNGs and names any that were edited in Figma.
+
+What is in it:
+
+- Buttons: 9-slice plaques (outline, bevel, lit band, shade band, depth row) for default, hover,
+  pressed, primary, danger, the violet reveal button and disabled. The interior is the CSS
+  background: the flat fill plus a 2×2 checker tile (`btn-dither-*`) along the bottom of the
+  padding box (the top when pressed), so stretched parts stay uniform and the dither stays on
+  the grid at any width.
+- Panels: the `.panel` slab frame (10px of rings, 24px gilt corner caps) and the compact
+  `.panel-sm` frame over a repeating slab texture (`slab-tex`, d2 at 92%), the targeting
+  reticle, the modal header rule, the room-icon niche and the crest.
+- Card chrome: one full face per type × resonance × size (rim, header plate, the sunken art well
+  with a dithered type tint, and a body that shades down in dithered bands; shadow cards sink
+  into violet), the wax pills, and the light / shadow corner ornaments.
+- Bars and gauges: the HP / block / candle troughs, 6-px fill tiles (the element width is the
+  data), and the energy orb, cost gem and candle-socket medallions, shaded with ordered dither.
+- Top bar: the lintel tile, the gilt lower edge with a dithered drop shadow, the relic sockets.
+- Scrims: the scene vignettes (on the scenes' own 256×144 grid, positioned like the scene so the
+  pixels line up), the combat field in dim light and blackout, the hand's ledge, the shadow pool
+  behind each combatant and the map-node shading, all d0 in alpha steps of 16 with ordered
+  dither between steps.
+
+Other effects around the chrome follow the same rule: shadows and glows are hard offsets or
+rings (never blurred), and hover and pressed states move whole pixels (cards lift without
+scaling).
 
 ### Typography
 
@@ -300,8 +331,9 @@ cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets r
 - **Acts 2 and 3 content depth**: they reuse the Act 1 monster roster with more HP and starting
   Strength. Only their bosses (_뼈의 여왕_, _심연의 눈_) are unique.
 - **Art, animation and sound**: relics, map-node and a few UI glyphs are still emoji, and the map
-  chart, map-node medallions, portrait and room-icon niches and buff/debuff intent glyphs are
-  still Figma vector art or CSS rather than pixel art. Animation is
+  chart, the map-node and portrait frame outlines (CSS circles and arches, with pixel shading on
+  the nodes) and the buff/debuff intent glyphs are still Figma vector art or CSS rather than
+  pixel art. Animation is
   limited to small CSS transitions (hits, intents, card hover/deal-in, targeting, turn change).
   There is no sound.
 - **Balance**: the numbers are a first pass. The greedy test bot reaches Act 2 in roughly a quarter

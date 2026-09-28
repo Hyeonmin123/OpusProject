@@ -6,9 +6,12 @@
  * reduced to a real low-res grid and exported nearest-neighbour upscaled. Render it with
  * `image-rendering: pixelated` wherever it is drawn larger than its grid.
  *
- * The UI chrome (panel and button frames, gauge troughs, medallions, the crest and the card
- * frame ornaments) is hand-built pixel art from `scripts/pixelart/chrome.py`, referenced from
- * the stylesheets rather than from here.
+ * The UI chrome (button plaques and their dither tiles, panel slabs, card faces and ornaments,
+ * gauge troughs and fills, medallions, the top bar, the scene scrims) is pixel art designed in
+ * the Figma file "Endless Cellar — Pixel UI Kit"
+ * (https://www.figma.com/design/m2OXVtN1pXojVj6c7EKelg) and exported into `assets/ui/` by
+ * `scripts/pixelart/uikit.py`. It is referenced from the stylesheets (as `border-image`s and
+ * background tiles) rather than from here.
  *
  * The remaining SVGs (intent buff/debuff and generic status glyphs, the map chart) come from
  * the project's Figma file "끝없는 지하실 — Art Assets"
@@ -65,8 +68,8 @@ export const KEY_ART = keyArt;
 /**
  * Full-bleed scene backgrounds (256×144 pixel grid, 16:9), drawn by `components/Backdrop`
  * behind each screen with a darkening scrim so foreground UI stays readable.
- * The gilt panel frame and crest are CSS-only chrome and are referenced from
- * `styles/global.css` and the screen stylesheets (assets/ui/*.png), like the card frames.
+ * The scrim that darkens their edges, the slab frames and the crest are UI-kit chrome referenced
+ * from the stylesheets (assets/ui/*.png), like the card faces.
  */
 export const SCENES = {
   /** Candle-lit archway; the menu sits in its dark doorway. */
