@@ -6,8 +6,9 @@
 }
 
 /* Shared pixel "resource trough" (HP here, wax in CandleGauge): a 9-slice sunken frame
-   (ui/trough-*.png, 2px corners) around a flat fill with a 2px lit top band and 2px notches
-   every 12px. Keep the two in sync. */
+   (ui/trough-*.png, 2px corners) around a fill tile (ui/fill-*.png, 12px wide, repeated from
+   the left): a lit top row, the base, a checker row into the shade and a notch every 12px.
+   The fill's width is the data; the tile only draws it. Keep the two in sync. */
 .bar {
   position: relative;
   flex: 1;
@@ -21,9 +22,8 @@
   position: absolute;
   inset: 0 auto 0 0;
   max-width: 100%;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 10px, var(--hp-bg) 10px 12px),
-    linear-gradient(180deg, var(--debuff) 0 2px, var(--hp) 2px);
+  background: url('../../assets/ui/fill-hp.png') 0 0 / 12px 8px repeat-x;
+  image-rendering: pixelated;
   transition: width 0.3s steps(6, end);
 }
 
@@ -32,9 +32,7 @@
 }
 
 .withBlock .fill {
-  background:
-    repeating-linear-gradient(90deg, transparent 0 10px, var(--border) 10px 12px),
-    linear-gradient(180deg, var(--text-dim) 0 2px, var(--block) 2px);
+  background-image: url('../../assets/ui/fill-block.png');
 }
 
 /* The label spans the whole trough, frame included (the fill area is only 8px tall). */

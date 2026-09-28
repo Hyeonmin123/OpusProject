@@ -6,14 +6,16 @@
   align-items: center;
   gap: 18px;
   padding: 8px 16px;
-  /* Stone lintel: flat d2 with a 2px lit top line. */
-  background: linear-gradient(180deg, var(--border) 0 2px, var(--panel) 2px);
+  /* Stone lintel (ui/topbar-tile.png, a 32x32 tile): a lit top line and a d2 lintel with a
+     sparse pixel grain. */
+  background: url('../../assets/ui/topbar-tile.png') 0 0 / 64px 64px var(--panel);
+  image-rendering: pixelated;
   border-bottom: 1px solid var(--bg);
   flex-wrap: wrap;
 }
 
 /* Pixel edge (ui/topbar-edge.png, a 32x5 tile): d0 line, gilt rule with a stud every 64px,
-   d0 line, then two rows of hard drop shadow over the scene below. */
+   d0 line, then two rows of dithered d0 drop shadow over the scene below. */
 .bar::after {
   content: '';
   position: absolute;

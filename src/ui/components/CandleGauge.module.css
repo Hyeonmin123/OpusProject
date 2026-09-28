@@ -75,10 +75,15 @@
   position: absolute;
   inset: 0 auto 0 0;
   max-width: 100%;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 10px, var(--accent) 10px 12px),
-    linear-gradient(180deg, var(--light) 0 2px, var(--candle) 2px);
+  /* Pixel fill tile (ui/fill-candle*.png): 6px tall in the top bar's gauge, 8px here. */
+  background: url('../../assets/ui/fill-candle-sm.png') 0 0 / 12px 6px repeat-x;
+  image-rendering: pixelated;
   transition: width 0.35s steps(6, end);
+}
+
+.large .fill {
+  background-image: url('../../assets/ui/fill-candle.png');
+  background-size: 12px 8px;
 }
 
 .tick {
@@ -113,9 +118,11 @@
 }
 
 .dim .fill {
-  background:
-    repeating-linear-gradient(90deg, transparent 0 10px, var(--border) 10px 12px),
-    linear-gradient(180deg, var(--accent-strong) 0 2px, var(--accent) 2px);
+  background-image: url('../../assets/ui/fill-candle-dim-sm.png');
+}
+
+.large.dim .fill {
+  background-image: url('../../assets/ui/fill-candle-dim.png');
 }
 
 .dim .header {
