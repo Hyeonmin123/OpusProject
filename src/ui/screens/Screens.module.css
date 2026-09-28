@@ -14,17 +14,17 @@
   margin-top: 12px;
 }
 
-/* Candle-in-the-arch crest (Figma: ui/crest) riding on the top edge of every room panel. */
-.box::before {
+/* Candle-in-the-arch crest (pixel art, ui/crest.png) riding on the top edge of every room
+   panel. On ::after because the panel's frame is its ::before. */
+.box::after {
   content: '';
   position: absolute;
   top: -17px;
-  left: 50%;
+  left: calc(50% - 32px);
   width: 64px;
   height: 32px;
-  transform: translateX(-50%);
-  background: url('../../assets/ui/crest.svg') center / contain no-repeat;
-  filter: drop-shadow(0 0 8px rgb(240 184 74 / 35%));
+  background: url('../../assets/ui/crest.png') center / 64px 32px no-repeat;
+  image-rendering: pixelated;
   pointer-events: none;
 }
 
@@ -74,11 +74,13 @@
   margin-top: 4px;
 }
 
+/* Pixel rule: a 2px gilt line on a 2px dark underline. */
 .sectionTitle::after {
   content: '';
   flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, rgb(184 154 94 / 45%), transparent);
+  height: 4px;
+  border-top: 2px solid var(--accent);
+  background: var(--bg);
 }
 
 .options {
@@ -109,10 +111,9 @@
 
 .result {
   padding: 14px 16px;
-  border-left: 3px solid var(--accent);
-  background: linear-gradient(90deg, rgb(184 154 94 / 10%), rgb(0 0 0 / 25%) 40%);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
+  border-left: 4px solid var(--accent);
+  background: rgb(15 14 17 / 45%);
+  box-shadow: inset 2px 0 0 var(--light);
 }
 
 .notes {
@@ -248,13 +249,8 @@
 }
 
 .stat {
-  padding: 10px 14px;
-  border-radius: 4px;
-  background: linear-gradient(180deg, rgb(0 0 0 / 20%), rgb(0 0 0 / 38%));
-  border: 1px solid var(--border);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 4%),
-    0 0 0 1px rgb(0 0 0 / 45%);
+  composes: panel-sm from global;
+  padding: 3px 7px;
 }
 
 .statValue {

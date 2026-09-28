@@ -6,9 +6,13 @@
  * reduced to a real low-res grid and exported nearest-neighbour upscaled. Render it with
  * `image-rendering: pixelated` wherever it is drawn larger than its grid.
  *
- * The remaining SVGs (intent buff/debuff and generic status glyphs, the map chart, the card
- * frame ornaments and the stone-and-gilt UI chrome) come from the project's Figma file
- * "끝없는 지하실 — Art Assets" (https://www.figma.com/design/SP8IxP7Nwge0zkGVkRNB8C).
+ * The UI chrome (panel and button frames, gauge troughs, medallions, the crest and the card
+ * frame ornaments) is hand-built pixel art from `scripts/pixelart/chrome.py`, referenced from
+ * the stylesheets rather than from here.
+ *
+ * The remaining SVGs (intent buff/debuff and generic status glyphs, the map chart) come from
+ * the project's Figma file "끝없는 지하실 — Art Assets"
+ * (https://www.figma.com/design/SP8IxP7Nwge0zkGVkRNB8C).
  * Components fall back to the emoji in `data/` when an entry is missing.
  */
 import keyArt from '../assets/art/keyart.png';
@@ -62,7 +66,7 @@ export const KEY_ART = keyArt;
  * Full-bleed scene backgrounds (256×144 pixel grid, 16:9), drawn by `components/Backdrop`
  * behind each screen with a darkening scrim so foreground UI stays readable.
  * The gilt panel frame and crest are CSS-only chrome and are referenced from
- * `styles/global.css` (assets/ui/*.svg) the same way the card frames are.
+ * `styles/global.css` and the screen stylesheets (assets/ui/*.png), like the card frames.
  */
 export const SCENES = {
   /** Candle-lit archway; the menu sits in its dark doorway. */

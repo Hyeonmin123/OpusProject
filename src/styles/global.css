@@ -172,9 +172,11 @@ button:disabled {
 }
 
 /*
- * Shared chrome (Figma page "UI Chrome"): buttons are carved stone plaques that catch a gilt
- * edge on hover; panels are translucent stone slabs framed by the gilt corner brackets of the
- * light card frame (assets/ui/panel-frame.svg, a 9-slice border-image source).
+ * Shared chrome, all pixel art from scripts/pixelart/chrome.py (assets/ui/*.png, exported at 2x
+ * and shown 1:1): buttons are stone plaques that turn gilt on hover and sink when pressed;
+ * panels are stone slabs with gilt corner caps. Both are 9-slice `border-image`s, so their
+ * chamfered corners and bevels stay whole-pixel at any size. `image-rendering: pixelated` keeps
+ * them hard on high-DPI screens (it is inherited, which is why `Icon` sets its own).
  */
 .btn {
   position: relative;
@@ -292,28 +294,35 @@ button:disabled {
   text-shadow: 2px 2px 0 var(--bg);
 }
 
+/* Stone slab. The frame (with its translucent d2 fill) is a 9-slice on ::before, behind the
+   content, so the chamfered corners are really cut out; `isolation` keeps it above whatever
+   is behind the panel. */
 .panel {
   position: relative;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 3.5%), transparent 140px),
-    linear-gradient(180deg, rgb(37 33 42 / 92%), rgb(22 20 26 / 94%));
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow:
-    0 0 0 1px rgb(0 0 0 / 55%),
-    inset 0 1px 0 rgb(255 255 255 / 5%),
-    0 18px 44px rgb(0 0 0 / 55%);
-  backdrop-filter: blur(3px);
+  isolation: isolate;
+  border: 1px solid transparent;
 }
 
-/* Gilt corner brackets (9-slice), drawn over the slab's edge. */
-.panel::after {
+.panel::before {
   content: '';
   position: absolute;
-  inset: 2px;
-  border: 26px solid transparent;
-  border-image: url('../assets/ui/panel-frame.svg') 40 stretch;
+  z-index: -1;
+  inset: -1px;
+  border: 24px solid transparent;
+  border-image: url('../assets/ui/panel-frame.png') 24 fill / 24px stretch;
+  image-rendering: pixelated;
+  /* Hard 4px drop shadow that follows the cut corners. */
+  filter: drop-shadow(0 4px 0 rgb(15 14 17 / 60%));
   pointer-events: none;
+}
+
+/* Compact slab (4px corners) for small floating panels and banners. Apply to an element that
+   has no other border; 8px of its padding is taken by the frame. */
+.panel-sm {
+  border: 8px solid transparent;
+  border-image: url('../assets/ui/panel-small.png') 8 fill / 8px stretch;
+  border-radius: 0;
+  image-rendering: pixelated;
 }
 
 .dim {

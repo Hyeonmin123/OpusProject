@@ -32,14 +32,8 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px 8px 10px;
-  border-radius: 4px;
-  background: linear-gradient(180deg, rgb(30 27 34 / 88%), rgb(15 14 17 / 90%));
-  border: 1px solid var(--border);
-  box-shadow:
-    0 0 0 1px rgb(0 0 0 / 55%),
-    inset 0 1px 0 rgb(255 255 255 / 5%),
-    0 6px 16px rgb(0 0 0 / 45%);
+  composes: panel-sm from global;
+  padding: 1px 5px 1px 3px;
 }
 
 .revealBtn {
@@ -104,25 +98,24 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 6;
-  padding: 6px 16px;
-  border-radius: 4px;
+  composes: panel-sm from global;
+  padding: 0 8px;
   font-family: var(--font-px11);
   font-size: 12px;
   font-weight: 700;
-  color: #f0c8c8;
-  background: rgb(20 6 8 / 85%);
-  border: 1px solid var(--debuff);
+  color: var(--debuff);
   pointer-events: none;
-  animation: bannerPulse 1.6s ease-in-out infinite;
+  outline: 2px solid transparent;
+  animation: bannerPulse 1.6s steps(1, end) infinite;
 }
 
 @keyframes bannerPulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgb(184 106 106 / 0%);
+    outline-color: transparent;
   }
   50% {
-    box-shadow: 0 0 16px 2px rgb(184 106 106 / 50%);
+    outline-color: var(--debuff);
   }
 }
 
@@ -321,17 +314,18 @@
   position: absolute;
   top: 14px;
   left: 50%;
-  padding: 4px 18px;
+  /* Same compact slab as .panel-sm (composes cannot target a descendant selector). */
+  border: 8px solid transparent;
+  border-image: url('../../assets/ui/panel-small.png') 8 fill / 8px stretch;
+  image-rendering: pixelated;
+  padding: 0 10px;
   font-family: var(--font-title);
   font-size: 24px;
   font-weight: 700;
   line-height: 28px;
   letter-spacing: 2px;
   color: var(--accent-strong);
-  background: rgb(15 14 17 / 82%);
-  border: 1px solid rgb(184 154 94 / 45%);
-  border-radius: 4px;
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 55%);
+  text-shadow: 2px 2px 0 var(--bg);
   white-space: nowrap;
   animation: turn-label 1.5s ease-out forwards;
 }
@@ -382,12 +376,9 @@
   left: 50%;
   transform: translateX(-50%);
   bottom: 236px;
-  padding: 6px 16px;
-  border-radius: 4px;
-  background: rgb(15 14 17 / 88%);
-  border: 1px solid rgb(184 154 94 / 55%);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 55%);
-  color: #f3e6c8;
+  composes: panel-sm from global;
+  padding: 0 9px;
+  color: var(--light);
   pointer-events: none;
   z-index: 5;
 }

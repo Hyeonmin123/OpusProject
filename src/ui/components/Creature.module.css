@@ -44,8 +44,9 @@
   content: '';
   position: absolute;
   inset: -4px -8px;
-  border: 26px solid transparent;
-  border-image: url('../../assets/ui/panel-frame.svg') 40 stretch;
+  border: 24px solid transparent;
+  border-image: url('../../assets/ui/reticle.png') 24 / 24px stretch;
+  image-rendering: pixelated;
   pointer-events: none;
   animation: reticle-in 0.16s ease-out;
 }
