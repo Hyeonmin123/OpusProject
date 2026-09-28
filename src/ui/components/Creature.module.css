@@ -11,13 +11,15 @@
   transition: opacity 0.3s;
 }
 
-/* A pool of shadow behind each combatant separates it from the scene art. */
+/* A pool of shadow behind each combatant separates it from the scene art (ui/pool.png: an
+   ellipse of d0 in dithered alpha steps). */
 .creature::before {
   content: '';
   position: absolute;
   inset: -4px -26px -8px;
   z-index: -1;
-  background: radial-gradient(closest-side, rgb(8 7 10 / 72%), rgb(8 7 10 / 38%) 62%, transparent);
+  background: url('../../assets/ui/pool.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated;
   pointer-events: none;
 }
 
@@ -37,7 +39,7 @@
   box-shadow:
     0 0 0 3px var(--light),
     0 0 0 5px #0b0a0d,
-    0 0 30px rgb(243 210 122 / 55%);
+    0 0 0 7px rgb(243 210 122 / 35%);
 }
 
 .targetable:hover::after {
@@ -60,12 +62,12 @@
   100% {
     box-shadow:
       0 0 0 2px rgb(216 183 110 / 40%),
-      0 0 10px rgb(216 183 110 / 15%);
+      0 0 0 4px rgb(216 183 110 / 12%);
   }
   50% {
     box-shadow:
       0 0 0 3px rgb(216 183 110 / 80%),
-      0 0 22px rgb(216 183 110 / 38%);
+      0 0 0 6px rgb(216 183 110 / 28%);
   }
 }
 
@@ -88,19 +90,17 @@
   display: grid;
   place-items: center;
   font-size: 54px;
-  background:
-    radial-gradient(circle at 50% 35%, rgb(255 255 255 / 8%), transparent 65%), var(--panel-2);
+  background: var(--panel-2);
   border: 2px solid var(--border-strong);
   box-shadow:
-    inset 0 -10px 24px rgb(0 0 0 / 50%),
     0 0 0 2px rgb(11 10 13 / 85%),
-    0 6px 16px rgb(0 0 0 / 55%);
+    0 4px 0 rgb(15 14 17 / 60%);
   transition:
     transform 0.15s ease-out,
     box-shadow 0.15s;
 }
 
-/* Figma portrait art fills the arched frame; the frame's inset shade sits on top. */
+/* Pixel portrait art fills the arched frame; a hard 2px inner shade line sits on top. */
 .hasArt {
   position: relative;
   overflow: hidden;
@@ -112,7 +112,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: inset 0 -10px 24px rgb(0 0 0 / 45%);
+  box-shadow: inset 0 0 0 2px rgb(15 14 17 / 45%);
   pointer-events: none;
 }
 

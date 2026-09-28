@@ -41,10 +41,9 @@
   background-size: 100% 100%;
   background-repeat: no-repeat;
   box-shadow:
-    0 0 0 1px #000,
-    0 0 0 2px rgb(184 154 94 / 28%),
-    0 18px 48px rgb(0 0 0 / 70%),
-    inset 0 0 40px rgb(0 0 0 / 55%);
+    0 0 0 2px #000,
+    0 0 0 4px rgb(184 154 94 / 28%),
+    0 8px 0 rgb(0 0 0 / 50%);
 }
 
 .edges {
@@ -79,7 +78,8 @@
   }
 }
 
-/* Nodes are small stone medallions tinted by room type with a thin ring. */
+/* Nodes are small stone medallions tinted by room type with a thin ring: a flat fill with a
+   pixel shading overlay (ui/node-shade*.png: a dithered highlight and shade crescent). */
 .node {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -90,14 +90,12 @@
   place-items: center;
   font-size: 18px;
   border: 2px solid #0b0a0d;
-  background: radial-gradient(
-    circle at 50% 32%,
-    color-mix(in srgb, var(--node-color) 80%, #fff 12%),
-    color-mix(in srgb, var(--node-color) 55%, #0b0a0d) 72%
-  );
+  background: url('../../assets/ui/node-shade.png') 0 0 / 100% 100% no-repeat border-box
+    color-mix(in srgb, var(--node-color) 72%, #0b0a0d);
+  image-rendering: pixelated;
   box-shadow:
-    0 0 0 1.5px color-mix(in srgb, var(--node-color) 45%, #5a5162),
-    0 3px 8px rgb(0 0 0 / 65%);
+    0 0 0 2px color-mix(in srgb, var(--node-color) 45%, #5a5162),
+    0 3px 0 rgb(0 0 0 / 55%);
   color: #fff;
   opacity: 0.72;
   filter: saturate(0.6) brightness(0.88);
@@ -118,6 +116,7 @@
   height: 76px;
   font-size: 35px;
   border-radius: 50% 50% 16px 16px;
+  background-image: url('../../assets/ui/node-shade-boss.png');
 }
 
 .reachable {
@@ -126,7 +125,7 @@
   box-shadow:
     0 0 0 2px var(--accent-strong),
     0 0 0 4px rgb(11 10 13 / 85%),
-    0 0 18px rgb(243 210 122 / 35%);
+    0 0 0 6px rgb(243 210 122 / 25%);
 }
 
 /* Expanding ring: "you can go here". Kept on a pseudo-element so hover can own box-shadow. */
@@ -147,7 +146,7 @@
   box-shadow:
     0 0 0 2px var(--light),
     0 0 0 4px #0b0a0d,
-    0 0 28px rgb(243 210 122 / 60%);
+    0 0 0 7px rgb(243 210 122 / 40%);
 }
 
 .reachable:hover::after,
@@ -160,8 +159,8 @@
   opacity: 0.9;
   filter: saturate(0.35) brightness(0.72);
   box-shadow:
-    0 0 0 1.5px var(--accent),
-    0 3px 8px rgb(0 0 0 / 65%);
+    0 0 0 2px var(--accent),
+    0 3px 0 rgb(0 0 0 / 55%);
 }
 
 .current {
@@ -170,7 +169,7 @@
   box-shadow:
     0 0 0 2px var(--candle),
     0 0 0 5px rgb(11 10 13 / 85%),
-    0 0 22px rgb(240 184 74 / 55%);
+    0 0 0 8px rgb(240 184 74 / 35%);
 }
 
 @keyframes ripple {
@@ -217,13 +216,11 @@
   display: grid;
   place-items: center;
   font-size: 14px;
-  background: radial-gradient(
-    circle at 50% 32%,
-    color-mix(in srgb, var(--node-color) 80%, #fff 12%),
-    color-mix(in srgb, var(--node-color) 55%, #0b0a0d) 72%
-  );
-  border: 1.5px solid #0b0a0d;
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--node-color) 45%, #5a5162);
+  background: url('../../assets/ui/node-shade-sm.png') 0 0 / 100% 100% no-repeat border-box
+    color-mix(in srgb, var(--node-color) 72%, #0b0a0d);
+  image-rendering: pixelated;
+  border: 2px solid #0b0a0d;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--node-color) 45%, #5a5162);
 }
 
 @media (max-width: 760px) {

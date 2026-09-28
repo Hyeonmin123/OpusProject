@@ -1,6 +1,7 @@
 /* Scene art sits on its own fixed layer behind everything, so scrolling or UI updates never
-   repaint it. The art is already low-contrast; the ::after scrim adds a little extra
-   darkening toward the edges where panels and text usually sit. */
+   repaint it. The art is already low-contrast; the ::after scrim (ui/scrim-*.png, pixel art on
+   the scenes' own 256x144 grid, sized and positioned like the scene so its pixels land on the
+   scene's) darkens toward the edges in ordered-dither steps of d0. */
 .backdrop {
   position: fixed;
   inset: 0;
@@ -20,27 +21,31 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgb(8 7 10 / 45%) 100%);
+  background: url('../../assets/ui/scrim-scene.png') center / cover no-repeat;
+  image-rendering: pixelated;
 }
 
-/* Keep the focal point of each scene in view when `cover` crops it. */
-.backdrop[data-scene='rest'] {
+/* Keep the focal point of each scene in view when `cover` crops it (the scrim follows). */
+.backdrop[data-scene='rest'],
+.backdrop[data-scene='rest']::after {
   background-position: center 75%;
 }
 
 .backdrop[data-scene='act1'],
 .backdrop[data-scene='act2'],
-.backdrop[data-scene='act3'] {
-  background-position: center 40%;
-}
-
-/* Combat is the busiest foreground, so its scenes sit a step further back. */
+.backdrop[data-scene='act3'],
 .backdrop[data-scene='act1']::after,
 .backdrop[data-scene='act2']::after,
 .backdrop[data-scene='act3']::after {
-  background:
-    linear-gradient(180deg, rgb(8 7 10 / 20%), rgb(8 7 10 / 30%) 60%, rgb(8 7 10 / 55%)),
-    radial-gradient(ellipse at 50% 42%, transparent 35%, rgb(8 7 10 / 55%) 100%);
+  background-position: center 40%;
+}
+
+/* Combat is the busiest foreground, so its scenes sit a step further back: a deeper vignette
+   and a darker floor. */
+.backdrop[data-scene='act1']::after,
+.backdrop[data-scene='act2']::after,
+.backdrop[data-scene='act3']::after {
+  background-image: url('../../assets/ui/scrim-combat.png');
 }
 
 @keyframes scene-in {

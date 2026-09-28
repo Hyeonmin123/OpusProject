@@ -41,8 +41,9 @@
   padding: 0 7px;
 }
 
-.revealBtn:not(:hover, :active) {
+.revealBtn:not(:hover, :active, :disabled) {
   border-image-source: url('../../assets/ui/btn-shadow.png');
+  background-image: url('../../assets/ui/btn-dither-violet.png');
 }
 
 .revealCost {
@@ -68,32 +69,26 @@
   filter: brightness(0.55) saturate(0.6);
 }
 
+/* The dark closes in on the field in ordered-dither steps of d0 (ui/scrim-dim.png,
+   ui/scrim-dark.png: pixel art on a 128x72 grid, cover-scaled so its pixels stay square). */
 .light-dim .field {
-  background:
-    radial-gradient(ellipse at 20% 60%, rgb(240 184 74 / 10%), transparent 45%),
-    radial-gradient(ellipse at 50% 50%, transparent 30%, rgb(0 0 0 / 55%) 90%);
+  background: url('../../assets/ui/scrim-dim.png') center / cover no-repeat;
+  image-rendering: pixelated;
 }
 
 .light-dark .field {
-  background:
-    radial-gradient(ellipse at 20% 60%, rgb(120 40 40 / 16%), transparent 40%),
-    radial-gradient(ellipse at 50% 50%, rgb(0 0 0 / 30%) 10%, rgb(0 0 0 / 85%) 85%);
+  background: url('../../assets/ui/scrim-dark.png') center / cover no-repeat;
+  image-rendering: pixelated;
 }
 
 /* Carry the field's darkness on into the hand's ledge, so the scene art doesn't show a lit
    band between the dimmed field and the cards. */
 .light-dim .handArea {
-  background: linear-gradient(
-    180deg,
-    rgb(0 0 0 / 38%),
-    rgb(10 9 12 / 65%) 38%,
-    rgb(10 9 12 / 88%) 70%,
-    rgb(10 9 12 / 94%)
-  );
+  background-image: url('../../assets/ui/ledge-dim.png');
 }
 
 .light-dark .handArea {
-  background: linear-gradient(180deg, rgb(0 0 0 / 74%), rgb(10 9 12 / 90%) 45%, rgb(10 9 12 / 96%));
+  background-image: url('../../assets/ui/ledge-dark.png');
 }
 
 .blackoutBanner {
@@ -169,7 +164,9 @@
   color: var(--text-dim);
 }
 
-/* The hand rests on a dark stone ledge with a pixel gilt rule running behind the cards. */
+/* The hand rests on a dark stone ledge with a pixel gilt rule running behind the cards. The
+   ledge (ui/ledge*.png, a 4x128 tile anchored to the bottom and repeated across) darkens
+   toward the bottom in ordered-dither steps of d0. */
 .handArea {
   grid-area: hand;
   position: relative;
@@ -178,13 +175,8 @@
   align-items: flex-end;
   gap: 16px;
   padding: 10px 20px 16px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgb(10 9 12 / 55%) 38%,
-    rgb(10 9 12 / 88%) 70%,
-    rgb(10 9 12 / 94%)
-  );
+  background: url('../../assets/ui/ledge.png') left bottom / 8px 256px repeat-x;
+  image-rendering: pixelated;
 }
 
 .handArea::before {
@@ -299,8 +291,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 55%, rgb(26 16 36 / 20%), rgb(26 16 36 / 60%));
-  animation: turn-veil 0.7s ease-out forwards;
+  /* A flat veil of shadow-deep (no blend), lifting in hard steps. */
+  background: rgb(26 16 36 / 45%);
+  animation: turn-veil 0.7s steps(4, end) forwards;
 }
 
 .turnFlash span {
@@ -309,7 +302,8 @@
   left: 50%;
   /* Same compact slab as .panel-sm (composes cannot target a descendant selector). */
   border: 8px solid transparent;
-  border-image: url('../../assets/ui/panel-small.png') 8 fill / 8px stretch;
+  border-image: url('../../assets/ui/panel-small.png') 8 / 8px stretch;
+  background: url('../../assets/ui/slab-tex.png') 0 0 / 32px 32px padding-box;
   image-rendering: pixelated;
   padding: 0 10px;
   font-family: var(--font-title);
