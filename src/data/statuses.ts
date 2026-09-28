@@ -65,4 +65,12 @@ export const STATUSES: Record<StatusId, StatusEffectDef> = {
     decay: 'intensity',
     describe: (n) => `공격받을 때마다 공격자에게 피해를 ${n} 줍니다.`,
   },
+  kindle: {
+    id: 'kindle',
+    name: '불씨',
+    icon: '🔆',
+    kind: 'buff',
+    decay: 'intensity',
+    describe: (n) => `턴 시작 시 촛농을 ${n} 회복합니다.`,
+  },
 };

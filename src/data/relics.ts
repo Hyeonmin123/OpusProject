@@ -88,6 +88,30 @@ const RELIC_LIST: RelicDef[] = [
     description: '전투에서 승리할 때마다 골드를 10 추가로 얻습니다.',
     triggers: [{ when: 'combatWin', gold: 10 }],
   },
+  {
+    id: 'waxSeal',
+    name: '밀랍 봉인',
+    icon: '🍯',
+    rarity: 'common',
+    description: '전투에서 승리하면 촛농을 3 회복합니다.',
+    triggers: [{ when: 'combatWin', candle: 3 }],
+  },
+  {
+    id: 'silverCandlestick',
+    name: '은촛대',
+    icon: '🪔',
+    rarity: 'common',
+    description: '획득 시 최대 촛농이 10 증가하고 촛농을 10 회복합니다.',
+    triggers: [{ when: 'pickup', maxCandle: 10, candle: 10 }],
+  },
+  {
+    id: 'owlEye',
+    name: '올빼미의 눈',
+    icon: '🦉',
+    rarity: 'common',
+    description: '각 전투의 첫 턴에는 어둠 속에서도 적의 의도가 모두 보입니다.',
+    triggers: [{ when: 'turnStart', onlyTurn: 1, effects: [{ type: 'reveal' }] }],
+  },
 
   // Boss relics
   {
@@ -98,6 +122,16 @@ const RELIC_LIST: RelicDef[] = [
     description: '매 턴 에너지를 1 추가로 얻습니다.',
     triggers: [],
     energyPerTurn: 1,
+  },
+  {
+    id: 'blackCandle',
+    name: '검은 양초',
+    icon: '🌑',
+    rarity: 'boss',
+    description: '매 턴 에너지를 1 추가로 얻습니다. 촛불이 매 턴 1 더 빨리 탑니다.',
+    triggers: [],
+    energyPerTurn: 1,
+    candleDrain: 1,
   },
   {
     id: 'eternalFlame',

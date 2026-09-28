@@ -1,6 +1,7 @@
 import { REWARD_POOL } from '../data/cards';
 import { RELICS } from '../data/relics';
 import type {
+  CardDef,
   CardInstance,
   CardRarity,
   EnemyTier,
@@ -8,6 +9,7 @@ import type {
   RewardState,
   ShopState,
 } from '../types';
+import { restoreCandle, shopCandlePrice } from './candle';
 import { makeCard } from './cards';
 import type { Ctx } from './context';
 
@@ -25,13 +27,20 @@ const RARITY_WEIGHTS: Record<EnemyTier, Array<[CardRarity, number]>> = {
   boss: [['rare', 1]],
 };
 
-/** Rolls `count` distinct reward cards. */
-export function rollCards(ctx: Ctx, count: number, tier: EnemyTier): CardInstance[] {
+/** Rolls `count` distinct reward cards (optionally only cards matching `filter`). */
+export function rollCards(
+  ctx: Ctx,
+  count: number,
+  tier: EnemyTier,
+  filter: (def: CardDef) => boolean = () => true,
+): CardInstance[] {
   const picked = new Set<string>();
   const result: CardInstance[] = [];
   for (let guard = 0; result.length < count && guard < 100; guard++) {
     const rarity = ctx.rng.weighted(RARITY_WEIGHTS[tier]);
-    const pool = REWARD_POOL.filter((c) => c.rarity === rarity && !picked.has(c.id));
+    const pool = REWARD_POOL.filter(
+      (c) => c.rarity === rarity && !picked.has(c.id) && filter(c),
+    );
     if (pool.length === 0) continue;
     const def = ctx.rng.pick(pool);
     picked.add(def.id);
@@ -59,6 +68,8 @@ export function grantRelic(ctx: Ctx, relicId: string): void {
     if (trig.maxHp) p.maxHp += trig.maxHp;
     if (trig.heal) p.hp = Math.min(p.maxHp, p.hp + trig.heal);
     if (trig.gold) gainGold(ctx, trig.gold);
+    if (trig.maxCandle) p.maxCandle += trig.maxCandle;
+    if (trig.candle) restoreCandle(p, trig.candle);
   }
 }
 
@@ -113,5 +124,7 @@ export function createShop(ctx: Ctx): ShopState {
     relics,
     removePrice: 75 + 25 * ctx.run.cardRemovals,
     removeUsed: false,
+    candlePrice: shopCandlePrice(ctx.run.act),
+    candleUsed: false,
   };
 }

@@ -45,6 +45,11 @@ export interface EnemyState {
   statuses: StatusMap;
   /** Move id the enemy will perform on its next turn (null when dead). */
   intent: string | null;
+  /**
+   * True while darkness hides the intent from the player. The engine still
+   * knows (and executes) `intent`; only player-facing views are withheld.
+   */
+  intentHidden: boolean;
   history: string[];
 }
 

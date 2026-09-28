@@ -29,6 +29,8 @@ interface GameStore {
 
   playCard: (cardUid: string, targetIndex?: number) => void;
   endTurn: () => void;
+  /** Spend candle wax to reveal intents hidden by darkness. */
+  revealIntents: () => void;
   finishCombat: () => void;
 
   claimRewardGold: () => void;
@@ -44,9 +46,11 @@ interface GameStore {
   buyShopCard: (index: number) => void;
   buyShopRelic: (index: number) => void;
   shopRemoveCard: (cardUid: string) => void;
+  buyShopCandle: () => void;
   leaveShop: () => void;
 
   restHeal: () => void;
+  restRekindle: () => void;
   restUpgrade: (cardUid: string) => void;
   leaveRest: () => void;
 }
@@ -101,6 +105,7 @@ export const useGame = create<GameStore>()(
 
         playCard: act(engine.playCard),
         endTurn: act(engine.endTurn),
+        revealIntents: act(engine.revealIntents),
         finishCombat: act(engine.finishCombat),
 
         claimRewardGold: act(engine.claimRewardGold),
@@ -116,9 +121,11 @@ export const useGame = create<GameStore>()(
         buyShopCard: act(engine.buyShopCard),
         buyShopRelic: act(engine.buyShopRelic),
         shopRemoveCard: act(engine.shopRemoveCard),
+        buyShopCandle: act(engine.buyShopCandle),
         leaveShop: act(engine.leaveShop),
 
         restHeal: act(engine.restHeal),
+        restRekindle: act(engine.restRekindle),
         restUpgrade: act(engine.restUpgrade),
         leaveRest: act(engine.leaveRest),
       };

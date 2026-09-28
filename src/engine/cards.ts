@@ -1,6 +1,14 @@
 import { CARDS } from '../data/cards';
 import { STATUSES } from '../data/statuses';
-import type { CardDef, CardInstance, CardStats, Effect, RunState, StatusMap } from '../types';
+import type {
+  CardDef,
+  CardInstance,
+  CardResonance,
+  CardStats,
+  Effect,
+  RunState,
+  StatusMap,
+} from '../types';
 import { nextUid } from './context';
 import { calcAttackDamage, calcBlockGain } from './math';
 
@@ -19,8 +27,13 @@ export function getCardStats(card: CardInstance): CardStats {
     exhaust: def.exhaust,
     unplayable: def.unplayable,
     description: def.description,
+    candle: def.candle,
   };
   return card.upgraded && def.upgrade ? { ...base, ...def.upgrade } : base;
+}
+
+export function cardResonance(card: CardInstance): CardResonance {
+  return getCardDef(card.defId).resonance ?? 'neutral';
 }
 
 export function cardName(card: CardInstance): string {
@@ -36,14 +49,23 @@ export function makeCard(run: RunState, defId: string, upgraded = false): CardIn
   return { uid: nextUid(run, 'c'), defId, upgraded };
 }
 
+function effectNeedsTarget(e: Effect): boolean {
+  return (
+    (e.type === 'damage' && (e.target ?? 'target') === 'target') ||
+    e.type === 'damageEqualBlock' ||
+    (e.type === 'applyStatus' && e.target === 'target') ||
+    (e.type === 'ifDark' && e.effects.some(effectNeedsTarget))
+  );
+}
+
 /** Whether playing the card requires choosing a single enemy. */
 export function cardNeedsTarget(card: CardInstance): boolean {
-  return getCardStats(card).effects.some(
-    (e) =>
-      (e.type === 'damage' && (e.target ?? 'target') === 'target') ||
-      e.type === 'damageEqualBlock' ||
-      (e.type === 'applyStatus' && e.target === 'target'),
-  );
+  return getCardStats(card).effects.some(effectNeedsTarget);
+}
+
+/** Rules text for a wax change ("촛농 2 소모." / "촛농 1 회복."). */
+export function describeCandle(amount: number): string {
+  return amount < 0 ? `촛농 ${-amount} 소모.` : `촛농 ${amount} 회복.`;
 }
 
 /** Optional live combat numbers so card text shows modified damage/block. */
@@ -98,6 +120,12 @@ function describeEffect(effect: Effect, view?: DescribeView): string {
       const pile = { draw: '뽑을 카드 더미', discard: '버린 카드 더미', hand: '손' }[effect.pile];
       return `${getCardDef(effect.cardId).name} ${effect.count}장을 ${pile}에 추가.`;
     }
+    case 'candle':
+      return describeCandle(effect.amount);
+    case 'reveal':
+      return '가려진 적의 의도를 모두 드러냄.';
+    case 'ifDark':
+      return `어둠 속이면: ${effect.effects.map((e) => describeEffect(e, view)).join(' ')}`;
   }
 }
 
@@ -111,6 +139,8 @@ export function describeCard(card: CardInstance, view?: DescribeView): string {
     // Powers persist: phrase them as a lasting effect.
     parts[parts.length - 1] = parts[parts.length - 1].replace(/\.$/, ' (지속).');
   }
+  // Wax is paid on play, before the effects.
+  if (stats.candle) parts.unshift(describeCandle(stats.candle));
   if (stats.exhaust) parts.push('소멸.');
   return parts.join(' ');
 }

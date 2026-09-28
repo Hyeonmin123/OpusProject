@@ -133,6 +133,44 @@ const EVENT_LIST: EventDef[] = [
         outcomes: [{ type: 'hp', amount: 10 }],
         result: '화로의 온기에 잠시 몸을 녹였다.',
       },
+      {
+        label: '불씨를 옮겨 붙인다',
+        detail: '촛농 12 회복.',
+        outcomes: [{ type: 'candle', amount: 12 }],
+        result: '화로의 불씨로 촛불을 다시 밝혔다. 그림자가 한 걸음 물러난다.',
+      },
+    ],
+  },
+  {
+    id: 'chandler',
+    title: '양초장이의 작업실',
+    icon: '🕯️',
+    text: '녹아내린 밀랍이 켜켜이 쌓인 작업대. 반쯤 만들다 만 양초들 사이로, 검게 물든 초 하나가 스스로 타고 있다.',
+    options: [
+      {
+        label: '밀랍을 긁어모은다',
+        detail: '촛농 15 회복.',
+        outcomes: [{ type: 'candle', amount: 15 }],
+        result: '남은 밀랍을 모아 촛대에 덧발랐다. 불꽃이 한층 커졌다.',
+      },
+      {
+        label: '밀랍으로 상처를 봉한다',
+        detail: '촛농 8 소모. 체력 14 회복.',
+        outcomes: [
+          { type: 'candle', amount: -8 },
+          { type: 'hp', amount: 14 },
+        ],
+        result: '뜨거운 밀랍이 상처를 덮는다. 고통과 함께 피가 멎었다.',
+      },
+      {
+        label: '검은 초의 불꽃을 들여다본다',
+        detail: '촛농 6 소모. 그림자 카드 1장 획득.',
+        outcomes: [
+          { type: 'candle', amount: -6 },
+          { type: 'randomCard', resonance: 'shadow' },
+        ],
+        result: '검은 불꽃 속에서 무언가가 속삭였다. 어둠을 다루는 법을 알 것 같다.',
+      },
     ],
   },
 ];

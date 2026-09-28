@@ -74,7 +74,11 @@ const ENEMY_LIST: EnemyDef[] = [
       screech: {
         id: 'screech',
         name: '초음파',
-        effects: [{ type: 'applyStatus', status: 'vulnerable', amount: 1, target: 'target' }],
+        effects: [
+          { type: 'applyStatus', status: 'vulnerable', amount: 1, target: 'target' },
+          // The shriek and wingbeats make the candle gutter.
+          { type: 'candle', amount: -1 },
+        ],
       },
     },
     ai: (ctx) =>
@@ -287,6 +291,7 @@ const ENEMY_LIST: EnemyDef[] = [
         effects: [
           { type: 'applyStatus', status: 'vulnerable', amount: 2, target: 'target' },
           { type: 'applyStatus', status: 'weak', amount: 2, target: 'target' },
+          { type: 'candle', amount: -3 },
         ],
       },
       boneStorm: {
@@ -334,6 +339,7 @@ const ENEMY_LIST: EnemyDef[] = [
           { type: 'applyStatus', status: 'vulnerable', amount: 2, target: 'target' },
           { type: 'applyStatus', status: 'frail', amount: 2, target: 'target' },
           { type: 'addCard', cardId: 'wound', count: 2, pile: 'draw' },
+          { type: 'candle', amount: -4 },
         ],
       },
     },

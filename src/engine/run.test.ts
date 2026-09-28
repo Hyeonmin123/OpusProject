@@ -100,6 +100,8 @@ describe('run flow', () => {
       relics: [],
       removePrice: 75,
       removeUsed: false,
+      candlePrice: 35,
+      candleUsed: false,
     };
     run.player.gold = 120;
     run = buyShopCard(run, 0);

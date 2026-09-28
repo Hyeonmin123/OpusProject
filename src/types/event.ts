@@ -6,7 +6,10 @@ export type EventOutcome =
   | { type: 'healPercent'; percent: number }
   | { type: 'maxHp'; amount: number }
   | { type: 'randomRelic' }
-  | { type: 'randomCard' }
+  /** Random reward card, optionally limited to one candle resonance. */
+  | { type: 'randomCard'; resonance?: 'light' | 'shadow' }
+  /** Positive restores candle wax, negative burns it (never below 0). */
+  | { type: 'candle'; amount: number }
   | { type: 'addCard'; cardId: string }
   | { type: 'upgradeRandom'; count: number }
   /** Opens a deck picker; resolved via a follow-up action. */

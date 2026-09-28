@@ -13,6 +13,16 @@ import type {
   StatusId,
   StatusMap,
 } from '../types';
+import {
+  BLACKOUT_DAMAGE,
+  BLACKOUT_ENEMY_DAMAGE_BONUS,
+  DIM_HIDE_CHANCE,
+  REVEAL_WAX_COST,
+  burnCandle,
+  candleDrainPerTurn,
+  isBlackout,
+  lightLevel,
+} from './candle';
 import { cardName, cardNeedsTarget, getCardDef, getCardStats, makeCard } from './cards';
 import { type Ctx, nextUid, transact } from './context';
 import { calcAttackDamage, calcBlockGain } from './math';
@@ -120,6 +130,7 @@ function handleEnemyDeath(ctx: Ctx, enemy: EnemyState): void {
   enemy.hp = 0;
   enemy.block = 0;
   enemy.intent = null;
+  enemy.intentHidden = false;
   for (const id of Object.keys(enemy.statuses) as StatusId[]) delete enemy.statuses[id];
   ctx.run.stats.enemiesKilled += 1;
   log(ctx, `${enemy.name} 처치!`, 'system');
@@ -155,7 +166,7 @@ function attack(ctx: Ctx, source: FighterRef, target: FighterRef, base: number):
   const src = fighter(ctx, source);
   const tgt = fighter(ctx, target);
   if (src.hp <= 0 || tgt.hp <= 0) return;
-  const dmg = calcAttackDamage(base, src.statuses, tgt.statuses);
+  const dmg = calcAttackDamage(base, src.statuses, tgt.statuses, attackBonus(ctx.run, source));
   const blocked = Math.min(tgt.block, dmg);
   applyDamage(ctx, target, dmg);
   log(
@@ -168,6 +179,81 @@ function attack(ctx: Ctx, source: FighterRef, target: FighterRef, base: number):
     applyDamage(ctx, source, thorns);
     log(ctx, `가시: ${src.name}에게 피해 ${thorns}`, 'system');
   }
+}
+
+/** Percent damage bonus for an attacker: enemies hit harder while the player is in blackout. */
+function attackBonus(run: RunState, source: FighterRef): number {
+  return source.kind === 'enemy' && isBlackout(run) ? BLACKOUT_ENEMY_DAMAGE_BONUS : 0;
+}
+
+// ---- Candle & darkness -----------------------------------------------------------------
+
+/** Clears every hidden intent. Returns true if anything was revealed. */
+function revealAll(ctx: Ctx): boolean {
+  let any = false;
+  for (const e of combatOf(ctx).enemies) {
+    if (e.intentHidden) any = true;
+    e.intentHidden = false;
+  }
+  return any;
+}
+
+/**
+ * Changes the candle during combat: positive restores (clamped to max), negative
+ * burns (clamped at 0). Logs blackout transitions, and a bright light instantly
+ * reveals hidden intents. Returns the burn shortfall (wax that was not there).
+ */
+function changeCandle(ctx: Ctx, delta: number): number {
+  const p = ctx.run.player;
+  const before = p.candle;
+  let shortfall = 0;
+  if (delta > 0) p.candle = Math.min(p.maxCandle, p.candle + delta);
+  else if (delta < 0) shortfall = burnCandle(ctx.run, -delta).shortfall;
+  if (before > 0 && p.candle === 0) {
+    log(
+      ctx,
+      `🕯️ 촛불이 꺼졌습니다 — 암전! (턴마다 체력 ${BLACKOUT_DAMAGE} 잃음, 적 피해 +${BLACKOUT_ENEMY_DAMAGE_BONUS}%)`,
+    );
+  } else if (before === 0 && p.candle > 0) {
+    log(ctx, '🕯️ 촛불이 다시 타오릅니다. 암전이 걷혔습니다.');
+  }
+  if (lightLevel(p) === 'bright' && revealAll(ctx)) {
+    log(ctx, '밝아진 불빛에 적의 의도가 드러났습니다.');
+  }
+  return shortfall;
+}
+
+/**
+ * Re-rolls which intents the darkness hides (called at the start of each player
+ * turn, after the candle burned). Bright: none. Dim: each enemy with
+ * DIM_HIDE_CHANCE, but at least one. Blackout: all of them.
+ */
+function applyDarkness(ctx: Ctx): void {
+  const combat = combatOf(ctx);
+  const level = lightLevel(ctx.run.player);
+  const living = combat.enemies.filter((e) => e.hp > 0);
+  for (const e of combat.enemies) e.intentHidden = false;
+  if (level === 'bright' || living.length === 0) return;
+  if (level === 'dark') {
+    for (const e of living) e.intentHidden = true;
+  } else {
+    for (const e of living) e.intentHidden = ctx.rng.chance(DIM_HIDE_CHANCE);
+    if (!living.some((e) => e.intentHidden)) ctx.rng.pick(living).intentHidden = true;
+  }
+  const hidden = living.filter((e) => e.intentHidden).length;
+  log(ctx, `어둠이 짙어 적 ${hidden}명의 의도가 보이지 않습니다.`);
+}
+
+/** Start-of-turn candle upkeep: drain (minus Kindle), then blackout damage at 0 wax. */
+function burnTurnCandle(ctx: Ctx): void {
+  const combat = combatOf(ctx);
+  const kindle = getStatus(combat.player.statuses, 'kindle');
+  changeCandle(ctx, kindle - candleDrainPerTurn(ctx.run));
+  if (!isBlackout(ctx.run)) return;
+  ctx.run.stats.blackoutTurns += 1;
+  log(ctx, `암전: 어둠 속에서 체력 ${BLACKOUT_DAMAGE} 잃음`);
+  loseHp(ctx, PLAYER, BLACKOUT_DAMAGE);
+  checkCombatEnd(ctx);
 }
 
 function gainBlock(ctx: Ctx, ref: FighterRef, amount: number): void {
@@ -316,6 +402,25 @@ export function executeEffects(
       case 'addCard':
         addCardsToPile(ctx, effect.cardId, effect.count, effect.pile);
         break;
+      case 'candle': {
+        const before = ctx.run.player.candle;
+        changeCandle(ctx, effect.amount);
+        const diff = ctx.run.player.candle - before;
+        if (diff !== 0) {
+          log(
+            ctx,
+            `촛농 ${diff > 0 ? '+' : ''}${diff}`,
+            actor.kind === 'player' ? 'player' : 'enemy',
+          );
+        }
+        break;
+      }
+      case 'reveal':
+        if (actor.kind === 'player' && revealAll(ctx)) log(ctx, '숨겨진 적의 의도가 드러났습니다.', 'player');
+        break;
+      case 'ifDark':
+        if (lightLevel(ctx.run.player) !== 'bright') executeEffects(ctx, actor, effect.effects, chosen);
+        break;
     }
   }
   checkCombatEnd(ctx);
@@ -356,11 +461,17 @@ function startPlayerTurn(ctx: Ctx): void {
   const combat = combatOf(ctx);
   combat.turn += 1;
   ctx.run.stats.turnsTaken += 1;
+  log(ctx, `— ${combat.turn}턴 —`);
   // Block expires at the start of your turn (turn 1 keeps relic-granted block).
   if (combat.turn > 1) combat.player.block = 0;
 
   const ritual = getStatus(combat.player.statuses, 'ritual');
   if (ritual > 0) applyStatusTo(ctx, PLAYER, PLAYER, 'strength', ritual);
+
+  // The candle burns down; blackout damage can end the fight right here.
+  burnTurnCandle(ctx);
+  if (combatOver(ctx)) return;
+  applyDarkness(ctx);
 
   combat.energy = energyPerTurn(ctx.run);
   for (const relicId of ctx.run.player.relics) {
@@ -371,7 +482,6 @@ function startPlayerTurn(ctx: Ctx): void {
     }
   }
   drawCards(ctx, ctx.run.player.handSize);
-  log(ctx, `— ${combat.turn}턴 —`);
 }
 
 function nameEnemies(defs: EnemyDef[]): string[] {
@@ -409,6 +519,7 @@ export function beginCombat(ctx: Ctx, encounter: EncounterDef): void {
       block: 0,
       statuses,
       intent: null,
+      intentHidden: false,
       history: [],
     };
   });
@@ -494,6 +605,17 @@ export function playCard(run: RunState, cardUid: string, targetIndex?: number): 
     ctx.run.stats.cardsPlayed += 1;
     log(ctx, `${cardName(card)} 사용`, 'player');
 
+    // Wax is paid like energy, before the effects (so a shadow card can darken
+    // the room enough to trigger its own "in darkness" bonus).
+    if (stats.candle) {
+      const shortfall = changeCandle(ctx, stats.candle);
+      if (shortfall > 0) {
+        log(ctx, `촛농이 모자라 그림자가 생명을 태웁니다: 체력 ${shortfall} 잃음`, 'player');
+        loseHp(ctx, PLAYER, shortfall);
+        checkCombatEnd(ctx);
+      }
+    }
+
     executeEffects(ctx, PLAYER, stats.effects, chosen);
 
     // Powers leave play permanently; exhausted cards go to the exhaust pile.
@@ -502,6 +624,29 @@ export function playCard(run: RunState, cardUid: string, targetIndex?: number): 
     } else if (stats.exhaust) combat.exhaustPile.push(card);
     else combat.discardPile.push(card);
     checkCombatEnd(ctx);
+  });
+}
+
+export function canRevealIntents(run: RunState): PlayCheck {
+  const combat = run.combat;
+  if (!combat || combat.phase !== 'player') return { ok: false, reason: '지금은 할 수 없습니다.' };
+  if (!combat.enemies.some((e) => e.hp > 0 && e.intentHidden))
+    return { ok: false, reason: '가려진 의도가 없습니다.' };
+  if (run.player.candle < REVEAL_WAX_COST)
+    return { ok: false, reason: `촛농이 부족합니다. (필요: ${REVEAL_WAX_COST})` };
+  return { ok: true };
+}
+
+/**
+ * "Raise the wick" (심지 돋우기): spends REVEAL_WAX_COST wax to reveal every
+ * hidden enemy intent for this turn. Always available when something is hidden.
+ */
+export function revealIntents(run: RunState): RunState {
+  return transact(run, (ctx) => {
+    if (!canRevealIntents(ctx.run).ok) return false;
+    log(ctx, `심지를 돋웁니다 (촛농 -${REVEAL_WAX_COST})`, 'player');
+    changeCandle(ctx, -REVEAL_WAX_COST);
+    if (revealAll(ctx)) log(ctx, '숨겨진 적의 의도가 드러났습니다.', 'player');
   });
 }
 
@@ -555,7 +700,7 @@ export function endTurn(run: RunState): RunState {
 
 // ---- UI helpers ----------------------------------------------------------------------------
 
-export type IntentKind = 'attack' | 'defend' | 'buff' | 'debuff' | 'special';
+export type IntentKind = 'attack' | 'defend' | 'buff' | 'debuff' | 'special' | 'hidden';
 
 export interface IntentPart {
   kind: IntentKind;
@@ -565,21 +710,34 @@ export interface IntentPart {
 export interface IntentView {
   moveName: string;
   parts: IntentPart[];
+  /** True when darkness hides the intent: `parts` then carries no real information. */
+  hidden?: boolean;
 }
 
-/** What an enemy is about to do, with damage already modified by statuses. */
+const HIDDEN_INTENT: IntentView = {
+  moveName: '???',
+  parts: [{ kind: 'hidden', label: '???' }],
+  hidden: true,
+};
+
+/**
+ * What an enemy is about to do, with damage already modified by statuses. This is
+ * the only player-facing view of intents: a hidden intent yields no information.
+ */
 export function describeIntent(run: RunState, enemyIndex: number): IntentView | null {
   const combat = run.combat;
   const enemy = combat?.enemies[enemyIndex];
   if (!combat || !enemy || enemy.hp <= 0 || !enemy.intent) return null;
+  if (enemy.intentHidden) return HIDDEN_INTENT;
   const move = enemyDef(enemy).moves[enemy.intent];
   if (!move) return null;
+  const bonus = isBlackout(run) ? BLACKOUT_ENEMY_DAMAGE_BONUS : 0;
 
   const parts: IntentPart[] = [];
   for (const e of move.effects) {
     switch (e.type) {
       case 'damage': {
-        const dmg = calcAttackDamage(e.amount, enemy.statuses, combat.player.statuses);
+        const dmg = calcAttackDamage(e.amount, enemy.statuses, combat.player.statuses, bonus);
         parts.push({
           kind: 'attack',
           label: e.times && e.times > 1 ? `${dmg}×${e.times}` : `${dmg}`,
@@ -597,6 +755,12 @@ export function describeIntent(run: RunState, enemyIndex: number): IntentView | 
         break;
       case 'addCard':
         parts.push({ kind: 'special', label: `${getCardDef(e.cardId).name} +${e.count}` });
+        break;
+      case 'candle':
+        parts.push({
+          kind: e.amount < 0 ? 'debuff' : 'buff',
+          label: `촛농 ${e.amount > 0 ? '+' : ''}${e.amount}`,
+        });
         break;
       default:
         parts.push({ kind: 'special', label: '?' });

@@ -3,6 +3,14 @@ import { STARTER_DECK } from '../data/cards';
 import { EVENT_IDS, EVENTS } from '../data/events';
 import { RELICS, STARTER_RELIC } from '../data/relics';
 import type { EncounterDef, EnemyTier, EventOutcome, RunState } from '../types';
+import {
+  ACT_TRANSITION_CANDLE,
+  MAX_CANDLE,
+  SHOP_CANDLE_AMOUNT,
+  burnCandle,
+  restRekindleAmount,
+  restoreCandle,
+} from './candle';
 import { canUpgrade, cardName, makeCard } from './cards';
 import { beginCombat } from './combat';
 import { type Ctx, transact } from './context';
@@ -11,7 +19,7 @@ import { createReward, createShop, gainGold, grantRelic, rollCards, rollRelic } 
 import { Rng, randomSeed } from './rng';
 
 /** Bump when RunState changes shape; older saves are discarded. */
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 const STARTING_HP = 80;
 const STARTING_GOLD = 99;
@@ -48,6 +56,8 @@ export function createRun(seed: number = randomSeed()): RunState {
       relics: [STARTER_RELIC],
       baseEnergy: 3,
       handSize: 5,
+      candle: MAX_CANDLE,
+      maxCandle: MAX_CANDLE,
     },
     combat: null,
     reward: null,
@@ -64,6 +74,8 @@ export function createRun(seed: number = randomSeed()): RunState {
       cardsPlayed: 0,
       goldEarned: 0,
       turnsTaken: 0,
+      waxBurned: 0,
+      blackoutTurns: 0,
     },
     result: null,
     deathCause: null,
@@ -164,6 +176,8 @@ function advanceAct(ctx: Ctx): void {
   r.lastEncounterId = null;
   const missing = r.player.maxHp - r.player.hp;
   r.player.hp += Math.floor(missing * ACT_TRANSITION_HEAL);
+  // A fresh stub of candle is found on the stairs down.
+  restoreCandle(r.player, Math.ceil((r.player.maxCandle - r.player.candle) * ACT_TRANSITION_CANDLE));
   returnToMap(ctx);
 }
 
@@ -178,7 +192,9 @@ export function finishCombat(run: RunState): RunState {
 
     if (combat.phase === 'lost') {
       r.result = 'defeat';
-      r.deathCause = `${combat.enemies.map((e) => e.name).join(', ')}에게 패배`;
+      const foes = combat.enemies.map((e) => e.name).join(', ');
+      r.deathCause =
+        r.player.candle <= 0 ? `암전 속에서 ${foes}에게 패배` : `${foes}에게 패배`;
       r.combat = null;
       r.screen = 'summary';
       return;
@@ -193,6 +209,7 @@ export function finishCombat(run: RunState): RunState {
         if (trig.when !== 'combatWin') continue;
         if (trig.heal) r.player.hp = Math.min(r.player.maxHp, r.player.hp + trig.heal);
         if (trig.gold) bonusGold += trig.gold;
+        if (trig.candle) restoreCandle(r.player, trig.candle);
       }
     }
     r.reward = createReward(ctx, combat.tier, bonusGold);
@@ -293,7 +310,8 @@ function applyOutcome(ctx: Ctx, outcome: EventOutcome): void {
       break;
     }
     case 'randomCard': {
-      const [card] = rollCards(ctx, 1, 'normal');
+      const resonance = outcome.resonance;
+      const [card] = rollCards(ctx, 1, 'normal', (c) => !resonance || c.resonance === resonance);
       if (card) {
         p.deck.push(card);
         event.notes.push(`카드 획득: ${cardName(card)}`);
@@ -314,6 +332,10 @@ function applyOutcome(ctx: Ctx, outcome: EventOutcome): void {
       }
       break;
     }
+    case 'candle':
+      if (outcome.amount >= 0) restoreCandle(p, outcome.amount);
+      else burnCandle(r, -outcome.amount);
+      break;
     case 'chooseRemove':
       if (p.deck.length > 1) event.pendingPick = 'remove';
       break;
@@ -406,6 +428,19 @@ export function shopRemoveCard(run: RunState, cardUid: string): RunState {
   });
 }
 
+/** Buys the shop's candle: restores SHOP_CANDLE_AMOUNT wax (once per visit). */
+export function buyShopCandle(run: RunState): RunState {
+  return transact(run, (ctx) => {
+    const shop = ctx.run.shop;
+    const p = ctx.run.player;
+    if (!shop || shop.candleUsed || p.gold < shop.candlePrice || p.candle >= p.maxCandle)
+      return false;
+    p.gold -= shop.candlePrice;
+    restoreCandle(p, SHOP_CANDLE_AMOUNT);
+    shop.candleUsed = true;
+  });
+}
+
 export function leaveShop(run: RunState): RunState {
   return transact(run, (ctx) => {
     if (ctx.run.screen !== 'shop') return false;
@@ -428,6 +463,18 @@ export function restHeal(run: RunState): RunState {
     p.hp = Math.min(p.maxHp, p.hp + restHealAmount(ctx.run));
     rest.done = true;
     rest.note = `체력을 ${p.hp - before} 회복했습니다.`;
+  });
+}
+
+/** Rest-site option: rekindle the candle instead of healing or upgrading. */
+export function restRekindle(run: RunState): RunState {
+  return transact(run, (ctx) => {
+    const rest = ctx.run.rest;
+    const p = ctx.run.player;
+    if (!rest || rest.done || p.candle >= p.maxCandle) return false;
+    const gained = restoreCandle(p, restRekindleAmount(ctx.run));
+    rest.done = true;
+    rest.note = `촛불을 다시 밝혔습니다. 촛농을 ${gained} 회복했습니다.`;
   });
 }
 

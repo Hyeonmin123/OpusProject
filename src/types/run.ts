@@ -14,6 +14,12 @@ export interface PlayerState {
   relics: string[];
   baseEnergy: number;
   handSize: number;
+  /**
+   * Candle wax: a second resource that persists for the whole run. It burns
+   * down every combat turn; at 0 the player is in blackout (암전).
+   */
+  candle: number;
+  maxCandle: number;
 }
 
 export interface RewardState {
@@ -44,6 +50,9 @@ export interface ShopState {
   relics: ShopRelicSlot[];
   removePrice: number;
   removeUsed: boolean;
+  /** One candle (wax refill) can be bought per shop visit. */
+  candlePrice: number;
+  candleUsed: boolean;
 }
 
 export type DeckPickPurpose = 'remove' | 'upgrade';
@@ -72,6 +81,10 @@ export interface RunStats {
   cardsPlayed: number;
   goldEarned: number;
   turnsTaken: number;
+  /** Total candle wax burned (passive drain, shadow cards, enemies, reveals). */
+  waxBurned: number;
+  /** Combat turns started in blackout. */
+  blackoutTurns: number;
 }
 
 export type RunResult = 'victory' | 'defeat' | null;

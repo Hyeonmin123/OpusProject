@@ -33,4 +33,13 @@ export type Effect =
   | { type: 'loseHp'; amount: number }
   | { type: 'heal'; amount: number }
   /** Creates temporary card copies in the player's combat piles. */
-  | { type: 'addCard'; cardId: string; count: number; pile: CardPile };
+  | { type: 'addCard'; cardId: string; count: number; pile: CardPile }
+  /**
+   * Changes the player's candle wax regardless of the actor (enemies use a
+   * negative amount to snuff it). Never costs HP when there is too little wax.
+   */
+  | { type: 'candle'; amount: number }
+  /** Reveals every enemy intent currently hidden by darkness (player only). */
+  | { type: 'reveal' }
+  /** Runs `effects` only while the candle is low (dim light or blackout). */
+  | { type: 'ifDark'; effects: Effect[] };
