@@ -32,10 +32,14 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 8px 10px;
-  border-radius: var(--radius);
-  background: rgb(0 0 0 / 35%);
+  padding: 8px 12px 8px 10px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgb(30 27 34 / 88%), rgb(15 14 17 / 90%));
   border: 1px solid var(--border);
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 55%),
+    inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 6px 16px rgb(0 0 0 / 45%);
 }
 
 .revealBtn {
@@ -86,7 +90,7 @@
   transform: translateX(-50%);
   z-index: 6;
   padding: 6px 16px;
-  border-radius: 20px;
+  border-radius: 4px;
   font-size: 0.88rem;
   font-weight: 700;
   color: #f0c8c8;
@@ -120,19 +124,21 @@
   display: flex;
   flex-direction: column;
   margin: 12px 12px 0 0;
-  padding: 10px 12px;
+  padding: 14px 14px 12px;
   font-size: 0.78rem;
   min-height: 0;
 }
 
 .log h3 {
   font-size: 0.85rem;
-  color: var(--text-dim);
+  color: var(--accent);
   margin-bottom: 6px;
+  padding-left: 10px;
 }
 
 .logList {
   flex: 1;
+  padding: 0 4px 0 10px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -149,14 +155,40 @@
   color: var(--text-dim);
 }
 
+/* The hand rests on a dark stone ledge with a gilt rule running behind the cards. */
 .handArea {
   grid-area: hand;
+  position: relative;
   min-width: 0;
   display: flex;
   align-items: flex-end;
   gap: 16px;
   padding: 10px 20px 16px;
-  background: linear-gradient(180deg, transparent, rgb(0 0 0 / 55%));
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgb(10 9 12 / 55%) 38%,
+    rgb(10 9 12 / 88%) 70%,
+    rgb(10 9 12 / 94%)
+  );
+}
+
+.handArea::before {
+  content: '';
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 38%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(184 154 94 / 40%) 18%,
+    rgb(216 183 110 / 60%) 50%,
+    rgb(184 154 94 / 40%) 82%,
+    transparent
+  );
+  pointer-events: none;
 }
 
 .leftCluster,
@@ -183,7 +215,14 @@
   color: #1b1408;
   background: radial-gradient(circle at 35% 30%, #f7e2a0, var(--energy) 55%, #6a4e14);
   border: 3px solid #2a2118;
-  box-shadow: 0 0 20px rgb(201 161 63 / 35%);
+  /* Gilt-ringed medallion: the same ring as the candle flame and the cards' cost gems. */
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 0 0 4px #0b0a0d,
+    0 0 22px rgb(201 161 63 / 35%);
+  transition:
+    filter 0.3s,
+    box-shadow 0.3s;
 }
 
 .energyIcon {
@@ -210,13 +249,109 @@
   justify-content: safe center;
   align-items: flex-end;
   min-height: 200px;
-  padding-top: 24px;
+  /* Headroom so a lifted / selected card (and its cost gem) is not clipped by the scroller. */
+  padding-top: 36px;
   overflow-x: auto;
   overflow-y: visible;
 }
 
 .hand > * {
   margin: 0 5px;
+  /* Cards entering the hand (turn start, draw effects) are dealt in from the deck. */
+  animation: deal-in 0.32s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+
+.hand > :nth-child(2) {
+  animation-delay: 0.04s;
+}
+.hand > :nth-child(3) {
+  animation-delay: 0.08s;
+}
+.hand > :nth-child(4) {
+  animation-delay: 0.12s;
+}
+.hand > :nth-child(5) {
+  animation-delay: 0.16s;
+}
+.hand > :nth-child(n + 6) {
+  animation-delay: 0.2s;
+}
+
+@keyframes deal-in {
+  from {
+    opacity: 0;
+    transform: translateY(36px) scale(0.96);
+  }
+}
+
+/* Turn change: the dark the enemies acted in lifts, and the new turn number is announced. */
+.turnFlash {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.turnFlash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 55%, rgb(26 16 36 / 20%), rgb(26 16 36 / 60%));
+  animation: turn-veil 0.7s ease-out forwards;
+}
+
+.turnFlash span {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  padding: 4px 18px;
+  font-family: var(--font-title);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--accent-strong);
+  background: rgb(15 14 17 / 82%);
+  border: 1px solid rgb(184 154 94 / 45%);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 55%);
+  white-space: nowrap;
+  animation: turn-label 1.5s ease-out forwards;
+}
+
+.light-dark .turnFlash span {
+  top: 52px;
+}
+
+@keyframes turn-veil {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes turn-label {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -6px);
+  }
+  15%,
+  70% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hand > *,
+  .turnFlash::before,
+  .turnFlash span {
+    animation: none;
+  }
+  .turnFlash {
+    display: none;
+  }
 }
 
 .endTurn {
@@ -228,10 +363,12 @@
   left: 50%;
   transform: translateX(-50%);
   bottom: 236px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  background: rgb(0 0 0 / 70%);
-  border: 1px solid var(--border-strong);
+  padding: 6px 16px;
+  border-radius: 4px;
+  background: rgb(15 14 17 / 88%);
+  border: 1px solid rgb(184 154 94 / 55%);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 55%);
+  color: #f3e6c8;
   font-size: 0.9rem;
   pointer-events: none;
   z-index: 5;
@@ -304,5 +441,9 @@
     position: static;
     transform: none;
     display: inline-block;
+  }
+  /* The stacked layout puts the player right under it; the veil alone marks the turn. */
+  .turnFlash span {
+    display: none;
   }
 }

@@ -129,6 +129,11 @@ export function CombatScreen({ run }: { run: RunState }) {
       }}
     >
       <section className={styles.field}>
+        {playerTurn && (
+          <div key={combat.turn} className={styles.turnFlash} aria-hidden>
+            <span>{combat.turn}턴</span>
+          </div>
+        )}
         {light === 'dark' && playerTurn && (
           <div className={styles.blackoutBanner} data-testid="blackout-banner">
             🌑 암전 — 턴마다 체력 {BLACKOUT_DAMAGE} 잃음 · 적 공격 피해 +

@@ -19,7 +19,22 @@
   line-height: 1;
 }
 
+/* Large gauge: the flame sits in a gilt-ringed medallion, like the energy orb. */
 .large .flame {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  place-items: center;
+  display: grid;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 42%, rgb(240 184 74 / 24%), #16141a 72%);
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 0 0 3.5px #0b0a0d,
+    0 0 14px rgb(240 184 74 / 25%);
+}
+
+.large .flame img {
   animation: flicker 2.4s ease-in-out infinite;
 }
 
@@ -47,9 +62,12 @@
 .bar {
   position: relative;
   height: 14px;
-  border-radius: 7px;
-  background: var(--candle-bg);
-  border: 1px solid #000;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #0b0a0d, var(--candle-bg) 140%);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 3px rgb(0 0 0 / 80%),
+    0 0 0 1px rgb(0 0 0 / 50%);
   overflow: hidden;
 }
 
@@ -59,9 +77,13 @@
 
 .fill {
   position: absolute;
-  inset: 0 auto 0 0;
-  background: linear-gradient(180deg, #ffe7a6, var(--candle));
-  box-shadow: 0 0 10px var(--candle);
+  inset: 1px auto 1px 1px;
+  max-width: calc(100% - 2px);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #ffe7a6, var(--candle) 60%, #b27a26);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 45%),
+    0 0 10px rgb(240 184 74 / 55%);
   transition:
     width 0.35s ease-out,
     background 0.3s;
@@ -90,8 +112,8 @@
 }
 
 .dim .fill {
-  background: linear-gradient(180deg, #d98a4a, #8a4a22);
-  box-shadow: none;
+  background: linear-gradient(180deg, #e39a5a, #b0602a 60%, #6a3616);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 30%);
 }
 
 .dim .header {
@@ -107,8 +129,14 @@
   color: #e07070;
 }
 
-.dark .flame {
+.dark .flame img {
   animation: none;
+}
+
+.large.dark .flame {
+  box-shadow:
+    0 0 0 1.5px var(--debuff),
+    0 0 0 3.5px #0b0a0d;
 }
 
 @keyframes flicker {

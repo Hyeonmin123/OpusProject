@@ -5,30 +5,42 @@
   width: 100%;
 }
 
+/* Shared "resource trough" (HP here, wax in CandleGauge): a carved dark groove with a lit
+   top edge on the fill, 3px corners. Keep the two in sync. */
 .bar {
   position: relative;
   flex: 1;
   height: 16px;
-  border-radius: 8px;
-  background: var(--hp-bg);
-  border: 1px solid #000;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #0b0a0d, var(--hp-bg) 140%);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 3px rgb(0 0 0 / 80%),
+    0 0 0 1px rgb(0 0 0 / 50%),
+    0 1px 0 1px rgb(255 255 255 / 4%);
   overflow: hidden;
 }
 
 .fill {
   position: absolute;
-  inset: 0 auto 0 0;
-  background: linear-gradient(180deg, #c04a4a, var(--hp));
+  inset: 1px auto 1px 1px;
+  max-width: calc(100% - 2px);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #d46464, var(--hp) 55%, #7a2626);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 28%);
   transition: width 0.3s ease-out;
 }
 
 .withBlock {
   border-color: var(--block);
-  box-shadow: 0 0 0 1px var(--block);
+  box-shadow:
+    inset 0 1px 3px rgb(0 0 0 / 80%),
+    0 0 0 1px rgb(0 0 0 / 50%),
+    0 0 8px rgb(91 125 153 / 55%);
 }
 
 .withBlock .fill {
-  background: linear-gradient(180deg, #7a9cb8, var(--block));
+  background: linear-gradient(180deg, #8fb0cb, var(--block) 55%, #3a5468);
 }
 
 .label {
@@ -37,8 +49,13 @@
   display: grid;
   place-items: center;
   font-size: 0.72rem;
-  font-weight: 700;
-  text-shadow: 0 1px 2px #000;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow:
+    0 0 3px #000,
+    0 1px 2px #000;
 }
 
 .block {
@@ -49,8 +66,8 @@
   place-items: center;
   font-size: 0.8rem;
   font-weight: 800;
-  color: #e6f0f8;
-  background: var(--block);
-  border: 1px solid #9cb8cf;
+  color: #eef5fb;
+  text-shadow: 0 1px 1px #000;
+  background: linear-gradient(180deg, #8fb0cb, var(--block) 55%, #3a5468);
   clip-path: polygon(50% 0, 100% 18%, 100% 60%, 50% 100%, 0 60%, 0 18%);
 }

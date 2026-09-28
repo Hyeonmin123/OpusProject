@@ -1,5 +1,6 @@
 .creature {
   position: relative;
+  isolation: isolate;
   width: 170px;
   display: flex;
   flex-direction: column;
@@ -7,22 +8,71 @@
   gap: 6px;
   padding: 10px 10px 12px;
   border-radius: var(--radius);
-  border: 1px solid transparent;
-  transition:
-    border-color 0.15s,
-    background 0.15s,
-    opacity 0.3s;
+  transition: opacity 0.3s;
 }
 
+/* A pool of shadow behind each combatant separates it from the scene art. */
+.creature::before {
+  content: '';
+  position: absolute;
+  inset: -4px -26px -8px;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(8 7 10 / 72%), rgb(8 7 10 / 38%) 62%, transparent);
+  pointer-events: none;
+}
+
+/* Targeting: every valid target's portrait breathes a gilt ring; the hovered one locks on
+   with the panel's gilt corner brackets as a reticle. */
 .targetable {
   cursor: crosshair;
-  border-color: rgb(216 183 110 / 35%);
-  background: rgb(216 183 110 / 5%);
 }
 
-.targetable:hover {
-  border-color: var(--accent-strong);
-  background: rgb(216 183 110 / 12%);
+.targetable .portrait {
+  animation: target-pulse 1.3s ease-in-out infinite;
+}
+
+.targetable:hover .portrait {
+  animation: none;
+  transform: scale(1.05);
+  box-shadow:
+    0 0 0 3px var(--light),
+    0 0 0 5px #0b0a0d,
+    0 0 30px rgb(243 210 122 / 55%);
+}
+
+.targetable:hover::after {
+  content: '';
+  position: absolute;
+  inset: -4px -8px;
+  border: 26px solid transparent;
+  border-image: url('../../assets/ui/panel-frame.svg') 40 stretch;
+  pointer-events: none;
+  animation: reticle-in 0.16s ease-out;
+}
+
+.targetable:hover .name {
+  color: var(--light);
+}
+
+@keyframes target-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 2px rgb(216 183 110 / 40%),
+      0 0 10px rgb(216 183 110 / 15%);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgb(216 183 110 / 80%),
+      0 0 22px rgb(216 183 110 / 38%);
+  }
+}
+
+@keyframes reticle-in {
+  from {
+    opacity: 0;
+    transform: scale(1.08);
+  }
 }
 
 .dead {
@@ -40,7 +90,13 @@
   background:
     radial-gradient(circle at 50% 35%, rgb(255 255 255 / 8%), transparent 65%), var(--panel-2);
   border: 2px solid var(--border-strong);
-  box-shadow: inset 0 -10px 24px rgb(0 0 0 / 50%);
+  box-shadow:
+    inset 0 -10px 24px rgb(0 0 0 / 50%),
+    0 0 0 2px rgb(11 10 13 / 85%),
+    0 6px 16px rgb(0 0 0 / 55%);
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s;
 }
 
 /* Figma portrait art fills the arched frame; the frame's inset shade sits on top. */
@@ -68,7 +124,7 @@
 }
 
 .player .portrait {
-  border-color: #6c5a3a;
+  border-color: var(--accent);
 }
 
 .boss .portrait {
@@ -108,6 +164,10 @@
   font-weight: 700;
   font-size: 0.95rem;
   text-align: center;
+  text-shadow:
+    0 1px 2px #000,
+    0 0 8px rgb(0 0 0 / 90%);
+  transition: color 0.15s;
 }
 
 .intent {
