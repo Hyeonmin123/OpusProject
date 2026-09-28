@@ -85,7 +85,6 @@
 
   --radius: 10px;
   --radius-sm: 6px;
-  --shadow: 0 6px 20px rgb(0 0 0 / 45%);
   /* Fallbacks only cover glyphs outside the subset (emoji first, so relic and node emoji keep
      their colour glyphs); Korean text never falls through to them. */
   --font-fallback:
