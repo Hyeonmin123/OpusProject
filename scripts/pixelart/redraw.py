@@ -229,9 +229,59 @@ def bat(n: int = 52):
 # --------------------------------------------------------------------------------------------
 
 
+CANDLE_BOX = (440, 415, 600, 695)  # candle + holder inside the doorway, on the 1024px export
+
+
 def split_keyart(rgb):
-    raise NotImplementedError
+    """Split the 1024px candle-in-archway art into
+    - a 16:9 menu backdrop: the square art centred, its outer stone-wall strips repeated
+      (mirrored) outwards and faded into the dark, and the candle painted out of the doorway;
+    - the candle itself (rgb + alpha) for the sprite that sits above the menu title."""
+    from pxlib import inpaint
+
+    h, w, _ = rgb.shape
+    x0, y0, x1, y1 = CANDLE_BOX
+    box = np.zeros((h, w), bool)
+    box[y0:y1, x0:x1] = True
+    a = rgb.astype(int)
+    lit = (a.max(2) > 34) & box
+    candle = dilate(lit, 1) & box
+    # keep the largest blob (the candle), drop stray doorway texture
+    from pxlib import remove_specks
+    candle = remove_specks(candle, 400)
+
+    scene = inpaint(rgb, dilate(candle, 4))
+
+    # widen to 16:9 with the outer wall strips
+    out_w = round(h * 16 / 9)
+    side = (out_w - w) // 2
+    strip = 120
+    left, right = scene[:, :strip], scene[:, -strip:]
+    cols_l, cols_r = [], []
+    for k in range(side):
+        t = k // strip
+        i = k % strip
+        # walk outwards: mirror the strip back and forth so the joints stay continuous
+        cols_l.append(left[:, i if t % 2 else strip - 1 - i])
+        cols_r.append(right[:, strip - 1 - i if t % 2 else i])
+    ext_l = np.stack(cols_l[::-1], 1).astype(float)
+    ext_r = np.stack(cols_r, 1).astype(float)
+    fade = np.linspace(0.35, 1.0, side)[None, :, None]  # darker towards the screen edges
+    ext_l *= fade
+    ext_r *= fade[:, ::-1]
+    wide = np.concatenate([ext_l.astype(np.uint8), scene, ext_r.astype(np.uint8)], 1)
+    return wide, rgb[y0:y1, x0:x1].copy(), candle[y0:y1, x0:x1].copy()
 
 
-def keyart_candle_grid(rgb, a):
-    raise NotImplementedError
+def keyart_candle_grid(rgb, a, height: int = 48):
+    """The candle sprite on its own pixel grid (height px tall, width to match)."""
+    from pxlib import bbox, resample_block
+
+    bx0, by0, bx1, by1 = bbox(a)
+    margin = 2  # grid cells of empty space around it
+    cell = (by1 - by0) / (height - 2 * margin)
+    n_w = int(np.ceil((bx1 - bx0) / cell)) + 2 * margin
+    sx = (bx0 + bx1) / 2 - n_w * cell / 2
+    sy = by0 - margin * cell
+    return resample_block(rgb, a, sx, sy, n_w * cell, height * cell, n_w, height, PALETTE,
+                          mode='mode', dark_bias=0.5)
