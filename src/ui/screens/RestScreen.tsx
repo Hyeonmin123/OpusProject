@@ -45,8 +45,8 @@ export function RestScreen({ run }: { run: RunState }) {
               <span className={styles.relicIcon}>🕯️</span>
               <span className={styles.relicName}>촛불 밝히기</span>
               <span className={styles.relicDesc}>
-                모닥불로 초를 다시 밝혀 최대 촛농의 50%를 회복합니다. (+{waxAmount}, 현재{' '}
-                {p.candle}/{p.maxCandle})
+                모닥불로 초를 다시 밝혀 최대 촛농의 50%를 회복합니다. (+{waxAmount}, 현재 {p.candle}
+                /{p.maxCandle})
               </span>
             </button>
             <button

@@ -38,9 +38,7 @@ export function rollCards(
   const result: CardInstance[] = [];
   for (let guard = 0; result.length < count && guard < 100; guard++) {
     const rarity = ctx.rng.weighted(RARITY_WEIGHTS[tier]);
-    const pool = REWARD_POOL.filter(
-      (c) => c.rarity === rarity && !picked.has(c.id) && filter(c),
-    );
+    const pool = REWARD_POOL.filter((c) => c.rarity === rarity && !picked.has(c.id) && filter(c));
     if (pool.length === 0) continue;
     const def = ctx.rng.pick(pool);
     picked.add(def.id);

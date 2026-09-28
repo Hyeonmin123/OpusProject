@@ -416,10 +416,12 @@ export function executeEffects(
         break;
       }
       case 'reveal':
-        if (actor.kind === 'player' && revealAll(ctx)) log(ctx, '숨겨진 적의 의도가 드러났습니다.', 'player');
+        if (actor.kind === 'player' && revealAll(ctx))
+          log(ctx, '숨겨진 적의 의도가 드러났습니다.', 'player');
         break;
       case 'ifDark':
-        if (lightLevel(ctx.run.player) !== 'bright') executeEffects(ctx, actor, effect.effects, chosen);
+        if (lightLevel(ctx.run.player) !== 'bright')
+          executeEffects(ctx, actor, effect.effects, chosen);
         break;
     }
   }

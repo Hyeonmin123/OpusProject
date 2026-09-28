@@ -177,7 +177,10 @@ function advanceAct(ctx: Ctx): void {
   const missing = r.player.maxHp - r.player.hp;
   r.player.hp += Math.floor(missing * ACT_TRANSITION_HEAL);
   // A fresh stub of candle is found on the stairs down.
-  restoreCandle(r.player, Math.ceil((r.player.maxCandle - r.player.candle) * ACT_TRANSITION_CANDLE));
+  restoreCandle(
+    r.player,
+    Math.ceil((r.player.maxCandle - r.player.candle) * ACT_TRANSITION_CANDLE),
+  );
   returnToMap(ctx);
 }
 
@@ -193,8 +196,7 @@ export function finishCombat(run: RunState): RunState {
     if (combat.phase === 'lost') {
       r.result = 'defeat';
       const foes = combat.enemies.map((e) => e.name).join(', ');
-      r.deathCause =
-        r.player.candle <= 0 ? `암전 속에서 ${foes}에게 패배` : `${foes}에게 패배`;
+      r.deathCause = r.player.candle <= 0 ? `암전 속에서 ${foes}에게 패배` : `${foes}에게 패배`;
       r.combat = null;
       r.screen = 'summary';
       return;

@@ -8,7 +8,7 @@ import type { PlayerState, RunState } from '../types';
 // events, act transitions, light cards) to reach Act 3 without living in blackout.
 
 /** Wax a new run starts with (and the base maximum). */
-export const MAX_CANDLE = 40;
+export const MAX_CANDLE = 60;
 /** Wax burned at the start of every combat turn. */
 export const CANDLE_DRAIN_PER_TURN = 1;
 /** Below this share of max wax the light is dim and enemy intents start to hide. */
@@ -26,7 +26,7 @@ export const REST_REKINDLE_PERCENT = 50;
 /** Share of *missing* wax restored when descending to the next act. */
 export const ACT_TRANSITION_CANDLE = 0.5;
 /** Wax restored by the candle sold in shops. */
-export const SHOP_CANDLE_AMOUNT = 15;
+export const SHOP_CANDLE_AMOUNT = 20;
 
 export function shopCandlePrice(act: number): number {
   return 35 + 5 * (act - 1);
@@ -70,10 +70,7 @@ export function restoreCandle(player: PlayerState, amount: number): number {
  * Burns wax (never below 0). Returns how much was actually burned and the
  * shortfall that could not be paid.
  */
-export function burnCandle(
-  run: RunState,
-  amount: number,
-): { burned: number; shortfall: number } {
+export function burnCandle(run: RunState, amount: number): { burned: number; shortfall: number } {
   const want = Math.max(0, amount);
   const burned = Math.min(run.player.candle, want);
   run.player.candle -= burned;

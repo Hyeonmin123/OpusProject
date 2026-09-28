@@ -285,8 +285,8 @@ const CARD_LIST: CardDef[] = [
     resonance: 'light',
     cost: 1,
     candle: 1,
-    effects: [{ type: 'damage', amount: 5 }],
-    upgrade: { candle: 2, effects: [{ type: 'damage', amount: 7 }] },
+    effects: [{ type: 'damage', amount: 6 }],
+    upgrade: { candle: 2, effects: [{ type: 'damage', amount: 9 }] },
     flavor: '칼날에 옮겨 붙은 불씨가 심지로 돌아온다.',
   },
   {
@@ -297,8 +297,8 @@ const CARD_LIST: CardDef[] = [
     resonance: 'light',
     cost: 1,
     candle: 2,
-    effects: [{ type: 'block', amount: 4 }],
-    upgrade: { effects: [{ type: 'block', amount: 7 }] },
+    effects: [{ type: 'block', amount: 6 }],
+    upgrade: { effects: [{ type: 'block', amount: 9 }] },
   },
   {
     id: 'tendTheWick',
@@ -306,11 +306,11 @@ const CARD_LIST: CardDef[] = [
     type: 'skill',
     rarity: 'uncommon',
     resonance: 'light',
-    cost: 1,
-    candle: 5,
+    cost: 0,
+    candle: 4,
     exhaust: true,
     effects: [{ type: 'draw', amount: 1 }],
-    upgrade: { candle: 7 },
+    upgrade: { candle: 6 },
   },
   {
     id: 'radiantBlow',
@@ -321,12 +321,13 @@ const CARD_LIST: CardDef[] = [
     cost: 2,
     candle: 2,
     effects: [
-      { type: 'damage', amount: 10 },
-      { type: 'applyStatus', status: 'weak', amount: 1, target: 'target' },
+      { type: 'damage', amount: 11 },
+      { type: 'applyStatus', status: 'weak', amount: 2, target: 'target' },
     ],
     upgrade: {
+      candle: 3,
       effects: [
-        { type: 'damage', amount: 13 },
+        { type: 'damage', amount: 14 },
         { type: 'applyStatus', status: 'weak', amount: 2, target: 'target' },
       ],
     },
@@ -348,11 +349,11 @@ const CARD_LIST: CardDef[] = [
     type: 'skill',
     rarity: 'rare',
     resonance: 'light',
-    cost: 2,
+    cost: 1,
     candle: 8,
     exhaust: true,
-    effects: [{ type: 'block', amount: 12 }],
-    upgrade: { candle: 10, effects: [{ type: 'block', amount: 16 }] },
+    effects: [{ type: 'block', amount: 10 }],
+    upgrade: { candle: 10, effects: [{ type: 'block', amount: 14 }] },
   },
 
   // ---- Shadow (그림자): burn wax, stronger per energy --------------------------

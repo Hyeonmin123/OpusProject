@@ -101,8 +101,8 @@ const RELIC_LIST: RelicDef[] = [
     name: '은촛대',
     icon: '🪔',
     rarity: 'common',
-    description: '획득 시 최대 촛농이 10 증가하고 촛농을 10 회복합니다.',
-    triggers: [{ when: 'pickup', maxCandle: 10, candle: 10 }],
+    description: '획득 시 최대 촛농이 15 증가하고 촛농을 15 회복합니다.',
+    triggers: [{ when: 'pickup', maxCandle: 15, candle: 15 }],
   },
   {
     id: 'owlEye',

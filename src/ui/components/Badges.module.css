@@ -67,7 +67,9 @@
   border-style: dashed;
   background: var(--shadow-deep);
   letter-spacing: 0.12em;
-  animation: bob 1.6s ease-in-out infinite, hiddenFade 2.2s ease-in-out infinite;
+  animation:
+    bob 1.6s ease-in-out infinite,
+    hiddenFade 2.2s ease-in-out infinite;
 }
 
 @keyframes hiddenFade {

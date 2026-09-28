@@ -135,8 +135,8 @@ const EVENT_LIST: EventDef[] = [
       },
       {
         label: '불씨를 옮겨 붙인다',
-        detail: '촛농 12 회복.',
-        outcomes: [{ type: 'candle', amount: 12 }],
+        detail: '촛농 15 회복.',
+        outcomes: [{ type: 'candle', amount: 15 }],
         result: '화로의 불씨로 촛불을 다시 밝혔다. 그림자가 한 걸음 물러난다.',
       },
     ],
@@ -149,8 +149,8 @@ const EVENT_LIST: EventDef[] = [
     options: [
       {
         label: '밀랍을 긁어모은다',
-        detail: '촛농 15 회복.',
-        outcomes: [{ type: 'candle', amount: 15 }],
+        detail: '촛농 20 회복.',
+        outcomes: [{ type: 'candle', amount: 20 }],
         result: '남은 밀랍을 모아 촛대에 덧발랐다. 불꽃이 한층 커졌다.',
       },
       {
