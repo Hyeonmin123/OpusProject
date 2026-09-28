@@ -36,9 +36,13 @@
   padding: 1px 5px 1px 3px;
 }
 
+/* Violet-rimmed plaque (ui/btn-shadow.png); hover and press use the shared states. */
 .revealBtn {
-  padding: 4px 12px;
-  border-color: var(--shadow);
+  padding: 0 7px;
+}
+
+.revealBtn:not(:hover, :active) {
+  border-image-source: url('../../assets/ui/btn-shadow.png');
 }
 
 .revealCost {

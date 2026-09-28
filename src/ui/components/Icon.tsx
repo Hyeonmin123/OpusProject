@@ -26,7 +26,9 @@ export function Icon({ src, size = 16, className, label }: Props) {
         display: 'inline-block',
         verticalAlign: 'middle',
         flex: 'none',
-        imageRendering: size >= 32 ? 'pixelated' : undefined,
+        // Explicit both ways: pixel chrome sets `image-rendering: pixelated` on its elements
+        // and the property is inherited.
+        imageRendering: size >= 32 ? 'pixelated' : 'auto',
       }}
     />
   );
