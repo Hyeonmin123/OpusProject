@@ -7,10 +7,25 @@
 
 .box {
   width: min(880px, 100%);
-  padding: 26px 28px;
+  padding: 30px 32px 28px;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  margin-top: 12px;
+}
+
+/* Candle-in-the-arch crest (Figma: ui/crest) riding on the top edge of every room panel. */
+.box::before {
+  content: '';
+  position: absolute;
+  top: -17px;
+  left: 50%;
+  width: 64px;
+  height: 32px;
+  transform: translateX(-50%);
+  background: url('../../assets/ui/crest.svg') center / contain no-repeat;
+  filter: drop-shadow(0 0 8px rgb(240 184 74 / 35%));
+  pointer-events: none;
 }
 
 .head {
@@ -20,20 +35,28 @@
 }
 
 .icon {
-  font-size: 2.6rem;
+  font-size: 2.4rem;
   width: 64px;
-  height: 64px;
+  height: 70px;
   display: grid;
   place-items: center;
-  border-radius: 14px;
-  background: var(--panel-2);
-  border: 1px solid var(--border-strong);
+  /* Arched niche, echoing the portrait frames and the key art. */
+  border-radius: 50% 50% 8px 8px / 42% 42% 8px 8px;
+  background:
+    radial-gradient(circle at 50% 38%, rgb(240 184 74 / 16%), transparent 65%),
+    linear-gradient(180deg, #1a171e, #0e0d10);
+  border: 1px solid #0b0a0d;
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 0 0 4px rgb(11 10 13 / 80%),
+    inset 0 -8px 16px rgb(0 0 0 / 55%);
   flex: 0 0 auto;
 }
 
 .head h2 {
   color: var(--accent-strong);
   font-size: 1.6rem;
+  text-shadow: 0 2px 12px rgb(184 154 94 / 25%);
 }
 
 .text {
@@ -41,11 +64,22 @@
   line-height: 1.7;
 }
 
+/* Section titles trail off into a gilt rule that fades out, like the card frame's footer. */
 .sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   font-family: var(--font-title);
   font-size: 1.05rem;
-  color: var(--text-dim);
+  color: var(--accent);
   margin-top: 4px;
+}
+
+.sectionTitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(184 154 94 / 45%), transparent);
 }
 
 .options {
@@ -75,8 +109,9 @@
 .result {
   padding: 14px 16px;
   border-left: 3px solid var(--accent);
-  background: rgb(0 0 0 / 25%);
+  background: linear-gradient(90deg, rgb(184 154 94 / 10%), rgb(0 0 0 / 25%) 40%);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
 }
 
 .notes {
@@ -210,12 +245,16 @@
 
 .stat {
   padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  background: var(--panel-2);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgb(0 0 0 / 20%), rgb(0 0 0 / 38%));
   border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 4%),
+    0 0 0 1px rgb(0 0 0 / 45%);
 }
 
 .statValue {
+  color: var(--accent-strong);
   font-size: 1.4rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;

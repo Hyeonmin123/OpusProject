@@ -6,6 +6,7 @@
 }
 
 .box {
+  position: relative;
   width: min(460px, 100%);
   display: flex;
   flex-direction: column;
@@ -27,12 +28,25 @@
 .title {
   font-size: clamp(2.2rem, 7vw, 3.4rem);
   color: var(--accent-strong);
-  text-shadow: 0 2px 18px rgb(184 154 94 / 30%);
+  text-shadow:
+    0 2px 3px #000,
+    0 2px 22px rgb(184 154 94 / 35%);
 }
 
 .subtitle {
   color: var(--text-dim);
   margin-bottom: 18px;
+  text-shadow: 0 1px 2px #000;
+}
+
+/* Gilt rule under the subtitle, like the section titles in the room panels. */
+.subtitle::after {
+  content: '';
+  display: block;
+  width: 180px;
+  height: 1px;
+  margin: 14px auto 0;
+  background: linear-gradient(90deg, transparent, rgb(216 183 110 / 60%), transparent);
 }
 
 .buttons {
@@ -53,10 +67,19 @@
   min-width: 0;
   font: inherit;
   color: var(--text);
-  background: var(--bg-2);
+  background: #0b0a0d;
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 80%);
   padding: 0.45em 0.7em;
+}
+
+.seedRow input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow:
+    inset 0 1px 3px rgb(0 0 0 / 80%),
+    0 0 0 3px rgb(216 183 110 / 15%);
 }
 
 .linkish {
@@ -64,16 +87,24 @@
   border: none;
   color: var(--text-dim);
   text-decoration: underline;
+  text-underline-offset: 3px;
   font-size: 0.85rem;
+  text-shadow: 0 1px 2px #000;
+}
+
+.linkish:hover {
+  color: var(--accent-strong);
 }
 
 .meta {
   margin-top: 18px;
   font-size: 0.85rem;
-  color: var(--text-faint);
+  color: var(--text-dim);
+  text-shadow: 0 1px 2px #000;
 }
 
 .runInfo {
   font-size: 0.85rem;
   color: var(--text-dim);
+  text-shadow: 0 1px 2px #000;
 }

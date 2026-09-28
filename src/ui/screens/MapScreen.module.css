@@ -54,9 +54,10 @@
 }
 
 .edge {
-  stroke: #4a4250;
+  stroke: #54494a;
   stroke-width: 2;
   stroke-dasharray: 4 6;
+  stroke-linecap: round;
 }
 
 .edgeTaken {
@@ -65,10 +66,20 @@
   stroke-width: 3;
 }
 
+/* Paths you can take next march slowly toward the reachable rooms. */
 .edgeOpen {
-  stroke: #8a7a5a;
+  stroke: var(--accent-strong);
+  stroke-opacity: 0.75;
+  animation: march 1.4s linear infinite;
 }
 
+@keyframes march {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+/* Nodes are small stone medallions tinted by room type with a thin ring. */
 .node {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -77,16 +88,25 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 1.2rem;
-  border: 2px solid #000;
-  background: var(--node-color);
+  font-size: 1.15rem;
+  border: 2px solid #0b0a0d;
+  background: radial-gradient(
+    circle at 50% 32%,
+    color-mix(in srgb, var(--node-color) 80%, #fff 12%),
+    color-mix(in srgb, var(--node-color) 55%, #0b0a0d) 72%
+  );
+  box-shadow:
+    0 0 0 1.5px color-mix(in srgb, var(--node-color) 45%, #5a5162),
+    0 3px 8px rgb(0 0 0 / 65%);
   color: #fff;
-  opacity: 0.55;
+  opacity: 0.72;
+  filter: saturate(0.6) brightness(0.88);
   padding: 0;
   transition:
-    transform 0.12s,
-    opacity 0.12s,
-    box-shadow 0.12s;
+    transform 0.14s ease-out,
+    opacity 0.14s,
+    filter 0.14s,
+    box-shadow 0.14s;
 }
 
 .node:disabled {
@@ -97,52 +117,89 @@
   width: 76px;
   height: 76px;
   font-size: 2.2rem;
-  border-radius: 18px;
+  border-radius: 50% 50% 16px 16px;
 }
 
 .reachable {
   opacity: 1;
-  border-color: var(--accent-strong);
-  animation: pulse 1.4s ease-in-out infinite;
+  filter: none;
+  box-shadow:
+    0 0 0 2px var(--accent-strong),
+    0 0 0 4px rgb(11 10 13 / 85%),
+    0 0 18px rgb(243 210 122 / 35%);
 }
 
-.reachable:hover {
+/* Expanding ring: "you can go here". Kept on a pseudo-element so hover can own box-shadow. */
+.reachable::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  border: 2px solid rgb(243 210 122 / 70%);
+  animation: ripple 1.6s ease-out infinite;
+  pointer-events: none;
+}
+
+.reachable:hover,
+.reachable:focus-visible {
+  outline: none;
   transform: translate(-50%, -50%) scale(1.18);
+  box-shadow:
+    0 0 0 2px var(--light),
+    0 0 0 4px #0b0a0d,
+    0 0 28px rgb(243 210 122 / 60%);
+}
+
+.reachable:hover::after,
+.reachable:focus-visible::after {
+  animation: none;
+  opacity: 0;
 }
 
 .visited {
   opacity: 0.9;
-  filter: saturate(0.4) brightness(0.8);
-  border-color: var(--accent);
+  filter: saturate(0.35) brightness(0.72);
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 3px 8px rgb(0 0 0 / 65%);
 }
 
 .current {
   opacity: 1;
   filter: none;
-  box-shadow: 0 0 0 4px rgb(216 183 110 / 55%);
+  box-shadow:
+    0 0 0 2px var(--candle),
+    0 0 0 5px rgb(11 10 13 / 85%),
+    0 0 22px rgb(240 184 74 / 55%);
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgb(216 183 110 / 55%);
+@keyframes ripple {
+  from {
+    transform: scale(0.92);
+    opacity: 0.9;
   }
-  50% {
-    box-shadow: 0 0 0 8px rgb(216 183 110 / 0%);
+  to {
+    transform: scale(1.4);
+    opacity: 0;
   }
 }
 
 .legend {
-  flex: 0 0 180px;
+  flex: 0 0 188px;
   align-self: flex-start;
-  position: sticky;
   top: 70px;
-  padding: 14px 16px;
+  padding: 18px 20px;
+}
+
+/* Beats the global `.panel { position: relative }` (loaded after this module). */
+.screen > .legend {
+  position: sticky;
 }
 
 .legend h3 {
   font-size: 1rem;
   margin-bottom: 8px;
+  color: var(--accent-strong);
 }
 
 .legendRow {
@@ -160,8 +217,13 @@
   display: grid;
   place-items: center;
   font-size: 0.85rem;
-  background: var(--node-color);
-  border: 1px solid #000;
+  background: radial-gradient(
+    circle at 50% 32%,
+    color-mix(in srgb, var(--node-color) 80%, #fff 12%),
+    color-mix(in srgb, var(--node-color) 55%, #0b0a0d) 72%
+  );
+  border: 1.5px solid #0b0a0d;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--node-color) 45%, #5a5162);
 }
 
 @media (max-width: 760px) {
@@ -169,8 +231,10 @@
     flex-direction: column;
     align-items: center;
   }
+  .screen > .legend {
+    position: relative;
+  }
   .legend {
-    position: static;
     width: 100%;
     max-width: 420px;
     flex-basis: auto;
@@ -180,5 +244,12 @@
   }
   .legend h3 {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edgeOpen,
+  .reachable::after {
+    animation: none;
   }
 }
