@@ -227,17 +227,12 @@
   font-family: var(--font-px11);
   font-size: 24px;
   font-weight: 700;
-  color: #1b1408;
-  background: radial-gradient(circle at 35% 30%, #f7e2a0, var(--energy) 55%, #6a4e14);
-  border: 3px solid #2a2118;
-  /* Gilt-ringed medallion: the same ring as the candle flame and the cards' cost gems. */
-  box-shadow:
-    0 0 0 1.5px var(--accent),
-    0 0 0 4px #0b0a0d,
-    0 0 22px rgb(201 161 63 / 35%);
-  transition:
-    filter 0.3s,
-    box-shadow 0.3s;
+  color: var(--bg);
+  /* Gilt-ringed pixel medallion (ui/medal-energy.png): the same ring as the candle flame and
+     the cards' cost gems. */
+  background: url('../../assets/ui/medal-energy.png') center / 72px 72px no-repeat;
+  image-rendering: pixelated;
+  transition: filter 0.3s steps(2, end);
 }
 
 .energyIcon {
@@ -248,7 +243,6 @@
 
 .energyEmpty {
   filter: grayscale(0.8) brightness(0.6);
-  box-shadow: none;
 }
 
 .pile {

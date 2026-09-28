@@ -10,14 +10,15 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  padding: 1px 6px 1px 4px;
-  border-radius: 12px;
+  padding: 0 5px 0 3px;
+  border-radius: 0;
   font-family: var(--font-px11);
   font-size: 12px;
   font-weight: 700;
   line-height: 16px;
   background: var(--panel-2);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
+  box-shadow: 0 0 0 2px var(--bg);
   cursor: help;
 }
 
@@ -35,14 +36,15 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 1px 7px;
+  border-radius: 0;
   font-family: var(--font-px11);
   font-size: 12px;
   font-weight: 700;
   line-height: 16px;
-  background: rgb(0 0 0 / 45%);
-  border: 1px solid var(--border-strong);
+  background: var(--bg-2);
+  border: 2px solid var(--border-strong);
+  box-shadow: 0 0 0 2px var(--bg);
   animation: bob 1.6s ease-in-out infinite;
 }
 

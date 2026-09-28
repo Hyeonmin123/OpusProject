@@ -5,47 +5,42 @@
   width: 100%;
 }
 
-/* Shared "resource trough" (HP here, wax in CandleGauge): a carved dark groove with a lit
-   top edge on the fill, 3px corners. Keep the two in sync. */
+/* Shared pixel "resource trough" (HP here, wax in CandleGauge): a 9-slice sunken frame
+   (ui/trough-*.png, 2px corners) around a flat fill with a 2px lit top band and 2px notches
+   every 12px. Keep the two in sync. */
 .bar {
   position: relative;
   flex: 1;
   height: 16px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #0b0a0d, var(--hp-bg) 140%);
-  border: 1px solid var(--border);
-  box-shadow:
-    inset 0 1px 3px rgb(0 0 0 / 80%),
-    0 0 0 1px rgb(0 0 0 / 50%),
-    0 1px 0 1px rgb(255 255 255 / 4%);
-  overflow: hidden;
+  border: 4px solid transparent;
+  border-image: url('../../assets/ui/trough-hp.png') 4 fill / 4px stretch;
+  image-rendering: pixelated;
 }
 
 .fill {
   position: absolute;
-  inset: 1px auto 1px 1px;
-  max-width: calc(100% - 2px);
-  border-radius: 2px;
-  background: linear-gradient(180deg, #d46464, var(--hp) 55%, #7a2626);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 28%);
-  transition: width 0.3s ease-out;
+  inset: 0 auto 0 0;
+  max-width: 100%;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 10px, var(--hp-bg) 10px 12px),
+    linear-gradient(180deg, var(--debuff) 0 2px, var(--hp) 2px);
+  transition: width 0.3s steps(6, end);
 }
 
 .withBlock {
-  border-color: var(--block);
-  box-shadow:
-    inset 0 1px 3px rgb(0 0 0 / 80%),
-    0 0 0 1px rgb(0 0 0 / 50%),
-    0 0 8px rgb(91 125 153 / 55%);
+  border-image-source: url('../../assets/ui/trough-block.png');
 }
 
 .withBlock .fill {
-  background: linear-gradient(180deg, #8fb0cb, var(--block) 55%, #3a5468);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 10px, var(--border) 10px 12px),
+    linear-gradient(180deg, var(--text-dim) 0 2px, var(--block) 2px);
 }
 
+/* The label spans the whole trough, frame included (the fill area is only 8px tall). */
 .label {
   position: absolute;
-  inset: 0;
+  inset: -4px;
   display: grid;
   place-items: center;
   font-family: var(--font-px11);
@@ -54,13 +49,18 @@
   line-height: 12px;
   font-variant-numeric: tabular-nums;
   color: var(--hi);
-  text-shadow: 1px 1px 0 var(--bg);
+  text-shadow:
+    1px 1px 0 var(--bg),
+    -1px 0 0 var(--bg),
+    0 -1px 0 var(--bg);
 }
 
+/* Block: a pixel heater shield (ui/shield.png, 15x13 grid) with the number on its face. */
 .block {
-  min-width: 30px;
+  flex: none;
+  width: 30px;
   height: 26px;
-  padding: 0 4px;
+  padding-bottom: 3px;
   display: grid;
   place-items: center;
   font-family: var(--font-px11);
@@ -69,6 +69,6 @@
   line-height: 12px;
   color: var(--hi);
   text-shadow: 1px 1px 0 var(--bg);
-  background: linear-gradient(180deg, #8fb0cb, var(--block) 55%, #3a5468);
-  clip-path: polygon(50% 0, 100% 18%, 100% 60%, 50% 100%, 0 60%, 0 18%);
+  background: url('../../assets/ui/shield.png') center / 30px 26px no-repeat;
+  image-rendering: pixelated;
 }
