@@ -12,7 +12,8 @@ run low and the dark hides what the enemies are about to do. Let it go out and y
 that hit harder but burn it (see [The candle system](#the-candle-촛불-system)).
 
 > Status: **first playable scaffold.** A full run (Act 1 → Act 3 → victory/defeat summary) can be
-> played start-to-finish. Art is placeholder (CSS + emoji). UI text is Korean.
+> played start-to-finish. Art comes from the project's Figma file (icons, portraits, key art,
+> scene backgrounds and UI chrome); some relic and node glyphs are still emoji. UI text is Korean.
 
 ## Quick start
 
@@ -189,7 +190,10 @@ irrelevant or impossible to sustain fail CI.
   key, together with small lifetime stats (runs, wins, best floor). `SAVE_VERSION` in
   `engine/run.ts` discards incompatible saves after breaking changes.
 - **Theming.** All colors live as CSS custom properties in `styles/global.css`, and components use
-  CSS Modules, so real art and a Figma palette can replace the placeholders screen by screen.
+  CSS Modules. Figma art is registered in `ui/art.ts`: icons, portraits, key art and the full-bleed
+  scene backgrounds (`SCENES`, drawn by `components/Backdrop` behind each screen). The shared
+  chrome (`.panel` stone slabs with a gilt 9-slice frame, `.btn` plaques, the room-panel crest)
+  lives in `global.css` and uses `assets/ui/*.svg`.
 
 ### Tests
 
@@ -233,8 +237,9 @@ irrelevant or impossible to sustain fail CI.
 
 - **Acts 2 and 3 content depth**: they reuse the Act 1 monster roster with more HP and starting
   Strength. Only their bosses (_뼈의 여왕_, _심연의 눈_) are unique.
-- **Art, animation and sound**: placeholders are CSS shapes and emoji, with only minimal hit/intent
-  animations. Real art will come from Figma.
+- **Art, animation and sound**: relics, map-node and a few UI glyphs are still emoji. Animation is
+  limited to small CSS transitions (hits, intents, card hover/deal-in, targeting, turn change).
+  There is no sound.
 - **Balance**: the numbers are a first pass. The greedy test bot reaches Act 2 in roughly a quarter
   of runs. It is a weak player (it picks the first card reward and plays cards greedily), so its
   win rate is a regression signal, not a difficulty target.
