@@ -15,12 +15,11 @@
 }
 
 .flame {
-  font-size: 1.1rem;
+  display: flex;
   line-height: 1;
 }
 
 .large .flame {
-  font-size: 1.8rem;
   animation: flicker 2.4s ease-in-out infinite;
 }
 

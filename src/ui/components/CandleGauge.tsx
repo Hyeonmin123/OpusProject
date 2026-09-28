@@ -4,7 +4,9 @@ import {
   dimThreshold,
   lightLevel,
 } from '../../engine';
+import { ICONS } from '../art';
 import styles from './CandleGauge.module.css';
+import { Icon } from './Icon';
 
 interface Props {
   candle: number;
@@ -36,8 +38,11 @@ export function CandleGauge({ candle, maxCandle, size = 'large', drain }: Props)
       data-testid={size === 'large' ? 'candle-gauge' : undefined}
       data-level={level}
     >
-      <span className={styles.flame} aria-hidden>
-        {level === 'dark' ? '🌑' : '🕯️'}
+      <span className={styles.flame}>
+        <Icon
+          src={level === 'dark' ? ICONS.candleOut : ICONS.candle}
+          size={size === 'large' ? 30 : 18}
+        />
       </span>
       <div className={styles.body}>
         {size === 'large' && (

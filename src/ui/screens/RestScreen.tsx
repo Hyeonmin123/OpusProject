@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { canUpgrade, restHealAmount, restRekindleAmount } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
+import { ICONS } from '../art';
 import { DeckModal } from '../components/DeckModal';
+import { Icon } from '../components/Icon';
 import styles from './Screens.module.css';
 
 export function RestScreen({ run }: { run: RunState }) {
@@ -42,7 +44,9 @@ export function RestScreen({ run }: { run: RunState }) {
               onClick={rekindle}
               disabled={waxAmount <= 0}
             >
-              <span className={styles.relicIcon}>🕯️</span>
+              <span className={styles.relicIcon}>
+                <Icon src={ICONS.candle} size={42} />
+              </span>
               <span className={styles.relicName}>촛불 밝히기</span>
               <span className={styles.relicDesc}>
                 모닥불로 초를 다시 밝혀 최대 촛농의 50%를 회복합니다. (+{waxAmount}, 현재 {p.candle}

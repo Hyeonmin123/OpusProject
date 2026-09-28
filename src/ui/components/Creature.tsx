@@ -7,7 +7,10 @@ import { HpBar } from './HpBar';
 
 interface Props {
   name: string;
+  /** Emoji fallback, shown when there is no portrait art. */
   icon: string;
+  /** Portrait image URL (see `ui/art.ts`). */
+  portrait?: string;
   hp: number;
   maxHp: number;
   block: number;
@@ -38,6 +41,7 @@ function useHitFlash(value: number): boolean {
 export function Creature({
   name,
   icon,
+  portrait,
   hp,
   maxHp,
   block,
@@ -70,8 +74,14 @@ export function Creature({
       {variant !== 'player' && (
         <div className={styles.intent}>{!dead && <IntentBadges intent={intent ?? null} />}</div>
       )}
-      <div className={styles.portrait} aria-hidden>
-        {dead ? '✝️' : icon}
+      <div className={`${styles.portrait} ${portrait ? styles.hasArt : ''}`} aria-hidden>
+        {portrait ? (
+          <img className={styles.art} src={portrait} alt="" draggable={false} />
+        ) : dead ? (
+          '✝️'
+        ) : (
+          icon
+        )}
       </div>
       <div className={styles.name}>{name}</div>
       <HpBar hp={hp} maxHp={maxHp} block={block} />

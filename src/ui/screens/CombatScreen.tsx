@@ -15,10 +15,12 @@ import {
 } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { CardInstance, RunState } from '../../types';
+import { ICONS, PORTRAITS } from '../art';
 import { CandleGauge } from '../components/CandleGauge';
 import { CardView } from '../components/CardView';
 import { Creature } from '../components/Creature';
 import { DeckModal } from '../components/DeckModal';
+import { Icon } from '../components/Icon';
 import styles from './CombatScreen.module.css';
 
 type PileView = 'draw' | 'discard' | 'exhaust' | null;
@@ -137,6 +139,7 @@ export function CombatScreen({ run }: { run: RunState }) {
           <Creature
             name={run.player.className}
             icon="🛡️"
+            portrait={PORTRAITS.warrior}
             hp={run.player.hp}
             maxHp={run.player.maxHp}
             block={combat.player.block}
@@ -172,6 +175,7 @@ export function CombatScreen({ run }: { run: RunState }) {
               key={enemy.uid}
               name={enemy.name}
               icon={ENEMIES[enemy.defId]?.icon ?? '👹'}
+              portrait={PORTRAITS[enemy.defId]}
               hp={enemy.hp}
               maxHp={enemy.maxHp}
               block={enemy.block}
@@ -206,7 +210,10 @@ export function CombatScreen({ run }: { run: RunState }) {
             className={`${styles.energy} ${combat.energy === 0 ? styles.energyEmpty : ''}`}
             title="에너지"
           >
-            {combat.energy}/{energyPerTurn(run)}
+            <Icon src={ICONS.energy} size={22} className={styles.energyIcon} />
+            <span>
+              {combat.energy}/{energyPerTurn(run)}
+            </span>
           </div>
           <button className={`btn ${styles.pile}`} onClick={() => setPileView('draw')}>
             뽑기 {combat.drawPile.length}

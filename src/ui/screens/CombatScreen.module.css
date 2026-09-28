@@ -175,14 +175,24 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  gap: 1px;
   font-size: 1.5rem;
   font-weight: 800;
   color: #1b1408;
   background: radial-gradient(circle at 35% 30%, #f7e2a0, var(--energy) 55%, #6a4e14);
   border: 3px solid #2a2118;
   box-shadow: 0 0 20px rgb(201 161 63 / 35%);
+}
+
+.energyIcon {
+  margin-top: -2px;
+  /* Engrave the gold bolt into the gold orb so it reads as a dark glyph. */
+  filter: brightness(0.3) sepia(0.6) drop-shadow(0 1px 0 rgb(255 240 200 / 50%));
 }
 
 .energyEmpty {

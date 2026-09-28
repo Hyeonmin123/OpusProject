@@ -3,8 +3,10 @@ import { RELICS } from '../../data/relics';
 import { SHOP_CANDLE_AMOUNT } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
+import { ICONS } from '../art';
 import { CardView } from '../components/CardView';
 import { DeckModal } from '../components/DeckModal';
+import { Icon } from '../components/Icon';
 import styles from './Screens.module.css';
 
 function Price({ price, gold }: { price: number; gold: number }) {
@@ -105,7 +107,9 @@ export function ShopScreen({ run }: { run: RunState }) {
             disabled={!canBuyCandle}
             onClick={buyCandle}
           >
-            <span className={styles.relicIcon}>🕯️</span>
+            <span className={styles.relicIcon}>
+              <Icon src={ICONS.candle} size={32} />
+            </span>
             <span className={styles.relicName}>양초</span>
             <span className={styles.relicDesc}>
               촛농을 {SHOP_CANDLE_AMOUNT} 회복합니다. (현재 {p.candle}/{p.maxCandle})

@@ -43,6 +43,30 @@
   box-shadow: inset 0 -10px 24px rgb(0 0 0 / 50%);
 }
 
+/* Figma portrait art fills the arched frame; the frame's inset shade sits on top. */
+.hasArt {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.hasArt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 -10px 24px rgb(0 0 0 / 45%);
+  pointer-events: none;
+}
+
+.art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
 .player .portrait {
   border-color: #6c5a3a;
 }

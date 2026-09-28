@@ -3,8 +3,10 @@ import { getAct } from '../../data/acts';
 import { RELICS } from '../../data/relics';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
+import { ICONS } from '../art';
 import { CandleGauge } from './CandleGauge';
 import { DeckModal } from './DeckModal';
+import { Icon } from './Icon';
 import styles from './TopBar.module.css';
 
 export function TopBar({ run }: { run: RunState }) {
@@ -15,7 +17,9 @@ export function TopBar({ run }: { run: RunState }) {
 
   return (
     <header className={styles.bar}>
-      <span className={styles.who}>⚔️ {p.className}</span>
+      <span className={styles.who}>
+        <Icon src={ICONS.attack} size={18} /> {p.className}
+      </span>
       <span className={`${styles.stat} ${styles.hp}`} title="체력">
         ♥ {p.hp}/{p.maxHp}
       </span>

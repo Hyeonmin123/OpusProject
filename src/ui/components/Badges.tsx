@@ -1,7 +1,9 @@
 import { STATUSES } from '../../data/statuses';
 import { type IntentKind, type IntentView, listStatuses } from '../../engine';
 import type { StatusMap } from '../../types';
+import { ICONS, STATUS_ICONS } from '../art';
 import styles from './Badges.module.css';
+import { Icon } from './Icon';
 
 export function StatusBadges({ statuses }: { statuses: StatusMap }) {
   const list = listStatuses(statuses);
@@ -16,7 +18,7 @@ export function StatusBadges({ statuses }: { statuses: StatusMap }) {
             className={`${styles.status} ${kind}`}
             title={`${def.name} ${amount}: ${def.describe(amount)}`}
           >
-            <span aria-hidden>{def.icon}</span>
+            <Icon src={STATUS_ICONS[id]} size={16} />
             {amount}
           </span>
         );
@@ -25,7 +27,16 @@ export function StatusBadges({ statuses }: { statuses: StatusMap }) {
   );
 }
 
-const INTENT_ICON: Record<IntentKind, string> = {
+/** Figma icon per intent kind; `special` keeps its emoji (no art yet). */
+const INTENT_ART: Partial<Record<IntentKind, string>> = {
+  attack: ICONS.attack,
+  defend: ICONS.block,
+  buff: ICONS.intentBuff,
+  debuff: ICONS.intentDebuff,
+  hidden: ICONS.shadow,
+};
+
+const INTENT_EMOJI: Record<IntentKind, string> = {
   attack: '🗡️',
   defend: '🛡️',
   buff: '⬆️',
@@ -33,6 +44,11 @@ const INTENT_ICON: Record<IntentKind, string> = {
   special: '❔',
   hidden: '🌑',
 };
+
+function IntentIcon({ kind }: { kind: IntentKind }) {
+  const art = INTENT_ART[kind];
+  return art ? <Icon src={art} size={18} /> : <span aria-hidden>{INTENT_EMOJI[kind]}</span>;
+}
 
 const INTENT_HINT: Record<IntentKind, string> = {
   attack: '공격 예정',
@@ -52,7 +68,8 @@ export function IntentBadges({ intent }: { intent: IntentView | null }) {
         title={`${INTENT_HINT.hidden} (심지를 돋우거나 '어둠 응시'로 드러낼 수 있습니다)`}
         data-testid="intent-hidden"
       >
-        <span aria-hidden>{INTENT_ICON.hidden}</span>???
+        <IntentIcon kind="hidden" />
+        ???
       </span>
     );
   }
@@ -64,7 +81,7 @@ export function IntentBadges({ intent }: { intent: IntentView | null }) {
           className={`${styles.intent} ${styles[`intent-${part.kind}`]}`}
           title={`${intent.moveName} — ${INTENT_HINT[part.kind]}`}
         >
-          <span aria-hidden>{INTENT_ICON[part.kind]}</span>
+          <IntentIcon kind={part.kind} />
           {part.label}
         </span>
       ))}
