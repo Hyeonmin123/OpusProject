@@ -67,7 +67,7 @@ export function SummaryScreen({ run }: { run: RunState }) {
           {run.player.relics.map((id) => `${RELICS[id].icon} ${RELICS[id].name}`).join(', ')}
         </div>
 
-        <div className="dim" style={{ fontSize: '0.8rem' }}>
+        <div className="dim" style={{ fontFamily: 'var(--font-px11)', fontSize: 12 }}>
           시드: {run.seed}
         </div>
 

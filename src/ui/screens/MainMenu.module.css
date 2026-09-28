@@ -28,17 +28,23 @@
 }
 
 .title {
-  font-size: clamp(2.2rem, 7vw, 3.4rem);
+  font-size: 48px;
   color: var(--accent-strong);
   text-shadow:
-    0 2px 3px #000,
-    0 2px 22px rgb(184 154 94 / 35%);
+    3px 3px 0 var(--bg),
+    0 3px 0 var(--bg);
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 36px;
+  }
 }
 
 .subtitle {
   color: var(--text-dim);
   margin-bottom: 18px;
-  text-shadow: 0 1px 2px #000;
+  text-shadow: 1px 1px 0 var(--bg);
 }
 
 /* Gilt rule under the subtitle, like the section titles in the room panels. */
@@ -90,8 +96,9 @@
   color: var(--text-dim);
   text-decoration: underline;
   text-underline-offset: 3px;
-  font-size: 0.85rem;
-  text-shadow: 0 1px 2px #000;
+  font-family: var(--font-px11);
+  font-size: 12px;
+  text-shadow: 1px 1px 0 var(--bg);
 }
 
 .linkish:hover {
@@ -100,13 +107,15 @@
 
 .meta {
   margin-top: 18px;
-  font-size: 0.85rem;
+  font-family: var(--font-px11);
+  font-size: 12px;
   color: var(--text-dim);
-  text-shadow: 0 1px 2px #000;
+  text-shadow: 1px 1px 0 var(--bg);
 }
 
 .runInfo {
-  font-size: 0.85rem;
+  font-family: var(--font-px11);
+  font-size: 12px;
   color: var(--text-dim);
-  text-shadow: 0 1px 2px #000;
+  text-shadow: 1px 1px 0 var(--bg);
 }

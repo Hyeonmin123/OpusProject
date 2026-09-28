@@ -48,14 +48,13 @@
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: 0.72rem;
-  font-weight: 800;
+  font-family: var(--font-px11);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 12px;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-  color: #fff;
-  text-shadow:
-    0 0 3px #000,
-    0 1px 2px #000;
+  color: var(--hi);
+  text-shadow: 1px 1px 0 var(--bg);
 }
 
 .block {
@@ -64,10 +63,12 @@
   padding: 0 4px;
   display: grid;
   place-items: center;
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: #eef5fb;
-  text-shadow: 0 1px 1px #000;
+  font-family: var(--font-px11);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 12px;
+  color: var(--hi);
+  text-shadow: 1px 1px 0 var(--bg);
   background: linear-gradient(180deg, #8fb0cb, var(--block) 55%, #3a5468);
   clip-path: polygon(50% 0, 100% 18%, 100% 60%, 50% 100%, 0 60%, 0 18%);
 }

@@ -217,6 +217,28 @@ Grids are chosen so pixels land on whole CSS pixels: portraits 52px and boss por
 their frames), icons and status icons 32px, scenes 256×144. The UI draws them with
 `image-rendering: pixelated` wherever they are shown larger than their grid.
 
+### Typography
+
+All text is set in [Galmuri](https://github.com/quiple/galmuri) (Lee Minseo, SIL Open Font
+License 1.1; the licence ships next to the fonts as `src/assets/fonts/OFL.txt`), a Korean bitmap
+font with all 11,172 Hangul syllables. The fonts are self-hosted: nothing is loaded from a CDN.
+`scripts/fonts/subset_galmuri.py` rebuilds the WOFF2 files in `src/assets/fonts/` from the npm
+release (`galmuri@2.40.3`), keeping Latin, punctuation and all of Hangul and dropping the
+kana/kanji and the monochrome dingbats (about 150 KB per face).
+
+A bitmap font is only sharp at whole multiples of its pixel grid, so every `font-size` in the UI
+is one of these (the families are the `--font-px9/11/14` tokens in `global.css`):
+
+| Face           | Sizes            | Used for                                                            |
+| -------------- | ---------------- | ------------------------------------------------------------------- |
+| Galmuri14      | 15px             | body copy (the root size)                                           |
+| Galmuri11      | 12px             | card rules text, logs, hints, secondary lines                       |
+| Galmuri11 Bold | 12px, 24/36/48px | names, buttons, labels and numbers; headings and titles             |
+| Galmuri9       | 10px, 20px       | tiny labels (card type line, small gauge); large buttons, cost gems |
+
+`font-synthesis: none` keeps the browser from smearing a fake bold onto the faces without a bold
+cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets rather than blurs.
+
 ### Tests
 
 `npm test` runs:

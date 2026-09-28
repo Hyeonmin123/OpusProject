@@ -41,7 +41,8 @@
 }
 
 .subtitle {
-  font-size: 0.85rem;
+  font-family: var(--font-px11);
+  font-size: 12px;
   color: var(--text-dim);
 }
 
@@ -66,7 +67,9 @@
 
 .preview {
   max-width: 132px;
-  font-size: 0.72rem;
+  font-family: var(--font-px11);
+  font-size: 12px;
+  line-height: 16px;
   color: #9fd18a;
   text-align: center;
 }

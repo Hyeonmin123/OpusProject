@@ -1,6 +1,45 @@
 /*
- * Dark-fantasy placeholder theme. All colors are tokens so real art/palette
- * from Figma can replace them in one place.
+ * Pixel type: Galmuri (Lee Minseo, SIL OFL 1.1, see assets/fonts/OFL.txt), self-hosted and
+ * subset to Latin + all Hangul syllables by scripts/fonts/subset_galmuri.py. Each face is a
+ * bitmap font drawn on a pixel grid, so it is only crisp at whole multiples of its grid:
+ *
+ *   Galmuri9       10px (20px)       tiny badges and numbers
+ *   Galmuri11      12px (24/36/48px) card and secondary text; weight 700 = Galmuri11 Bold,
+ *                                    used for titles, names and buttons
+ *   Galmuri14      15px (30px)       body copy
+ *
+ * Every font-size in the UI is one of those sizes. `font-synthesis: none` stops the browser
+ * smearing a fake bold onto the faces that have no bold cut.
+ */
+@font-face {
+  font-family: 'Galmuri9';
+  src: url('../assets/fonts/Galmuri9.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('../assets/fonts/Galmuri11.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('../assets/fonts/Galmuri11-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri14';
+  src: url('../assets/fonts/Galmuri14.woff2') format('woff2');
+  font-display: swap;
+}
+
+/*
+ * Dark-fantasy theme. Every colour is a step of the locked pixel-art palette
+ * (scripts/pixelart/pxlib.py).
  */
 :root {
   --bg: #0f0e11;
@@ -15,6 +54,7 @@
   --text-faint: #6b645c;
   --accent: #b89a5e;
   --accent-strong: #d8b76e;
+  --hi: #f5f0e6;
 
   --hp: #a23a3a;
   --hp-bg: #3a1c1c;
@@ -46,15 +86,29 @@
   --radius: 10px;
   --radius-sm: 6px;
   --shadow: 0 6px 20px rgb(0 0 0 / 45%);
-  --font-title: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif;
-  --font-body:
-    'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
+  /* Fallbacks only cover glyphs outside the subset (emoji first, so relic and node emoji keep
+     their colour glyphs); Korean text never falls through to them. */
+  --font-fallback:
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple SD Gothic Neo',
+    'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  --font-px9: 'Galmuri9', var(--font-fallback);
+  --font-px11: 'Galmuri11', var(--font-fallback);
+  --font-px14: 'Galmuri14', var(--font-fallback);
+  /* Titles and names: Galmuri11 Bold (12px / 24px / 36px / 48px). */
+  --font-title: var(--font-px11);
+  /* Body copy: Galmuri14 at 15px. */
+  --font-body: var(--font-px14);
 
   color-scheme: dark;
   font-family: var(--font-body);
+  font-size: 15px;
   color: var(--text);
-  line-height: 1.45;
-  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  font-synthesis: none;
+  font-kerning: none;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
 }
 
 * {
@@ -87,7 +141,24 @@ h3 {
   font-family: var(--font-title);
   font-weight: 700;
   margin: 0;
-  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: 48px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+input {
+  font: inherit;
 }
 
 button {
@@ -112,12 +183,16 @@ button:disabled {
     linear-gradient(180deg, #332e39, #211d25);
   border: 1px solid var(--border-strong);
   border-radius: 4px;
-  padding: 0.55em 1.1em;
+  padding: 7px 16px;
+  font-family: var(--font-px11);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
   box-shadow:
     0 0 0 1px rgb(0 0 0 / 55%),
     inset 0 1px 0 rgb(255 255 255 / 7%),
     0 2px 6px rgb(0 0 0 / 35%);
-  text-shadow: 0 1px 1px rgb(0 0 0 / 60%);
+  text-shadow: 1px 1px 0 var(--bg);
   transition:
     border-color 0.15s,
     box-shadow 0.15s,
@@ -209,8 +284,12 @@ button:disabled {
 }
 
 .btn-large {
-  font-size: 1.15rem;
-  padding: 0.75em 1.8em;
+  font-family: var(--font-px9);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 26px;
+  padding: 12px 30px;
+  text-shadow: 2px 2px 0 var(--bg);
 }
 
 .panel {

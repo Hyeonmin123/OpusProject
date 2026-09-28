@@ -12,8 +12,10 @@
   gap: 2px;
   padding: 1px 6px 1px 4px;
   border-radius: 12px;
-  font-size: 0.75rem;
+  font-family: var(--font-px11);
+  font-size: 12px;
   font-weight: 700;
+  line-height: 16px;
   background: var(--panel-2);
   border: 1px solid var(--border);
   cursor: help;
@@ -35,8 +37,10 @@
   gap: 4px;
   padding: 2px 8px;
   border-radius: 6px;
-  font-size: 0.82rem;
-  font-weight: 800;
+  font-family: var(--font-px11);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
   background: rgb(0 0 0 / 45%);
   border: 1px solid var(--border-strong);
   animation: bob 1.6s ease-in-out infinite;
@@ -66,7 +70,7 @@
   border-color: var(--shadow);
   border-style: dashed;
   background: var(--shadow-deep);
-  letter-spacing: 0.12em;
+  letter-spacing: 2px;
   animation:
     bob 1.6s ease-in-out infinite,
     hiddenFade 2.2s ease-in-out infinite;

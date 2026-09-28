@@ -19,6 +19,7 @@
 
 .who {
   font-family: var(--font-title);
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -26,6 +27,8 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  font-family: var(--font-px11);
+  font-size: 12px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -40,7 +43,8 @@
 
 .where {
   color: var(--text-dim);
-  font-size: 0.9rem;
+  font-family: var(--font-px11);
+  font-size: 12px;
 }
 
 .relics {
@@ -58,7 +62,7 @@
   background: radial-gradient(circle at 50% 38%, #2c2732, #141216 72%);
   border: 1.5px solid #0b0a0d;
   box-shadow: 0 0 0 1px rgb(184 154 94 / 60%);
-  font-size: 1rem;
+  font-size: 16px;
   cursor: help;
   transition: box-shadow 0.15s;
 }
@@ -79,6 +83,5 @@
 }
 
 .actions :global(.btn) {
-  padding: 0.35em 0.8em;
-  font-size: 0.9rem;
+  padding: 4px 12px;
 }
