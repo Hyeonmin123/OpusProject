@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useGame } from '../../store/gameStore';
+import { KEY_ART } from '../art';
 import styles from './MainMenu.module.css';
 
 export function MainMenu() {
@@ -26,9 +27,15 @@ export function MainMenu() {
   return (
     <div className={styles.screen}>
       <div className={`${styles.box} fade-in`}>
-        <div className={styles.sigil} aria-hidden>
-          🕯️
-        </div>
+        <img
+          className={styles.keyArt}
+          src={KEY_ART}
+          width={240}
+          height={248}
+          alt=""
+          aria-hidden
+          draggable={false}
+        />
         <h1 className={styles.title}>끝없는 지하실</h1>
         <div className={styles.subtitle}>The Endless Cellar — 덱빌딩 로그라이크</div>
 

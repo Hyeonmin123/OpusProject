@@ -14,9 +14,14 @@
   text-align: center;
 }
 
-.sigil {
-  font-size: 3.4rem;
-  filter: drop-shadow(0 0 18px rgb(184 154 94 / 40%));
+/* Candle-in-the-archway key art (Figma: art/keyart). */
+.keyArt {
+  display: block;
+  width: min(220px, 60vw);
+  height: auto;
+  margin-bottom: -6px;
+  filter: drop-shadow(0 0 22px rgb(240 184 74 / 18%));
+  user-select: none;
 }
 
 .title {
