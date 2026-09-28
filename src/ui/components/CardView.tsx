@@ -7,7 +7,9 @@ import {
   getCardStats,
 } from '../../engine';
 import type { CardInstance, CardResonance, CardType } from '../../types';
+import { CARD_TYPE_ICONS, ICONS } from '../art';
 import styles from './CardView.module.css';
+import { Icon } from './Icon';
 
 const TYPE_LABEL: Record<CardType, string> = {
   attack: '공격',
@@ -16,24 +18,15 @@ const TYPE_LABEL: Record<CardType, string> = {
   status: '상태이상',
 };
 
-/** Placeholder "art" glyph per card type until Figma illustrations exist. */
-const TYPE_GLYPH: Record<CardType, string> = {
-  attack: '⚔️',
-  skill: '🛡️',
-  power: '✨',
-  status: '☁️',
-};
-
 const RESONANCE_LABEL: Record<CardResonance, string> = {
   light: '빛',
   shadow: '그림자',
   neutral: '',
 };
 
-const RESONANCE_GLYPH: Record<CardResonance, string> = {
-  light: '☀️',
-  shadow: '🌑',
-  neutral: '',
+const RESONANCE_ICON: Record<Exclude<CardResonance, 'neutral'>, string> = {
+  light: ICONS.light,
+  shadow: ICONS.shadow,
 };
 
 interface Props {
@@ -108,14 +101,15 @@ export function CardView({
             className={`${styles.wax} ${stats.candle > 0 ? styles.waxGain : styles.waxBurn}`}
             title={stats.candle > 0 ? `촛농 ${stats.candle} 회복` : `촛농 ${-stats.candle} 소모`}
           >
-            🕯️{stats.candle > 0 ? '+' : ''}
+            <Icon src={ICONS.candle} size={13} />
+            {stats.candle > 0 ? '+' : ''}
             {stats.candle}
           </span>
         ) : null}
-        {TYPE_GLYPH[def.type]}
+        <Icon src={CARD_TYPE_ICONS[def.type]} size={size === 'small' ? 24 : 30} />
         {resonance !== 'neutral' && (
-          <span className={styles.resonanceGlyph} aria-hidden>
-            {RESONANCE_GLYPH[resonance]}
+          <span className={styles.resonanceGlyph}>
+            <Icon src={RESONANCE_ICON[resonance]} size={14} />
           </span>
         )}
       </div>

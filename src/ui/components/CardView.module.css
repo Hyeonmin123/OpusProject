@@ -57,6 +57,24 @@
     0 0 10px rgb(142 107 196 / 35%),
     0 4px 12px rgb(0 0 0 / 50%);
 }
+/* Figma corner ornaments over the light / shadow frames (art/frame-*.svg). The SVG has the
+   same aspect ratio as both card sizes, so it is simply stretched to the card box. */
+.light::after,
+.shadow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+.light::after {
+  background-image: url('../../assets/art/frame-light.svg');
+}
+.shadow::after {
+  background-image: url('../../assets/art/frame-shadow.svg');
+}
+
 .light .type {
   color: var(--light);
 }
@@ -70,9 +88,9 @@
 
 .resonanceGlyph {
   position: absolute;
-  right: 4px;
+  right: 3px;
   bottom: 2px;
-  font-size: 0.85rem;
+  display: flex;
 }
 
 /* Wax badge (inside the art box): candle restored (+) or burned (−) when played. */
@@ -128,6 +146,7 @@
 
 .cost {
   position: absolute;
+  z-index: 1;
   top: -9px;
   left: -9px;
   width: 30px;
