@@ -98,20 +98,20 @@ export function CardView({
           {stats.cost}
         </div>
       )}
-      {stats.candle ? (
-        <div
-          className={`${styles.wax} ${stats.candle > 0 ? styles.waxGain : styles.waxBurn}`}
-          title={stats.candle > 0 ? `촛농 ${stats.candle} 회복` : `촛농 ${-stats.candle} 소모`}
-        >
-          {stats.candle > 0 ? '+' : ''}
-          {stats.candle}
-        </div>
-      ) : null}
       <div className={styles.name}>
         {def.name}
         {card.upgraded ? '+' : ''}
       </div>
       <div className={styles.art}>
+        {stats.candle ? (
+          <span
+            className={`${styles.wax} ${stats.candle > 0 ? styles.waxGain : styles.waxBurn}`}
+            title={stats.candle > 0 ? `촛농 ${stats.candle} 회복` : `촛농 ${-stats.candle} 소모`}
+          >
+            🕯️{stats.candle > 0 ? '+' : ''}
+            {stats.candle}
+          </span>
+        ) : null}
         {TYPE_GLYPH[def.type]}
         {resonance !== 'neutral' && (
           <span className={styles.resonanceGlyph} aria-hidden>

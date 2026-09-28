@@ -75,21 +75,21 @@
   font-size: 0.85rem;
 }
 
-/* Wax badge: how much candle the card restores (+) or burns (−) when played. */
+/* Wax badge (inside the art box): candle restored (+) or burned (−) when played. */
 .wax {
   position: absolute;
-  top: -9px;
-  right: -9px;
-  min-width: 30px;
-  height: 26px;
+  top: 3px;
+  right: 3px;
+  height: 18px;
   padding: 0 5px;
-  border-radius: 13px 13px 13px 4px;
-  display: grid;
-  place-items: center;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
   font-weight: 800;
-  font-size: 0.82rem;
-  border: 2px solid #2a2118;
-  z-index: 1;
+  font-size: 0.7rem;
+  line-height: 1;
+  border: 1px solid #2a2118;
 }
 
 .waxGain {

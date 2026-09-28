@@ -84,7 +84,10 @@
   place-items: center;
   font-size: 0.7rem;
   font-weight: 800;
-  text-shadow: 0 1px 2px #000;
+  color: #fff;
+  text-shadow:
+    0 0 3px #000,
+    0 1px 2px #000;
 }
 
 .dim .fill {
