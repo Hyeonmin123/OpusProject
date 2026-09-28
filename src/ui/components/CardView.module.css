@@ -1,7 +1,9 @@
+/* Pixel card (the "Card Chrome" page of the Figma pixel UI kit): the whole face (rim, header
+   plate, sunken art well and the body's dithered shading) is one sprite per type, resonance
+   and size, drawn at the card's exact size / 2 and shown 1:1 over the border box. The CSS
+   border stays (transparent) so the layout is unchanged; the rim sprite sits in it, and a hard
+   2px d0 ring and 6px drop shadow (no blur) sit outside. */
 .card {
-  --card-color: var(--card-status);
-  /* Hover / selection glow colour: gilt for neutral cards, resonance colour otherwise. */
-  --glow: 216 183 110;
   position: relative;
   width: 132px;
   height: 184px;
@@ -9,13 +11,12 @@
   display: flex;
   flex-direction: column;
   padding: 8px 8px 10px;
-  /* Pixel card: square corners, a 2px frame inside a 2px d0 outline, a flat body with a lit
-     top band, and a hard 4px drop shadow (no blurs). */
   border-radius: 0;
-  border: 2px solid color-mix(in srgb, var(--card-color) 55%, #a09080);
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 8%) 0 2px, transparent 2px),
-    color-mix(in srgb, var(--card-color) 78%, #000);
+  border: 2px solid transparent;
+  background: url('../../assets/ui/card/status.png') 0 0 / 100% 100% no-repeat border-box;
+  image-rendering: pixelated;
+  /* Hover / selection ring colour: gilt for neutral cards, resonance colour otherwise. */
+  --glow: 216 183 110;
   box-shadow:
     0 0 0 2px var(--bg),
     0 6px 0 rgb(15 14 17 / 60%);
@@ -32,23 +33,83 @@
 }
 
 .attack {
-  --card-color: var(--card-attack);
+  background-image: url('../../assets/ui/card/attack.png');
+}
+.attack.light {
+  background-image: url('../../assets/ui/card/attack-light.png');
+}
+.attack.shadow {
+  background-image: url('../../assets/ui/card/attack-shadow.png');
 }
 .skill {
-  --card-color: var(--card-skill);
+  background-image: url('../../assets/ui/card/skill.png');
+}
+.skill.light {
+  background-image: url('../../assets/ui/card/skill-light.png');
+}
+.skill.shadow {
+  background-image: url('../../assets/ui/card/skill-shadow.png');
 }
 .power {
-  --card-color: var(--card-power);
+  background-image: url('../../assets/ui/card/power.png');
+}
+.power.light {
+  background-image: url('../../assets/ui/card/power-light.png');
+}
+.power.shadow {
+  background-image: url('../../assets/ui/card/power-shadow.png');
 }
 .status {
-  --card-color: var(--card-status);
+  background-image: url('../../assets/ui/card/status.png');
+}
+.status.light {
+  background-image: url('../../assets/ui/card/status-light.png');
+}
+.status.shadow {
+  background-image: url('../../assets/ui/card/status-shadow.png');
+}
+.small.attack {
+  background-image: url('../../assets/ui/card/attack-small.png');
+}
+.small.attack.light {
+  background-image: url('../../assets/ui/card/attack-light-small.png');
+}
+.small.attack.shadow {
+  background-image: url('../../assets/ui/card/attack-shadow-small.png');
+}
+.small.skill {
+  background-image: url('../../assets/ui/card/skill-small.png');
+}
+.small.skill.light {
+  background-image: url('../../assets/ui/card/skill-light-small.png');
+}
+.small.skill.shadow {
+  background-image: url('../../assets/ui/card/skill-shadow-small.png');
+}
+.small.power {
+  background-image: url('../../assets/ui/card/power-small.png');
+}
+.small.power.light {
+  background-image: url('../../assets/ui/card/power-light-small.png');
+}
+.small.power.shadow {
+  background-image: url('../../assets/ui/card/power-shadow-small.png');
+}
+.small.status {
+  background-image: url('../../assets/ui/card/status-small.png');
+}
+.small.status.light {
+  background-image: url('../../assets/ui/card/status-light-small.png');
+}
+.small.status.shadow {
+  background-image: url('../../assets/ui/card/status-shadow-small.png');
 }
 
-/* Candle resonance: light cards glow warm, shadow cards smoulder violet. */
-/* The glow is a hard, translucent 2px ring outside the outline rather than a blur. */
+/* Candle resonance: light cards get a gilt rim, shadow cards a violet one and a body that
+   sinks into violet in dithered bands (both in the face sprite); the hard ring outside is a
+   translucent flat band of the resonance colour. */
 .light {
   --glow: 243 210 122;
-  border-color: var(--light);
   box-shadow:
     0 0 0 2px var(--bg),
     0 0 0 4px rgb(243 210 122 / 30%),
@@ -56,20 +117,13 @@
 }
 .shadow {
   --glow: 142 107 196;
-  border-color: var(--shadow);
-  /* Violet smoulder: the body sinks into shadow-deep, with a flat band under the vine. */
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 8%) 0 2px, transparent 2px),
-    linear-gradient(180deg, transparent calc(100% - 22px), var(--shadow-deep) calc(100% - 22px)),
-    color-mix(in srgb, var(--card-color) 62%, var(--shadow-deep));
   box-shadow:
     0 0 0 2px var(--bg),
     0 0 0 4px rgb(142 107 196 / 30%),
     0 6px 0 rgb(15 14 17 / 60%);
 }
-/* Pixel corner ornaments over the light / shadow frames (art/frame-*.png from
-   scripts/pixelart/chrome.py): full overlays of the card's padding box, drawn on a 2x grid
-   at each card size so they are shown 1:1. */
+/* Pixel corner ornaments over the light / shadow frames (art/frame-*.png): full overlays of
+   the card's padding box, drawn on a 2x grid at each card size so they are shown 1:1. */
 .light::after,
 .shadow::after {
   content: '';
@@ -125,29 +179,20 @@
   font-weight: 700;
   font-size: 12px;
   line-height: 12px;
-  border: 2px solid var(--bg);
+  /* Pixel pill (ui/tag-*.png, 9-slice): d0 outline over the 2px border, a lit top row, the
+     base and a dark bottom row. */
+  border: 2px solid transparent;
+  border-image: url('../../assets/ui/tag-gain.png') 4 fill / 4px stretch;
 }
 
-/* Flat pixel tags: lit top row, base, dark bottom row. */
 .waxGain {
   color: var(--bg);
-  background: linear-gradient(
-    180deg,
-    var(--hi) 0 2px,
-    var(--light) 2px calc(100% - 2px),
-    var(--accent) calc(100% - 2px)
-  );
 }
 
 .waxBurn {
   color: var(--hi);
   text-shadow: 1px 1px 0 var(--shadow-deep);
-  background: linear-gradient(
-    180deg,
-    var(--text-dim) 0 2px,
-    var(--shadow) 2px calc(100% - 2px),
-    var(--shadow-deep) calc(100% - 2px)
-  );
+  border-image-source: url('../../assets/ui/tag-burn.png');
 }
 
 .clickable {
@@ -159,7 +204,6 @@
 .clickable:focus-visible {
   outline: none;
   transform: translateY(-12px);
-  border-color: rgb(var(--glow));
   box-shadow:
     0 0 0 2px var(--bg),
     0 0 0 4px rgb(var(--glow) / 55%),
@@ -170,7 +214,6 @@
 .selected,
 .selected:hover {
   transform: translateY(-20px);
-  border-color: rgb(var(--glow));
   box-shadow:
     0 0 0 2px rgb(var(--glow)),
     0 0 0 4px var(--bg),
@@ -211,6 +254,7 @@
   font-weight: 700;
   font-size: 12px;
   line-height: 16px;
+  text-shadow: 1px 1px 0 var(--bg);
   margin: 2px 0 4px 14px;
   white-space: nowrap;
   overflow: hidden;
@@ -221,18 +265,14 @@
   color: #9fd18a;
 }
 
-/* Art well: a sunken pixel inset with a 2px checker dither. */
+/* Art well: the sunken, dither-tinted inset is part of the face sprite (it sits at a fixed
+   place on the card); the transparent border keeps the box the same size. */
 .art {
   height: 46px;
   display: grid;
   place-items: center;
   font-size: 26px;
-  background:
-    repeating-conic-gradient(rgb(255 255 255 / 4%) 0 25%, transparent 0 50%) 0 0 / 4px 4px,
-    rgb(0 0 0 / 35%);
-  border: 2px solid rgb(0 0 0 / 35%);
-  border-right-color: rgb(255 255 255 / 8%);
-  border-bottom-color: rgb(255 255 255 / 8%);
+  border: 2px solid transparent;
 }
 
 .small .art {
