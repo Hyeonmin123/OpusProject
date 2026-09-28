@@ -12,10 +12,10 @@ run low and the dark hides what the enemies are about to do. Let it go out and y
 that hit harder but burn it (see [The candle system](#the-candle-촛불-system)).
 
 > Status: **first playable scaffold.** A full run (Act 1 → Act 3 → victory/defeat summary) can be
-> played start-to-finish. Portraits, key art, gameplay and status icons and scene backgrounds are
-> palette-locked pixel art (see [Art pipeline](#art-pipeline)); the stone-and-gilt UI chrome and
-> card frame ornaments are still the Figma vector art, and some relic and node glyphs are still
-> emoji. UI text is Korean.
+> played start-to-finish. Portraits, key art, gameplay and status icons, scene backgrounds, the
+> stone-and-gilt UI chrome and the card frame ornaments are palette-locked pixel art (see
+> [Art pipeline](#art-pipeline)), and all text is set in the Galmuri pixel font
+> ([Typography](#typography)). Some relic and node glyphs are still emoji. UI text is Korean.
 
 ## Quick start
 
@@ -195,7 +195,7 @@ irrelevant or impossible to sustain fail CI.
   CSS Modules. All art is registered in `ui/art.ts`: icons, portraits, key art and the full-bleed
   scene backgrounds (`SCENES`, drawn by `components/Backdrop` behind each screen). The shared
   chrome (`.panel` stone slabs with a gilt 9-slice frame, `.btn` plaques, the room-panel crest)
-  lives in `global.css` and uses `assets/ui/*.svg`.
+  lives in `global.css` and uses the pixel-art `assets/ui/*.png`.
 
 ### Art pipeline
 
@@ -216,6 +216,24 @@ The pixel art starts as Gemini image exports, kept unprocessed in `art-src/gemin
 Grids are chosen so pixels land on whole CSS pixels: portraits 52px and boss portraits 66px (2× in
 their frames), icons and status icons 32px, scenes 256×144. The UI draws them with
 `image-rendering: pixelated` wherever they are shown larger than their grid.
+
+The UI chrome has no source image: `python3 scripts/pixelart/chrome.py` draws it directly on its
+final grid, in the same locked palette (the primary button's bronze is one of the scene
+palette's midpoints), and exports it at 2×, so it is shown 1:1:
+
+- 9-slice `border-image` frames: the `.panel` stone slab with chamfered corners and gilt corner
+  caps (`ui/panel-frame.png`), a compact slab for small panels and banners (`ui/panel-small.png`,
+  the global `.panel-sm` class), the targeting reticle, the button plaques (default, hover,
+  pressed; primary, danger and the violet reveal button) and the HP / candle gauge troughs.
+- Sprites: the room-panel crest, the block shield, relic sockets, the energy orb, cost gem and
+  candle-flame medallions, the top bar's gilt edge tile and the large buttons' diamonds.
+- Card corner ornaments (`art/frame-{light,shadow}[-small].png`): full overlays of the card's
+  inner box at both card sizes, gilt brackets and sparkles for light cards, a violet thorn vine
+  for shadow cards.
+
+Soft CSS effects around the chrome follow the same rule: shadows and glows are hard 2–6px
+offsets or rings, gauge fills are flat bands with 2px notches, and hover and pressed states
+move whole pixels (cards lift without scaling).
 
 ### Typography
 
@@ -281,9 +299,9 @@ cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets r
 
 - **Acts 2 and 3 content depth**: they reuse the Act 1 monster roster with more HP and starting
   Strength. Only their bosses (_뼈의 여왕_, _심연의 눈_) are unique.
-- **Art, animation and sound**: relics, map-node and a few UI glyphs are still emoji, and the UI
-  chrome, card frame ornaments, map chart and buff/debuff intent glyphs are still Figma vector
-  art rather than pixel art. Animation is
+- **Art, animation and sound**: relics, map-node and a few UI glyphs are still emoji, and the map
+  chart, map-node medallions, portrait and room-icon niches and buff/debuff intent glyphs are
+  still Figma vector art or CSS rather than pixel art. Animation is
   limited to small CSS transitions (hits, intents, card hover/deal-in, targeting, turn change).
   There is no sound.
 - **Balance**: the numbers are a first pass. The greedy test bot reaches Act 2 in roughly a quarter
