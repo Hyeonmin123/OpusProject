@@ -25,3 +25,4 @@ dist-ssr
 
 # Python bytecode (scripts/pixelart)
 __pycache__
+build/
