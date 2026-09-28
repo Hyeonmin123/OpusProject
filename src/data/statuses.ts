@@ -1,0 +1,68 @@
+import type { StatusEffectDef, StatusId } from '../types';
+
+export const STATUSES: Record<StatusId, StatusEffectDef> = {
+  strength: {
+    id: 'strength',
+    name: '힘',
+    icon: '💪',
+    kind: 'buff',
+    decay: 'intensity',
+    describe: (n) => `공격 피해가 ${n} 증가합니다.`,
+  },
+  dexterity: {
+    id: 'dexterity',
+    name: '민첩',
+    icon: '🌀',
+    kind: 'buff',
+    decay: 'intensity',
+    describe: (n) => `카드로 얻는 방어도가 ${n} 증가합니다.`,
+  },
+  vulnerable: {
+    id: 'vulnerable',
+    name: '취약',
+    icon: '💔',
+    kind: 'debuff',
+    decay: 'duration',
+    describe: (n) => `공격으로 받는 피해가 50% 증가합니다. (${n}턴)`,
+  },
+  weak: {
+    id: 'weak',
+    name: '약화',
+    icon: '🥀',
+    kind: 'debuff',
+    decay: 'duration',
+    describe: (n) => `공격으로 주는 피해가 25% 감소합니다. (${n}턴)`,
+  },
+  frail: {
+    id: 'frail',
+    name: '손상',
+    icon: '🩹',
+    kind: 'debuff',
+    decay: 'duration',
+    describe: (n) => `카드로 얻는 방어도가 25% 감소합니다. (${n}턴)`,
+  },
+  ritual: {
+    id: 'ritual',
+    name: '의식',
+    icon: '🕯️',
+    kind: 'buff',
+    decay: 'intensity',
+    describe: (n) => `턴 시작 시 힘을 ${n} 얻습니다.`,
+  },
+  metallicize: {
+    id: 'metallicize',
+    name: '금속화',
+    icon: '⛓️',
+    kind: 'buff',
+    decay: 'intensity',
+    describe: (n) => `턴 종료 시 방어도를 ${n} 얻습니다.`,
+  },
+  thorns: {
+    id: 'thorns',
+    name: '가시',
+    icon: '🌵',
+    kind: 'buff',
+    decay: 'intensity',
+    describe: (n) => `공격받을 때마다 공격자에게 피해를 ${n} 줍니다.`,
+  },
+};
