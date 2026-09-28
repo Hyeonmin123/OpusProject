@@ -1,0 +1,73 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  min-height: 24px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 6px 1px 4px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  cursor: help;
+}
+
+.buff {
+  border-color: color-mix(in srgb, var(--buff) 60%, transparent);
+  color: #cfe3c2;
+}
+
+.debuff {
+  border-color: color-mix(in srgb, var(--debuff) 70%, transparent);
+  color: #f0c8c8;
+}
+
+.intent {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  background: rgb(0 0 0 / 45%);
+  border: 1px solid var(--border-strong);
+  animation: bob 1.6s ease-in-out infinite;
+}
+
+.intent-attack {
+  color: #ffb0a0;
+  border-color: #8a3a2c;
+}
+.intent-defend {
+  color: #b8d4ea;
+  border-color: var(--block);
+}
+.intent-buff {
+  color: #cfe3c2;
+  border-color: #5a7a4a;
+}
+.intent-debuff {
+  color: #e6b8e6;
+  border-color: #7a4a7a;
+}
+.intent-special {
+  color: #e6dcb8;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}

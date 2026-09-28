@@ -1,0 +1,95 @@
+.creature {
+  position: relative;
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    opacity 0.3s;
+}
+
+.targetable {
+  cursor: crosshair;
+  border-color: rgb(216 183 110 / 35%);
+  background: rgb(216 183 110 / 5%);
+}
+
+.targetable:hover {
+  border-color: var(--accent-strong);
+  background: rgb(216 183 110 / 12%);
+}
+
+.dead {
+  opacity: 0.25;
+  filter: grayscale(1);
+}
+
+.portrait {
+  width: 108px;
+  height: 108px;
+  border-radius: 50% 50% 14px 14px;
+  display: grid;
+  place-items: center;
+  font-size: 3.4rem;
+  background:
+    radial-gradient(circle at 50% 35%, rgb(255 255 255 / 8%), transparent 65%), var(--panel-2);
+  border: 2px solid var(--border-strong);
+  box-shadow: inset 0 -10px 24px rgb(0 0 0 / 50%);
+}
+
+.player .portrait {
+  border-color: #6c5a3a;
+}
+
+.boss .portrait {
+  width: 136px;
+  height: 136px;
+  font-size: 4.4rem;
+  border-color: #7a2f4a;
+}
+
+.elite .portrait {
+  border-color: #a0453a;
+}
+
+.hit .portrait {
+  animation: hit 0.35s ease-out;
+}
+
+@keyframes hit {
+  0% {
+    transform: translateX(0);
+    filter: brightness(2) saturate(0.2) sepia(1) hue-rotate(-30deg);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+.name {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.intent {
+  min-height: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}

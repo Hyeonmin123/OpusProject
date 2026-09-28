@@ -1,0 +1,56 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.bar {
+  position: relative;
+  flex: 1;
+  height: 16px;
+  border-radius: 8px;
+  background: var(--hp-bg);
+  border: 1px solid #000;
+  overflow: hidden;
+}
+
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(180deg, #c04a4a, var(--hp));
+  transition: width 0.3s ease-out;
+}
+
+.withBlock {
+  border-color: var(--block);
+  box-shadow: 0 0 0 1px var(--block);
+}
+
+.withBlock .fill {
+  background: linear-gradient(180deg, #7a9cb8, var(--block));
+}
+
+.label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-shadow: 0 1px 2px #000;
+}
+
+.block {
+  min-width: 30px;
+  height: 26px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #e6f0f8;
+  background: var(--block);
+  border: 1px solid #9cb8cf;
+  clip-path: polygon(50% 0, 100% 18%, 100% 60%, 50% 100%, 0 60%, 0 18%);
+}

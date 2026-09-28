@@ -1,0 +1,237 @@
+/* Shared layout for the non-combat "room" screens. */
+.screen {
+  display: flex;
+  justify-content: center;
+  padding: 28px 16px 48px;
+}
+
+.box {
+  width: min(880px, 100%);
+  padding: 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icon {
+  font-size: 2.6rem;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+  flex: 0 0 auto;
+}
+
+.head h2 {
+  color: var(--accent-strong);
+  font-size: 1.6rem;
+}
+
+.text {
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.sectionTitle {
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 2px;
+  padding: 12px 16px;
+}
+
+.optionLabel {
+  font-weight: 700;
+}
+
+.optionDetail {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.result {
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent);
+  background: rgb(0 0 0 / 25%);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.notes {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: #cfe3c2;
+  font-size: 0.9rem;
+}
+
+.rewardRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.rewardRow .rewardIcon {
+  font-size: 1.5rem;
+}
+
+.claimed {
+  text-decoration: line-through;
+  opacity: 0.45;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  padding: 18px 0 6px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.price {
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.priceTooHigh {
+  color: #c06060;
+}
+
+.soldOut {
+  font-weight: 700;
+  color: var(--text-faint);
+}
+
+.shopGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 22px 16px;
+}
+
+.shopItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.relicList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.relicCard {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 14px;
+}
+
+.relicIcon {
+  font-size: 2rem;
+}
+
+.relicName {
+  font-weight: 700;
+}
+
+.relicDesc {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.restChoices {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.restChoice {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 22px 16px;
+}
+
+.restChoice .relicIcon {
+  font-size: 2.6rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.stat {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+}
+
+.statValue {
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.victoryTitle {
+  color: var(--accent-strong);
+  font-size: 2.2rem;
+}
+
+.defeatTitle {
+  color: #d06a6a;
+  font-size: 2.2rem;
+}

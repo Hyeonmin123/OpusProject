@@ -1,0 +1,160 @@
+/*
+ * Dark-fantasy placeholder theme. All colors are tokens so real art/palette
+ * from Figma can replace them in one place.
+ */
+:root {
+  --bg: #0f0e11;
+  --bg-2: #16141a;
+  --panel: #1e1b22;
+  --panel-2: #27232c;
+  --panel-3: #312c37;
+  --border: #3b3542;
+  --border-strong: #5a5162;
+  --text: #ddd6ca;
+  --text-dim: #948b80;
+  --text-faint: #6b645c;
+  --accent: #b89a5e;
+  --accent-strong: #d8b76e;
+
+  --hp: #a23a3a;
+  --hp-bg: #3a1c1c;
+  --block: #5b7d99;
+  --energy: #c9a13f;
+  --gold: #d6b04c;
+  --buff: #86a872;
+  --debuff: #b86a6a;
+
+  --card-attack: #5e2a2a;
+  --card-skill: #253f4d;
+  --card-power: #4d3f22;
+  --card-status: #34313a;
+
+  --node-combat: #7d4a44;
+  --node-elite: #a0453a;
+  --node-event: #5b6a8a;
+  --node-shop: #a08545;
+  --node-rest: #b0703a;
+  --node-boss: #7a2f4a;
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 6px 20px rgb(0 0 0 / 45%);
+  --font-title: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif;
+  --font-body:
+    'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
+
+  color-scheme: dark;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 50% -10%, #2a2230 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 120%, #1d1512 0%, transparent 55%), var(--bg);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-title);
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Generic button styles shared by all screens. */
+.btn {
+  background: linear-gradient(180deg, var(--panel-3), var(--panel-2));
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.55em 1.1em;
+  transition:
+    border-color 0.15s,
+    transform 0.1s,
+    background 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #6b5530, #4a3a20);
+  border-color: var(--accent);
+  color: #f3e6c8;
+}
+
+.btn-primary:hover:not(:disabled) {
+  border-color: var(--accent-strong);
+  background: linear-gradient(180deg, #7b6336, #574425);
+}
+
+.btn-danger {
+  border-color: #7a3a3a;
+}
+
+.btn-large {
+  font-size: 1.15rem;
+  padding: 0.75em 1.8em;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.dim {
+  color: var(--text-dim);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.25s ease-out;
+}

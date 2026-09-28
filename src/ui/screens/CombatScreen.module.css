@@ -1,0 +1,218 @@
+.screen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    'field log'
+    'hand hand';
+  height: calc(100vh - 50px);
+  min-height: 560px;
+}
+
+.field {
+  grid-area: field;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 32px;
+  min-width: 0;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgb(60 40 30 / 35%), transparent 60%),
+    linear-gradient(180deg, transparent 70%, rgb(0 0 0 / 35%));
+}
+
+.playerSide {
+  flex: 0 0 auto;
+}
+
+.enemies {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.log {
+  grid-area: log;
+  display: flex;
+  flex-direction: column;
+  margin: 12px 12px 0 0;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  min-height: 0;
+}
+
+.log h3 {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.logList {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logplayer {
+  color: #d9c89a;
+}
+.logenemy {
+  color: #e0a39a;
+}
+.logsystem {
+  color: var(--text-dim);
+}
+
+.handArea {
+  grid-area: hand;
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 10px 20px 16px;
+  background: linear-gradient(180deg, transparent, rgb(0 0 0 / 55%));
+}
+
+.leftCluster,
+.rightCluster {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.energy {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1b1408;
+  background: radial-gradient(circle at 35% 30%, #f7e2a0, var(--energy) 55%, #6a4e14);
+  border: 3px solid #2a2118;
+  box-shadow: 0 0 20px rgb(201 161 63 / 35%);
+}
+
+.energyEmpty {
+  filter: grayscale(0.8) brightness(0.6);
+  box-shadow: none;
+}
+
+.pile {
+  min-width: 92px;
+  font-size: 0.82rem;
+}
+
+.hand {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  /* 'safe' keeps the first cards reachable when the hand overflows and scrolls. */
+  justify-content: safe center;
+  align-items: flex-end;
+  min-height: 200px;
+  padding-top: 24px;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.hand > * {
+  margin: 0 5px;
+}
+
+.endTurn {
+  min-width: 120px;
+}
+
+.hintBar {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 236px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgb(0 0 0 / 70%);
+  border: 1px solid var(--border-strong);
+  font-size: 0.9rem;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  background: rgb(5 4 6 / 70%);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 30px 48px;
+  text-align: center;
+}
+
+.banner h2 {
+  font-size: 2.4rem;
+}
+
+.victory {
+  color: var(--accent-strong);
+}
+
+.defeat {
+  color: #d06a6a;
+}
+
+@media (max-width: 900px) {
+  .screen {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'field'
+      'hand';
+    height: auto;
+  }
+  .log {
+    display: none;
+  }
+  .field {
+    flex-direction: column;
+    padding: 16px;
+  }
+  .enemies {
+    justify-content: center;
+  }
+  .handArea {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hand {
+    order: -1;
+    flex-basis: 100%;
+  }
+  .hintBar {
+    position: static;
+    transform: none;
+    display: inline-block;
+  }
+}
