@@ -135,11 +135,93 @@ def light_resonance():
 
 
 def rat(n: int = 52):
-    raise NotImplementedError
+    """굶주린 쥐: a scrawny, hunched grey rat in profile, small in the frame, beady eye and
+    closed mouth. Grey fur (#5a5162 / #948b80 / #3b3542), pink bits in dusty red #b86a6a."""
+    c = Canvas(n)
+    # tail first so the body overlaps its root: a long thin curl to the right
+    tail = c.line([(35, 44), (40, 45), (44, 44), (47, 41), (47, 37), (45, 35)], width=1)
+    c.fill(tail, 'dr')
+    # hunched, bony body (arched back, thin belly)
+    body = c.poly([(17, 44), (18, 36), (22, 30), (28, 28), (33, 29), (37, 33), (38, 39),
+                   (37, 44)])
+    c.shade(body, 's2', light='p1', dark='s1')
+    # starving: a few ribs showing on the flank
+    for x in (23, 26, 29):
+        c.fill(c.line([(x, 35), (x + 1, 39)]), 's1')
+    # hind leg / haunch
+    haunch = c.ellipse(29, 36, 37, 44)
+    c.shade(haunch, 's2', light='p0', dark='s1')
+    # ear: round, pink inside, tucked behind the head
+    ear = c.ellipse(17, 22, 23, 28)
+    c.shade(ear, 's2', light='p1', dark='s1')
+    c.fill(c.ellipse(18, 23, 21, 26), 'dr')
+    # head: small, pointed snout to the left
+    head = c.poly([(8, 34), (11, 30), (15, 27), (20, 27), (22, 30), (21, 35), (16, 37), (11, 37)])
+    c.shade(head, 's2', light='p1', dark='s1')
+    snout = c.poly([(5, 35), (9, 32), (11, 34), (10, 37), (7, 37)])
+    c.shade(snout, 'p0', light='p1')
+    # front paws and hind foot
+    for m in (c.rect(12, 43, 14, 44), c.rect(18, 43, 20, 44), c.rect(34, 43, 37, 44)):
+        c.fill(m, 'dr')
+    c.outline('d0')
+    # details drawn over the outline pass
+    c.px(5, 35, 'dr')          # nose
+    c.px(14, 30, 'd0')         # beady eye with a glint
+    c.px(15, 30, 'd0')
+    c.px(14, 31, 'd0')
+    c.px(15, 31, 'd0')
+    c.px(14, 30, 'hi')
+    for x, y in ((6, 32), (5, 31), (4, 30), (7, 38), (5, 39)):  # whiskers
+        c.px(x, y, 'p1')
+    return c.result()
 
 
 def bat(n: int = 52):
-    raise NotImplementedError
+    """동굴 박쥐: a small round bat, wings spread, big ears, tiny fangs and two gold eye glints.
+    Stone-grey fur, dark violet-grey membranes with lighter finger bones."""
+    c = Canvas(n)
+    cx = 26
+
+    def mirror(pts):
+        return [(2 * cx - x, y) for x, y in pts]
+
+    wing_l = [(22, 25), (16, 19), (9, 16), (4, 18), (6, 23), (9, 22), (10, 28), (14, 25),
+              (16, 31), (20, 28), (23, 32)]
+    for pts in (wing_l, mirror(wing_l)):
+        w = c.poly(pts)
+        c.shade(w, 's1', light='s2', dark='s0')
+    # finger bones
+    for bone in ([(22, 25), (9, 16)], [(21, 26), (9, 22)], [(21, 27), (14, 25)],
+                 [(22, 28), (20, 28)]):
+        for pts in (bone, mirror(bone)):
+            c.fill(c.line(pts), 's2')
+    # body and head
+    body = c.ellipse(cx - 5, 22, cx + 5, 36)
+    c.shade(body, 's2', light='p0', dark='s1')
+    c.fill(c.ellipse(cx - 3, 27, cx + 3, 34), 'p0')  # lighter chest fur
+    head = c.ellipse(cx - 5, 15, cx + 5, 25)
+    c.shade(head, 's2', light='p1', dark='s1')
+    ear_l = [(cx - 5, 18), (cx - 6, 10), (cx - 1, 16)]
+    for pts in (ear_l, mirror(ear_l)):
+        c.shade(c.poly(pts), 's2', light='p1', dark='s1')
+    # feet
+    c.fill(c.rect(cx - 3, 37, cx - 2, 38), 'p1')
+    c.fill(c.rect(cx + 2, 37, cx + 3, 38), 'p1')
+    c.outline('d0')
+    # face details
+    for x in (cx - 3, cx + 2):
+        c.px(x, 19, 'd0')
+        c.px(x + 1, 19, 'g2')
+    c.px(cx, 21, 'dr')                               # snout
+    c.px(cx - 1, 23, 'd0')                           # mouth
+    c.px(cx, 23, 'd0')
+    c.px(cx + 1, 23, 'd0')
+    c.px(cx - 1, 24, 'p2')                           # tiny fangs
+    c.px(cx + 1, 24, 'p2')
+    for pts in ([(cx - 4, 13), (cx - 3, 15)], [(cx + 4, 13), (cx + 3, 15)]):  # inner ears
+        for x, y in pts:
+            c.px(x, y, 's1')
+    return c.result()
 
 
 # --------------------------------------------------------------------------------------------

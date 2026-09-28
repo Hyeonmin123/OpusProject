@@ -98,7 +98,11 @@ def recolour_golem(rgb, alpha):
     warm = alpha & (r >= b + 8) & (r >= g - 4) & ~ember & (mx > 38)
     out = rgb.copy()
     out[warm] = _ramp(lum[warm], [(30, 's0'), (40, 'p0'), (52, 'p1'), (62, 'g0'), (74, 'g1'),
-                                  (101, 'g3')])
+                                  (101, 'g2')])
+    # the ember is a few hairline cracks; spread its glow a little so it survives the grid
+    core = ember & alpha
+    glow = dilate(core, 7) & alpha & ~core & (lum < 45)
+    out = inpaint(out, glow, source=core)
     return out
 
 
@@ -156,6 +160,8 @@ RECOLOURS = {
     'rottingGolem': recolour_golem,
     'abyssalEye': lift(0.8, 1.05),
     'thorns': lift(0.75, 1.1),
+    'skeleton': lift(0.8, 1.05),
+    'fallenKnight': lift(0.82, 1.05),
 }
 
 POST_GRID = {'hidden': stamp_hidden}
