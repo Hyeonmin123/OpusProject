@@ -53,7 +53,6 @@
   color-scheme: dark;
   font-family: var(--font-body);
   color: var(--text);
-  background: var(--bg);
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
 }
@@ -70,10 +69,15 @@ body,
   height: 100%;
 }
 
-body {
+/* The page colour lives on the root element; body stays transparent so the fixed scene
+   backdrop (z-index -1, see components/Backdrop) paints above it but below all content. */
+html {
   background:
     radial-gradient(ellipse at 50% -10%, #2a2230 0%, transparent 60%),
     radial-gradient(ellipse at 50% 120%, #1d1512 0%, transparent 55%), var(--bg);
+}
+
+body {
   overflow-x: hidden;
 }
 

@@ -1,0 +1,54 @@
+/* Scene art sits on its own fixed layer behind everything, so scrolling or UI updates never
+   repaint it. The art is already low-contrast; the ::after scrim adds a little extra
+   darkening toward the edges where panels and text usually sit. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--bg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  will-change: opacity;
+  animation: scene-in 0.5s ease-out;
+}
+
+.backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgb(8 7 10 / 45%) 100%);
+}
+
+/* Keep the focal point of each scene in view when `cover` crops it. */
+.backdrop[data-scene='rest'] {
+  background-position: center 75%;
+}
+
+.backdrop[data-scene='act1'],
+.backdrop[data-scene='act2'],
+.backdrop[data-scene='act3'] {
+  background-position: center 40%;
+}
+
+/* Combat is the busiest foreground, so its scenes sit a step further back. */
+.backdrop[data-scene='act1']::after,
+.backdrop[data-scene='act2']::after,
+.backdrop[data-scene='act3']::after {
+  background:
+    linear-gradient(180deg, rgb(8 7 10 / 20%), rgb(8 7 10 / 30%) 60%, rgb(8 7 10 / 55%)),
+    radial-gradient(ellipse at 50% 42%, transparent 35%, rgb(8 7 10 / 55%) 100%);
+}
+
+@keyframes scene-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    animation: none;
+  }
+}

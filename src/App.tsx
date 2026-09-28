@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useGame } from './store/gameStore';
 import type { RunState } from './types';
+import { type SceneId, combatScene } from './ui/art';
+import { Backdrop } from './ui/components/Backdrop';
 import { TopBar } from './ui/components/TopBar';
 import { CombatScreen } from './ui/screens/CombatScreen';
 import { EventScreen } from './ui/screens/EventScreen';
@@ -30,6 +32,22 @@ function ScreenFor({ run }: { run: RunState }) {
   }
 }
 
+/** Which scene art sits behind each screen. */
+function sceneFor(run: RunState): SceneId {
+  switch (run.screen) {
+    case 'combat':
+      return combatScene(run.act);
+    case 'shop':
+      return 'shop';
+    case 'rest':
+      return 'rest';
+    case 'event':
+      return 'event';
+    default:
+      return 'wall';
+  }
+}
+
 export default function App() {
   const run = useGame((s) => s.run);
   const view = useGame((s) => s.view);
@@ -44,10 +62,17 @@ export default function App() {
     window.scrollTo({ top: 0 });
   }, [run?.screen]);
 
-  if (view === 'menu' || !run) return <MainMenu />;
+  if (view === 'menu' || !run)
+    return (
+      <>
+        <Backdrop scene="menu" />
+        <MainMenu />
+      </>
+    );
 
   return (
     <>
+      <Backdrop scene={sceneFor(run)} />
       <TopBar run={run} />
       <main>
         <ScreenFor run={run} />

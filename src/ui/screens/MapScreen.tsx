@@ -3,6 +3,7 @@ import { getAct } from '../../data/acts';
 import { reachableNodeIds } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { MapNode, NodeType, RunState } from '../../types';
+import { MAP_CHART } from '../art';
 import { NODE_INFO } from '../nodeInfo';
 import styles from './MapScreen.module.css';
 
@@ -66,7 +67,10 @@ export function MapScreen({ run }: { run: RunState }) {
               : '빛나는 방으로 이동할 수 있습니다.'}
           </div>
         </div>
-        <div className={styles.map} style={{ width, height }}>
+        <div
+          className={styles.map}
+          style={{ width, height, backgroundImage: `url("${MAP_CHART}")` }}
+        >
           <svg className={styles.edges} width={width} height={height}>
             {nodes.flatMap((n) =>
               n.next.map((nextId) => {

@@ -4,6 +4,15 @@
  * Components fall back to the emoji in `data/` when an entry is missing.
  */
 import keyArt from '../assets/art/keyart.svg';
+import bgAct1 from '../assets/bg/act1.svg';
+import bgAct2 from '../assets/bg/act2.svg';
+import bgAct3 from '../assets/bg/act3.svg';
+import bgEvent from '../assets/bg/event.svg';
+import mapChart from '../assets/bg/map-chart.svg';
+import bgMenu from '../assets/bg/menu.svg';
+import bgRest from '../assets/bg/rest.svg';
+import bgShop from '../assets/bg/shop.svg';
+import bgWall from '../assets/bg/wall.svg';
 import candle from '../assets/icons/candle.svg';
 import candleOut from '../assets/icons/candle-out.svg';
 import energy from '../assets/icons/energy.svg';
@@ -38,6 +47,34 @@ import weak from '../assets/status/weak.svg';
 import type { CardType, StatusId } from '../types';
 
 export const KEY_ART = keyArt;
+
+/**
+ * Full-bleed scene backgrounds (Figma page "Backgrounds", 1920×1080, same flat-fill + lit-contour
+ * language as the portraits). Deliberately low-contrast: foreground UI sits on top of them.
+ * The gilt panel frame and crest (Figma page "UI Chrome") are CSS-only chrome and are referenced
+ * from `styles/global.css` (assets/ui/*.svg) the same way the card frames are.
+ */
+export const SCENES = {
+  menu: bgMenu,
+  /** Generic chamber wall: map, rewards, run summary. */
+  wall: bgWall,
+  act1: bgAct1,
+  act2: bgAct2,
+  act3: bgAct3,
+  shop: bgShop,
+  rest: bgRest,
+  event: bgEvent,
+} as const;
+
+export type SceneId = keyof typeof SCENES;
+
+/** Combat backdrop per act (acts past 3 reuse the last one). */
+export function combatScene(act: number): SceneId {
+  return act <= 1 ? 'act1' : act === 2 ? 'act2' : 'act3';
+}
+
+/** Dark vellum chart the map's node graph is drawn on (2× of the 444×850 map). */
+export const MAP_CHART = mapChart;
 
 /** Core UI icons (24×24 grid, readable at 14–32px). */
 export const ICONS = {

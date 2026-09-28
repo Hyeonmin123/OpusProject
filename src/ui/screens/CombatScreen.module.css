@@ -17,9 +17,6 @@
   gap: 24px;
   padding: 20px 32px;
   min-width: 0;
-  background:
-    radial-gradient(ellipse at 50% 100%, rgb(60 40 30 / 35%), transparent 60%),
-    linear-gradient(180deg, transparent 70%, rgb(0 0 0 / 35%));
 }
 
 .playerSide {
