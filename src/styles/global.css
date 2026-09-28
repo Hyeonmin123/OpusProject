@@ -71,6 +71,12 @@
   --shadow: #8e6bc4;
   --shadow-deep: #1a1024;
 
+  /* Midpoints of two palette steps (scripts/pixelart/uikit.py EXTRA): the bronze of the
+     primary plaque and the mid red of the danger plaque's hover. */
+  --bronze: #74634a;
+  --bronze-lit: #897660;
+  --red-mid: #6e2b2b;
+
   --card-attack: #5e2a2a;
   --card-skill: #253f4d;
   --card-power: #4d3f22;
@@ -125,9 +131,7 @@ body,
 /* The page colour lives on the root element; body stays transparent so the fixed scene
    backdrop (z-index -1, see components/Backdrop) paints above it but below all content. */
 html {
-  background:
-    radial-gradient(ellipse at 50% -10%, #2a2230 0%, transparent 60%),
-    radial-gradient(ellipse at 50% 120%, #1d1512 0%, transparent 55%), var(--bg);
+  background: var(--bg);
 }
 
 body {
@@ -171,20 +175,26 @@ button:disabled {
 }
 
 /*
- * Shared chrome, all pixel art from scripts/pixelart/chrome.py (assets/ui/*.png, exported at 2x
- * and shown 1:1): buttons are stone plaques that turn gilt on hover and sink when pressed;
- * panels are stone slabs with gilt corner caps. Both are 9-slice `border-image`s, so their
- * chamfered corners and bevels stay whole-pixel at any size. `image-rendering: pixelated` keeps
- * them hard on high-DPI screens (it is inherited, which is why `Icon` sets its own).
+ * Shared chrome. Every image is pixel art from the Figma file "Endless Cellar — Pixel UI Kit"
+ * (exported @2x by scripts/pixelart/uikit.py into assets/ui/, shown 1:1): hard outlines, flat
+ * palette fills, ordered-dither shading, and no smooth CSS colour blends or blurs.
+ *
+ * Buttons are plaques: a 9-slice `border-image` frame (outline, bevel, lit band, shade band,
+ * depth row) over a flat fill colour, with a 2-row checker tile (`btn-dither-*`) repeated
+ * along the bottom of the padding box so the fill dithers into the shade. The frame's stretched
+ * edges are uniform along their length; the dither is a background tile that repeats from the
+ * left edge, so it stays on the pixel grid at any width. `image-rendering: pixelated` keeps it
+ * all hard on high-DPI screens (it is inherited, which is why `Icon` sets its own).
  */
 .btn {
   position: relative;
-  background: none;
   border-style: solid;
   /* Plaque: 3px (6 CSS px) bevel all round plus a 1px depth row under it. */
   border-width: 6px 6px 8px;
-  border-image: url('../assets/ui/btn.png') 6 6 8 fill / 6px 6px 8px stretch;
+  border-image: url('../assets/ui/btn.png') 6 6 8 / 6px 6px 8px stretch;
   border-radius: 0;
+  background: url('../assets/ui/btn-dither-stone.png') left bottom / 4px 4px repeat-x padding-box
+    var(--panel-3);
   padding: 2px 11px 0;
   image-rendering: pixelated;
   font-family: var(--font-px11);
@@ -194,13 +204,13 @@ button:disabled {
      (1.5 x 12px = 18px). */
   line-height: 1.5;
   text-shadow: 1px 1px 0 var(--bg);
-  transition:
-    color 0.1s,
-    filter 0.15s;
+  transition: color 0.1s;
 }
 
 .btn:hover:not(:disabled) {
   border-image-source: url('../assets/ui/btn-hover.png');
+  background-color: var(--border);
+  background-image: url('../assets/ui/btn-dither-stone-hover.png');
   color: var(--light);
 }
 
@@ -210,26 +220,34 @@ button:disabled {
 }
 
 /* Pressed: the plaque sinks one pixel (top edge 8px, bottom 6px), so the label drops 2px
-   while the button keeps its size. */
+   while the button keeps its size; the bevel inverts and the dither band moves to the top. */
 .btn:active:not(:disabled) {
   border-image-source: url('../assets/ui/btn-active.png');
-  border-image-slice: 8 6 6 fill;
+  border-image-slice: 8 6 6;
   border-image-width: 8px 6px 6px;
   border-width: 8px 6px 6px;
+  background-position: left top;
 }
 
 .btn:disabled {
-  opacity: 0.45;
-  filter: saturate(0.5);
+  border-image-source: url('../assets/ui/btn-disabled.png');
+  background-color: var(--panel);
+  background-image: url('../assets/ui/btn-dither-disabled.png');
+  color: var(--text-faint);
+  opacity: 0.75;
 }
 
 .btn-primary {
   border-image-source: url('../assets/ui/btn-primary.png');
+  background-color: var(--bronze);
+  background-image: url('../assets/ui/btn-dither-bronze.png');
   color: var(--hi);
 }
 
 .btn-primary:hover:not(:disabled) {
   border-image-source: url('../assets/ui/btn-primary-hover.png');
+  background-color: var(--bronze-lit);
+  background-image: url('../assets/ui/btn-dither-bronze-hover.png');
   color: var(--hi);
 }
 
@@ -258,10 +276,13 @@ button:disabled {
 
 .btn-danger {
   border-image-source: url('../assets/ui/btn-danger.png');
+  background-image: url('../assets/ui/btn-dither-danger.png');
 }
 
 .btn-danger:hover:not(:disabled) {
   border-image-source: url('../assets/ui/btn-danger-hover.png');
+  background-color: var(--red-mid);
+  background-image: url('../assets/ui/btn-dither-danger-hover.png');
   color: var(--hi);
 }
 
@@ -278,9 +299,11 @@ button:disabled {
   text-shadow: 2px 2px 0 var(--bg);
 }
 
-/* Stone slab. The frame (with its translucent d2 fill) is a 9-slice on ::before, behind the
-   content, so the chamfered corners are really cut out; `isolation` keeps it above whatever
-   is behind the panel. */
+/* Stone slab. The frame is a 9-slice on ::before, behind the content, so the chamfered
+   corners are really cut out; `isolation` keeps it above whatever is behind the panel. The
+   frame's five rings fill the 10px border; its 24px gilt corner caps reach into the padding
+   box, over the slab texture tile (d2 at 92% with a sparse grain, so the scene art still
+   reads faintly through the slab). */
 .panel {
   position: relative;
   isolation: isolate;
@@ -292,8 +315,9 @@ button:disabled {
   position: absolute;
   z-index: -1;
   inset: -1px;
-  border: 24px solid transparent;
-  border-image: url('../assets/ui/panel-frame.png') 24 fill / 24px stretch;
+  border: 10px solid transparent;
+  border-image: url('../assets/ui/panel-frame.png') 24 / 24px stretch;
+  background: url('../assets/ui/slab-tex.png') 0 0 / 32px 32px padding-box;
   image-rendering: pixelated;
   /* Hard 4px drop shadow that follows the cut corners. */
   filter: drop-shadow(0 4px 0 rgb(15 14 17 / 60%));
@@ -301,11 +325,12 @@ button:disabled {
 }
 
 /* Compact slab (4px corners) for small floating panels and banners. Apply to an element that
-   has no other border; 8px of its padding is taken by the frame. */
+   has no other border; its 8px border is the frame's four rings. */
 .panel-sm {
   border: 8px solid transparent;
-  border-image: url('../assets/ui/panel-small.png') 8 fill / 8px stretch;
+  border-image: url('../assets/ui/panel-small.png') 8 / 8px stretch;
   border-radius: 0;
+  background: url('../assets/ui/slab-tex.png') 0 0 / 32px 32px padding-box;
   image-rendering: pixelated;
 }
 

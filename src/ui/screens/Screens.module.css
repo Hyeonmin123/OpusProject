@@ -40,16 +40,10 @@
   height: 70px;
   display: grid;
   place-items: center;
-  /* Arched niche, echoing the portrait frames and the key art. */
-  border-radius: 50% 50% 8px 8px / 42% 42% 8px 8px;
-  background:
-    radial-gradient(circle at 50% 38%, rgb(240 184 74 / 16%), transparent 65%),
-    linear-gradient(180deg, #1a171e, #0e0d10);
-  border: 1px solid #0b0a0d;
-  box-shadow:
-    0 0 0 1.5px var(--accent),
-    0 0 0 4px rgb(11 10 13 / 80%),
-    inset 0 -8px 16px rgb(0 0 0 / 55%);
+  /* Arched niche (ui/niche.png, 32x35 grid): gilt rim, lit from above in dithered steps,
+     echoing the portrait frames and the key art. */
+  background: url('../../assets/ui/niche.png') 0 0 / 64px 70px no-repeat;
+  image-rendering: pixelated;
   flex: 0 0 auto;
 }
 
@@ -62,7 +56,7 @@
   line-height: 24px;
 }
 
-/* Section titles trail off into a gilt rule that fades out, like the card frame's footer. */
+/* Section titles trail off into a gilt rule, like the card frame's footer. */
 .sectionTitle {
   display: flex;
   align-items: center;

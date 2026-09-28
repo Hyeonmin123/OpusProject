@@ -32,7 +32,8 @@
   padding: 18px 24px 14px;
 }
 
-/* Gilt rule between two dark lines (like the top bar's edge), kept inside the slab's frame. */
+/* Gilt rule between two dark lines (ui/header-rule.png, a 32x3 tile with glints), kept
+   inside the slab's frame. */
 .header::after {
   content: '';
   position: absolute;
@@ -40,8 +41,8 @@
   right: 8px;
   bottom: -3px;
   height: 6px;
-  border-block: 2px solid var(--bg);
-  background: var(--accent);
+  background: url('../../assets/ui/header-rule.png') 0 0 / 64px 6px repeat-x;
+  image-rendering: pixelated;
 }
 
 .header h2 {
