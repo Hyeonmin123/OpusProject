@@ -41,6 +41,67 @@
   --card-color: var(--card-status);
 }
 
+/* Candle resonance: light cards glow warm, shadow cards smoulder violet. */
+.light {
+  border-color: var(--light);
+  box-shadow:
+    0 0 10px rgb(243 210 122 / 35%),
+    0 4px 12px rgb(0 0 0 / 50%);
+}
+.shadow {
+  border-color: var(--shadow);
+  background:
+    radial-gradient(ellipse at 50% 110%, rgb(142 107 196 / 30%), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, var(--card-color) 70%, #000), var(--shadow-deep));
+  box-shadow:
+    0 0 10px rgb(142 107 196 / 35%),
+    0 4px 12px rgb(0 0 0 / 50%);
+}
+.light .type {
+  color: var(--light);
+}
+.shadow .type {
+  color: #b9a6d8;
+}
+
+.art {
+  position: relative;
+}
+
+.resonanceGlyph {
+  position: absolute;
+  right: 4px;
+  bottom: 2px;
+  font-size: 0.85rem;
+}
+
+/* Wax badge: how much candle the card restores (+) or burns (−) when played. */
+.wax {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  min-width: 30px;
+  height: 26px;
+  padding: 0 5px;
+  border-radius: 13px 13px 13px 4px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 0.82rem;
+  border: 2px solid #2a2118;
+  z-index: 1;
+}
+
+.waxGain {
+  color: #3a2608;
+  background: radial-gradient(circle at 35% 30%, #fff1c2, var(--light) 60%, #a07a2a);
+}
+
+.waxBurn {
+  color: #efe4ff;
+  background: radial-gradient(circle at 35% 30%, #b89ae6, var(--shadow) 55%, #2a1740);
+}
+
 .clickable {
   cursor: pointer;
 }

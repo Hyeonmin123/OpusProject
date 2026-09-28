@@ -1,6 +1,12 @@
 import type { ReactNode } from 'react';
-import { type DescribeView, describeCard, getCardDef, getCardStats } from '../../engine';
-import type { CardInstance, CardType } from '../../types';
+import {
+  type DescribeView,
+  cardResonance,
+  describeCard,
+  getCardDef,
+  getCardStats,
+} from '../../engine';
+import type { CardInstance, CardResonance, CardType } from '../../types';
 import styles from './CardView.module.css';
 
 const TYPE_LABEL: Record<CardType, string> = {
@@ -16,6 +22,18 @@ const TYPE_GLYPH: Record<CardType, string> = {
   skill: '🛡️',
   power: '✨',
   status: '☁️',
+};
+
+const RESONANCE_LABEL: Record<CardResonance, string> = {
+  light: '빛',
+  shadow: '그림자',
+  neutral: '',
+};
+
+const RESONANCE_GLYPH: Record<CardResonance, string> = {
+  light: '☀️',
+  shadow: '🌑',
+  neutral: '',
 };
 
 interface Props {
@@ -45,9 +63,11 @@ export function CardView({
 }: Props) {
   const def = getCardDef(card.defId);
   const stats = getCardStats(card);
+  const resonance = cardResonance(card);
   const classes = [
     styles.card,
     styles[def.type],
+    resonance !== 'neutral' && styles[resonance],
     size === 'small' && styles.small,
     card.upgraded && styles.upgraded,
     onClick && !disabled && styles.clickable,
@@ -78,12 +98,31 @@ export function CardView({
           {stats.cost}
         </div>
       )}
+      {stats.candle ? (
+        <div
+          className={`${styles.wax} ${stats.candle > 0 ? styles.waxGain : styles.waxBurn}`}
+          title={stats.candle > 0 ? `촛농 ${stats.candle} 회복` : `촛농 ${-stats.candle} 소모`}
+        >
+          {stats.candle > 0 ? '+' : ''}
+          {stats.candle}
+        </div>
+      ) : null}
       <div className={styles.name}>
         {def.name}
         {card.upgraded ? '+' : ''}
       </div>
-      <div className={styles.art}>{TYPE_GLYPH[def.type]}</div>
-      <div className={styles.type}>{TYPE_LABEL[def.type]}</div>
+      <div className={styles.art}>
+        {TYPE_GLYPH[def.type]}
+        {resonance !== 'neutral' && (
+          <span className={styles.resonanceGlyph} aria-hidden>
+            {RESONANCE_GLYPH[resonance]}
+          </span>
+        )}
+      </div>
+      <div className={styles.type}>
+        {TYPE_LABEL[def.type]}
+        {resonance !== 'neutral' && ` · ${RESONANCE_LABEL[resonance]}`}
+      </div>
       <div className={styles.desc}>{describeCard(card, view)}</div>
       {footer && <div className={styles.footer}>{footer}</div>}
     </div>

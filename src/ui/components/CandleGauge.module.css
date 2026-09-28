@@ -1,0 +1,136 @@
+.gauge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+  cursor: help;
+}
+
+.large {
+  width: 200px;
+}
+
+.small {
+  width: 120px;
+}
+
+.flame {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.large .flame {
+  font-size: 1.8rem;
+  animation: flicker 2.4s ease-in-out infinite;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--candle);
+}
+
+.drain {
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.bar {
+  position: relative;
+  height: 14px;
+  border-radius: 7px;
+  background: var(--candle-bg);
+  border: 1px solid #000;
+  overflow: hidden;
+}
+
+.large .bar {
+  height: 16px;
+}
+
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(180deg, #ffe7a6, var(--candle));
+  box-shadow: 0 0 10px var(--candle);
+  transition:
+    width 0.35s ease-out,
+    background 0.3s;
+}
+
+.tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: rgb(0 0 0 / 55%);
+}
+
+.label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-shadow: 0 1px 2px #000;
+}
+
+.dim .fill {
+  background: linear-gradient(180deg, #d98a4a, #8a4a22);
+  box-shadow: none;
+}
+
+.dim .header {
+  color: #d98a4a;
+}
+
+.dark .bar {
+  border-color: var(--debuff);
+  animation: blackoutPulse 1.4s ease-in-out infinite;
+}
+
+.dark .header {
+  color: #e07070;
+}
+
+.dark .flame {
+  animation: none;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    transform: scale(1) rotate(0);
+    filter: brightness(1);
+  }
+  30% {
+    transform: scale(1.04) rotate(-2deg);
+    filter: brightness(1.15);
+  }
+  60% {
+    transform: scale(0.98) rotate(1.5deg);
+    filter: brightness(0.9);
+  }
+}
+
+@keyframes blackoutPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(184 106 106 / 0%);
+  }
+  50% {
+    box-shadow: 0 0 10px 2px rgb(184 106 106 / 55%);
+  }
+}

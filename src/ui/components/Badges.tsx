@@ -31,6 +31,7 @@ const INTENT_ICON: Record<IntentKind, string> = {
   buff: '⬆️',
   debuff: '🌀',
   special: '❔',
+  hidden: '🌑',
 };
 
 const INTENT_HINT: Record<IntentKind, string> = {
@@ -39,10 +40,22 @@ const INTENT_HINT: Record<IntentKind, string> = {
   buff: '강화 예정',
   debuff: '약화 부여 예정',
   special: '특수 행동',
+  hidden: '어둠에 가려 무엇을 할지 알 수 없습니다',
 };
 
 export function IntentBadges({ intent }: { intent: IntentView | null }) {
   if (!intent) return null;
+  if (intent.hidden) {
+    return (
+      <span
+        className={`${styles.intent} ${styles['intent-hidden']}`}
+        title={`${INTENT_HINT.hidden} (심지를 돋우거나 '어둠 응시'로 드러낼 수 있습니다)`}
+        data-testid="intent-hidden"
+      >
+        <span aria-hidden>{INTENT_ICON.hidden}</span>???
+      </span>
+    );
+  }
   return (
     <>
       {intent.parts.map((part, i) => (

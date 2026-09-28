@@ -21,6 +21,8 @@ export function SummaryScreen({ run }: { run: RunState }) {
     ['가한 피해', s.damageDealt],
     ['받은 피해', s.damageTaken],
     ['획득 골드', s.goldEarned],
+    ['태운 촛농', s.waxBurned],
+    ['암전 속 턴', s.blackoutTurns],
   ];
 
   const deckCounts = new Map<string, number>();

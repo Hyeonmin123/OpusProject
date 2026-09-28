@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { RELICS } from '../../data/relics';
+import { SHOP_CANDLE_AMOUNT } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
 import { CardView } from '../components/CardView';
@@ -18,10 +19,13 @@ export function ShopScreen({ run }: { run: RunState }) {
   const buyCard = useGame((s) => s.buyShopCard);
   const buyRelic = useGame((s) => s.buyShopRelic);
   const removeCard = useGame((s) => s.shopRemoveCard);
+  const buyCandle = useGame((s) => s.buyShopCandle);
   const leave = useGame((s) => s.leaveShop);
   const [removing, setRemoving] = useState(false);
 
   const canRemove = !shop.removeUsed && gold >= shop.removePrice && run.player.deck.length > 1;
+  const p = run.player;
+  const canBuyCandle = !shop.candleUsed && gold >= shop.candlePrice && p.candle < p.maxCandle;
 
   return (
     <div className={`${styles.screen} fade-in`}>
@@ -94,6 +98,22 @@ export function ShopScreen({ run }: { run: RunState }) {
               <span className={styles.soldOut}>이용 완료</span>
             ) : (
               <Price price={shop.removePrice} gold={gold} />
+            )}
+          </button>
+          <button
+            className={`btn ${styles.relicCard}`}
+            disabled={!canBuyCandle}
+            onClick={buyCandle}
+          >
+            <span className={styles.relicIcon}>🕯️</span>
+            <span className={styles.relicName}>양초</span>
+            <span className={styles.relicDesc}>
+              촛농을 {SHOP_CANDLE_AMOUNT} 회복합니다. (현재 {p.candle}/{p.maxCandle})
+            </span>
+            {shop.candleUsed ? (
+              <span className={styles.soldOut}>판매 완료</span>
+            ) : (
+              <Price price={shop.candlePrice} gold={gold} />
             )}
           </button>
         </div>

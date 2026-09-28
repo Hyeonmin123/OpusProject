@@ -24,6 +24,13 @@
   --buff: #86a872;
   --debuff: #b86a6a;
 
+  /* Candle (second resource) and light/shadow card resonance */
+  --candle: #f0b84a;
+  --candle-bg: #2a2014;
+  --light: #f3d27a;
+  --shadow: #8e6bc4;
+  --shadow-deep: #1a1024;
+
   --card-attack: #5e2a2a;
   --card-skill: #253f4d;
   --card-power: #4d3f22;

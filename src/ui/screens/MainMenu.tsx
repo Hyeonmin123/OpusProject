@@ -44,7 +44,8 @@ export function MainMenu() {
         </div>
         {inProgress && (
           <div className={styles.runInfo}>
-            진행 중: {run.act}막 {run.floor}층 · 체력 {run.player.hp}/{run.player.maxHp}
+            진행 중: {run.act}막 {run.floor}층 · 체력 {run.player.hp}/{run.player.maxHp} · 촛농{' '}
+            {run.player.candle}/{run.player.maxCandle}
           </div>
         )}
 

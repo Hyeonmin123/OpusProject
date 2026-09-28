@@ -61,6 +61,24 @@
 .intent-special {
   color: #e6dcb8;
 }
+.intent-hidden {
+  color: #b9a6d8;
+  border-color: var(--shadow);
+  border-style: dashed;
+  background: var(--shadow-deep);
+  letter-spacing: 0.12em;
+  animation: bob 1.6s ease-in-out infinite, hiddenFade 2.2s ease-in-out infinite;
+}
+
+@keyframes hiddenFade {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
 
 @keyframes bob {
   0%,

@@ -1,14 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import { ENEMIES } from '../../data/enemies';
 import {
+  BLACKOUT_DAMAGE,
+  BLACKOUT_ENEMY_DAMAGE_BONUS,
+  REVEAL_WAX_COST,
   canPlayCard,
+  canRevealIntents,
+  candleDrainPerTurn,
   cardNeedsTarget,
   describeIntent,
   energyPerTurn,
+  lightLevel,
   type DescribeView,
 } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { CardInstance, RunState } from '../../types';
+import { CandleGauge } from '../components/CandleGauge';
 import { CardView } from '../components/CardView';
 import { Creature } from '../components/Creature';
 import { DeckModal } from '../components/DeckModal';
@@ -20,7 +27,11 @@ export function CombatScreen({ run }: { run: RunState }) {
   const playCard = useGame((s) => s.playCard);
   const endTurn = useGame((s) => s.endTurn);
   const finishCombat = useGame((s) => s.finishCombat);
+  const revealIntents = useGame((s) => s.revealIntents);
   const combat = run.combat!;
+  const light = lightLevel(run.player);
+  const anyHidden = combat.enemies.some((e) => e.hp > 0 && e.intentHidden);
+  const revealCheck = canRevealIntents(run);
 
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
   const [hoverEnemy, setHoverEnemy] = useState<number | null>(null);
@@ -75,6 +86,7 @@ export function CombatScreen({ run }: { run: RunState }) {
       if (pileView || e.target instanceof HTMLInputElement) return;
       if (e.key === 'Escape') setSelectedUid(null);
       else if ((e.key === 'e' || e.key === 'E') && playerTurn) handleEndTurn();
+      else if ((e.key === 'r' || e.key === 'R') && revealCheck.ok) revealIntents();
       else if (/^[1-9]$/.test(e.key)) {
         const card = combat.hand[Number(e.key) - 1];
         if (card) onCardClick(card);
@@ -105,7 +117,8 @@ export function CombatScreen({ run }: { run: RunState }) {
 
   return (
     <div
-      className={styles.screen}
+      className={`${styles.screen} ${styles[`light-${light}`]}`}
+      data-light={light}
       onContextMenu={(e) => {
         if (selected) {
           e.preventDefault();
@@ -114,6 +127,12 @@ export function CombatScreen({ run }: { run: RunState }) {
       }}
     >
       <section className={styles.field}>
+        {light === 'dark' && playerTurn && (
+          <div className={styles.blackoutBanner} data-testid="blackout-banner">
+            🌑 암전 — 턴마다 체력 {BLACKOUT_DAMAGE} 잃음 · 적 공격 피해 +
+            {BLACKOUT_ENEMY_DAMAGE_BONUS}%
+          </div>
+        )}
         <div className={styles.playerSide}>
           <Creature
             name={run.player.className}
@@ -124,6 +143,28 @@ export function CombatScreen({ run }: { run: RunState }) {
             statuses={combat.player.statuses}
             variant="player"
           />
+          <div className={styles.candlePanel}>
+            <CandleGauge
+              candle={run.player.candle}
+              maxCandle={run.player.maxCandle}
+              drain={candleDrainPerTurn(run)}
+            />
+            {anyHidden && (
+              <button
+                className={`btn ${styles.revealBtn}`}
+                onClick={revealIntents}
+                disabled={!revealCheck.ok}
+                title={
+                  revealCheck.ok
+                    ? `촛농 ${REVEAL_WAX_COST}을 태워 가려진 적의 의도를 모두 드러냅니다 (단축키: R)`
+                    : revealCheck.reason
+                }
+                data-testid="reveal-intents"
+              >
+                🔍 심지 돋우기 <span className={styles.revealCost}>촛농 -{REVEAL_WAX_COST}</span>
+              </button>
+            )}
+          </div>
         </div>
         <div className={styles.enemies}>
           {combat.enemies.map((enemy, i) => (

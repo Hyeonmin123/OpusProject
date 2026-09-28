@@ -3,6 +3,7 @@ import { getAct } from '../../data/acts';
 import { RELICS } from '../../data/relics';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
+import { CandleGauge } from './CandleGauge';
 import { DeckModal } from './DeckModal';
 import styles from './TopBar.module.css';
 
@@ -18,6 +19,7 @@ export function TopBar({ run }: { run: RunState }) {
       <span className={`${styles.stat} ${styles.hp}`} title="체력">
         ♥ {p.hp}/{p.maxHp}
       </span>
+      <CandleGauge candle={p.candle} maxCandle={p.maxCandle} size="small" />
       <span className={`${styles.stat} ${styles.gold}`} title="골드">
         ◉ {p.gold}
       </span>

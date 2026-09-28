@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { canUpgrade, restHealAmount } from '../../engine';
+import { canUpgrade, restHealAmount, restRekindleAmount } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
 import { DeckModal } from '../components/DeckModal';
@@ -9,11 +9,13 @@ export function RestScreen({ run }: { run: RunState }) {
   const rest = run.rest!;
   const heal = useGame((s) => s.restHeal);
   const upgrade = useGame((s) => s.restUpgrade);
+  const rekindle = useGame((s) => s.restRekindle);
   const leave = useGame((s) => s.leaveRest);
   const [picking, setPicking] = useState(false);
   const p = run.player;
   const healAmount = Math.min(restHealAmount(run), p.maxHp - p.hp);
   const anyUpgradable = p.deck.some(canUpgrade);
+  const waxAmount = Math.min(restRekindleAmount(run), p.maxCandle - p.candle);
 
   return (
     <div className={`${styles.screen} fade-in`}>
@@ -33,6 +35,18 @@ export function RestScreen({ run }: { run: RunState }) {
               <span className={styles.relicName}>휴식</span>
               <span className={styles.relicDesc}>
                 최대 체력의 30%를 회복합니다. (+{healAmount})
+              </span>
+            </button>
+            <button
+              className={`btn ${styles.restChoice}`}
+              onClick={rekindle}
+              disabled={waxAmount <= 0}
+            >
+              <span className={styles.relicIcon}>🕯️</span>
+              <span className={styles.relicName}>촛불 밝히기</span>
+              <span className={styles.relicDesc}>
+                모닥불로 초를 다시 밝혀 최대 촛농의 50%를 회복합니다. (+{waxAmount}, 현재{' '}
+                {p.candle}/{p.maxCandle})
               </span>
             </button>
             <button
