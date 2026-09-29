@@ -281,7 +281,10 @@ const share = (b: Batch, level: LightLevel) =>
 describe('full-run simulation', () => {
   const SEEDS = 40;
   let awareBatch: Batch | undefined;
+  let carelessBatch: Batch | undefined;
   const getAware = () => (awareBatch ??= playBatch(SEEDS, 'aware'));
+  const getCareless = () => (carelessBatch ??= playBatch(SEEDS, 'careless'));
+  const wins = (b: Batch) => b.runs.filter(({ run }) => run.result === 'victory').length;
 
   it('runs are deterministic for a given seed', () => {
     const a = autoplay(777).run;
@@ -302,7 +305,7 @@ describe('full-run simulation', () => {
 
   it('candle pacing: relevant for a careful player, ruinous when ignored', () => {
     const aware = getAware();
-    const careless = playBatch(SEEDS, 'careless');
+    const careless = getCareless();
 
     // Relevant: even a careful player regularly fights in dim light.
     const sawDim = aware.runs.filter(({ trace }) => trace.turnsByLight.dim > 0).length;
@@ -314,5 +317,18 @@ describe('full-run simulation', () => {
     // Ignoring it spirals: far more time in blackout and more blackout deaths.
     expect(share(careless, 'dark')).toBeGreaterThan(share(aware, 'dark') * 2);
     expect(careless.blackoutDeaths).toBeGreaterThanOrEqual(aware.blackoutDeaths * 2);
+  });
+
+  it('difficulty: a careful run is winnable but not a sure thing', () => {
+    const aware = getAware();
+    const careless = getCareless();
+    // The simple greedy bot should win a real share of runs (about a fifth over
+    // hundreds of seeds), but far from all of them.
+    expect(wins(aware)).toBeGreaterThanOrEqual(SEEDS / 10);
+    expect(wins(aware)).toBeLessThanOrEqual(SEEDS / 2);
+    // Act 1 is a hurdle, not a wall: most runs reach Act 2.
+    expect(aware.runs.filter(({ run }) => run.act >= 2).length).toBeGreaterThan(SEEDS / 2);
+    // Ignoring the candle costs wins.
+    expect(wins(careless)).toBeLessThan(wins(aware));
   });
 });

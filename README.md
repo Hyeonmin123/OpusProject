@@ -169,11 +169,14 @@ times. The pacing test in `simulation.test.ts` pits a candle-aware bot against o
 the candle:
 
 - The aware bot spends about 91% of its turns in bright light, 7% dim, and 2% in blackout.
-- It still sees dim light in about half of its runs.
-- The careless bot dies in blackout about three times as often (14 vs. 4 of 40 runs).
+- It still sees dim light in more than half of its runs.
+- The careless bot dies in blackout several times as often (22 vs. 6 of 40 runs) and wins about
+  half as often.
 
 The test asserts bands around these numbers, so later balance changes that make the candle
-irrelevant or impossible to sustain fail CI.
+irrelevant or impossible to sustain fail CI. A second band keeps the game winnable: the aware bot
+must win between a tenth and a half of the 40 seeded runs (it wins about a fifth over a few
+hundred seeds), most runs must reach Act 2, and the careless bot must win less often.
 
 ### Key design decisions
 
@@ -362,9 +365,11 @@ cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets r
   pixel art. Animation is
   limited to small CSS transitions (hits, intents, card hover/deal-in, targeting, turn change).
   There is no sound.
-- **Balance**: the numbers are a first pass. The greedy test bot reaches Act 2 in roughly a quarter
-  of runs. It is a weak player (it picks the first card reward and plays cards greedily), so its
-  win rate is a regression signal, not a difficulty target.
+- **Balance**: tuned with the bot simulation. The candle-aware greedy bot reaches Act 2 in about
+  three quarters of runs, Act 3 in about two fifths, and wins about a fifth of them. Each boss is
+  the hardest fight of its act, and the Act 3 boss is the hardest of all. The bot is a weak player
+  (it takes a card reward almost at random and plays cards greedily), so its win rate is a
+  regression signal, not a difficulty target.
 - **Candle stretch ideas**: "corruption" (shadow cards permanently darkening other cards) is not
   implemented.
 - **Meta-progression and unlocks**: only lifetime counters are stored. There are no card unlocks,
