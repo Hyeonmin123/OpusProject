@@ -41,8 +41,12 @@
 }
 
 /* Combat is the busiest foreground, so its scenes sit a step further back: a deeper vignette
-   and a darker floor. The map/reward/summary wall was reading too bright next to the flanking
-   candle sconces, so it gets the same deeper scrim. */
+   and a darker floor. The map/reward/summary wall was pulling focus from the node chart in front
+   of it, so it gets the same deeper scrim.
+   (A translucent flat-color scrim here — `rgb(0 0 0 / 60%)`, or an opaque `background-color`
+   paired with element `opacity` — made unrelated foreground elements that use `color-mix()`
+   backgrounds render almost invisibly in this browser: a compositing quirk with a fully
+   see-through fixed-position layer, not something to fight. An opaque image avoids it.) */
 .backdrop[data-scene='act1']::after,
 .backdrop[data-scene='act2']::after,
 .backdrop[data-scene='act3']::after,

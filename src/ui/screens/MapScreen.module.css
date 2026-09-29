@@ -184,15 +184,15 @@
 }
 
 .legend {
-  flex: 0 0 188px;
-  align-self: flex-start;
-  top: 70px;
+  width: 188px;
   padding: 18px 20px;
 }
 
 /* Beats the global `.panel { position: relative }` (loaded after this module). */
 .screen > .legend {
-  position: sticky;
+  position: absolute;
+  top: 70px;
+  right: 16px;
 }
 
 .legend h3 {
@@ -227,8 +227,12 @@
   .screen {
     flex-direction: column;
     align-items: center;
+    gap: 16px;
   }
   .screen > .legend {
+    /* Must stay a positioned (non-static) value — `static` here made unrelated foreground
+       elements using `color-mix()` backgrounds render almost invisibly in this browser, a
+       stacking-context/compositing quirk with the fixed-position Backdrop behind everything. */
     position: relative;
   }
   .legend {
