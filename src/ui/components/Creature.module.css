@@ -8,6 +8,9 @@
   gap: 6px;
   padding: 10px 10px 12px;
   border-radius: var(--radius);
+}
+
+.creature > * {
   transition: opacity 0.3s;
 }
 
@@ -78,7 +81,520 @@
   }
 }
 
-.dead {
+/* Everything but the floating numbers, so a killing blow's number still reads. */
+.dead > :not(.floats) {
+  opacity: 0.25;
+  filter: grayscale(1);
+}
+
+.portrait {
+  width: 108px;
+  height: 108px;
+  border-radius: 50% 50% 14px 14px;
+  display: grid;
+  place-items: center;
+  font-size: 54px;
+  background: var(--panel-2);
+  border: 2px solid var(--border-strong);
+  box-shadow:
+    0 0 0 2px rgb(11 10 13 / 85%),
+    0 4px 0 rgb(15 14 17 / 60%);
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s;
+}
+
+/* Pixel portrait art fills the arched frame; a hard 2px inner shade line sits on top. */
+.hasArt {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.hasArt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px rgb(15 14 17 / 45%);
+  pointer-events: none;
+}
+
+/* Pixel-art portraits: the grid (52px, bosses 66px) is exactly half the frame's inner size,
+   so nearest-neighbour scaling keeps every pixel a crisp 2×2 block. */
+.art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  user-select: none;
+}
+
+.player .portrait {
+  border-color: var(--accent);
+}
+
+.boss .portrait {
+  width: 136px;
+  height: 136px;
+  font-size: 70px;
+  border-color: #7a2f4a;
+}
+
+.elite .portrait {
+  border-color: #a0453a;
+}
+
+/* ---- Combat feedback -------------------------------------------------------------------
+   Every beat is drawn in hard frames (`steps(1, end)` between keyframes, so each value holds
+   until the next one) like a sprite animation, instead of smooth tweens, to match the pixel
+   art: an impact is one white silhouette frame, a red frame, then a shake that settles in
+   whole pixels. */
+
+/* Hit flash on the portrait. The A/B twins are identical; alternating between them restarts
+   the animation when hits land back to back. A hit fully soaked by block keeps the white
+   frame but skips the red one. */
+.hitA {
+  animation: hit-a 0.36s steps(1, end);
+}
+
+.hitB {
+  animation: hit-b 0.36s steps(1, end);
+}
+
+.hitBlockedA {
+  animation: hit-blocked-a 0.3s steps(1, end);
+}
+
+.hitBlockedB {
+  animation: hit-blocked-b 0.3s steps(1, end);
+}
+
+@keyframes hit-a {
+  0% {
+    transform: translateX(-4px);
+    filter: brightness(0) invert(1);
+  }
+  14% {
+    transform: translateX(6px);
+    filter: sepia(1) saturate(5) hue-rotate(-50deg) brightness(0.85);
+  }
+  32% {
+    transform: translateX(-4px);
+    filter: none;
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  68% {
+    transform: none;
+  }
+}
+
+@keyframes hit-b {
+  0% {
+    transform: translateX(-4px);
+    filter: brightness(0) invert(1);
+  }
+  14% {
+    transform: translateX(6px);
+    filter: sepia(1) saturate(5) hue-rotate(-50deg) brightness(0.85);
+  }
+  32% {
+    transform: translateX(-4px);
+    filter: none;
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  68% {
+    transform: none;
+  }
+}
+
+@keyframes hit-blocked-a {
+  0% {
+    transform: translateX(-2px);
+    filter: brightness(0) invert(1);
+  }
+  16% {
+    transform: translateX(2px);
+    filter: none;
+  }
+  40% {
+    transform: none;
+  }
+}
+
+@keyframes hit-blocked-b {
+  0% {
+    transform: translateX(-2px);
+    filter: brightness(0) invert(1);
+  }
+  16% {
+    transform: translateX(2px);
+    filter: none;
+  }
+  40% {
+    transform: none;
+  }
+}
+
+/* Block gained: the frame rings steel blue for a few frames. */
+.guardA {
+  animation: guard-a 0.32s steps(1, end);
+}
+
+.guardB {
+  animation: guard-b 0.32s steps(1, end);
+}
+
+@keyframes guard-a {
+  0% {
+    box-shadow:
+      0 0 0 2px var(--hi),
+      0 0 0 4px var(--block),
+      0 0 0 6px var(--bg);
+  }
+  20% {
+    box-shadow:
+      0 0 0 2px var(--block),
+      0 0 0 4px var(--bg),
+      0 0 0 6px var(--block);
+  }
+  45% {
+    box-shadow:
+      0 0 0 2px var(--block),
+      0 0 0 4px rgb(11 10 13 / 85%);
+  }
+  75% {
+    box-shadow:
+      0 0 0 2px rgb(11 10 13 / 85%),
+      0 4px 0 rgb(15 14 17 / 60%);
+  }
+}
+
+@keyframes guard-b {
+  0% {
+    box-shadow:
+      0 0 0 2px var(--hi),
+      0 0 0 4px var(--block),
+      0 0 0 6px var(--bg);
+  }
+  20% {
+    box-shadow:
+      0 0 0 2px var(--block),
+      0 0 0 4px var(--bg),
+      0 0 0 6px var(--block);
+  }
+  45% {
+    box-shadow:
+      0 0 0 2px var(--block),
+      0 0 0 4px rgb(11 10 13 / 85%);
+  }
+  75% {
+    box-shadow:
+      0 0 0 2px rgb(11 10 13 / 85%),
+      0 4px 0 rgb(15 14 17 / 60%);
+  }
+}
+
+/* The portrait sits in a body layer so an action's motion (on the body) and a hit flash (on
+   the portrait) can play at the same time. */
+.body {
+  position: relative;
+}
+
+.acting {
+  z-index: 2;
+}
+
+/* Enemy attack, 0.5s: wind back, then a lunge toward the player that lands at 34% (the
+   0.17s beat where the combat screen shows the hit), hold, and recoil home. */
+.lunge {
+  animation: lunge 0.5s steps(1, end);
+}
+
+@keyframes lunge {
+  0% {
+    transform: translate(4px, 0);
+  }
+  8% {
+    transform: translate(8px, 2px);
+  }
+  18% {
+    transform: translate(10px, 2px);
+  }
+  26% {
+    transform: translate(-24px, -4px);
+  }
+  34% {
+    transform: translate(-56px, -8px);
+  }
+  50% {
+    transform: translate(-50px, -6px);
+  }
+  62% {
+    transform: translate(-36px, -4px);
+  }
+  72% {
+    transform: translate(-22px, -2px);
+  }
+  82% {
+    transform: translate(-10px, 0);
+  }
+  92% {
+    transform: translate(-4px, 0);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* A non-attack move (block, buff, a debuff cast at the player, a card shuffled in): a hop in
+   place, landing on the same 34% beat. */
+.hop {
+  animation: hop 0.5s steps(1, end);
+}
+
+@keyframes hop {
+  0% {
+    transform: translateY(2px);
+  }
+  12% {
+    transform: translateY(4px);
+  }
+  22% {
+    transform: translateY(-8px);
+  }
+  34% {
+    transform: translateY(-14px);
+  }
+  52% {
+    transform: translateY(-10px);
+  }
+  66% {
+    transform: translateY(-4px);
+  }
+  80% {
+    transform: none;
+  }
+}
+
+/* The acting enemy's intent pops up as the move fires. */
+.acting .intent {
+  animation: intent-fire 0.5s steps(1, end);
+}
+
+@keyframes intent-fire {
+  0% {
+    transform: none;
+  }
+  26% {
+    transform: translateY(-6px);
+    filter: brightness(1.6);
+  }
+  50% {
+    transform: translateY(-3px);
+    filter: none;
+  }
+  70% {
+    transform: none;
+  }
+}
+
+/* The player's attack card: a short jab toward the enemies. */
+.jab {
+  animation: jab 0.26s steps(1, end);
+}
+
+@keyframes jab {
+  0% {
+    transform: translate(10px, -2px);
+  }
+  15% {
+    transform: translate(24px, -4px);
+  }
+  45% {
+    transform: translate(14px, -2px);
+  }
+  70% {
+    transform: translate(6px, 0);
+  }
+  85% {
+    transform: none;
+  }
+}
+
+/* Floating numbers: they pop over the portrait, hang, drift up 2px at a time and blink out
+   (opacity also steps). Bitmap text at 24/12px with hard 2px outlines, no blur. */
+.floats {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 58px;
+  height: 0;
+  z-index: 4;
+  pointer-events: none;
+  /* Absolute children of a flex box are centred by it: no -50% transform, whose half pixels
+     would blur the bitmap text. */
+  display: flex;
+  justify-content: center;
+}
+
+.player .floats {
+  top: 28px;
+}
+
+.boss .floats {
+  top: 72px;
+}
+
+.float {
+  --dx: 0px;
+  --ink: var(--bg);
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+  font-family: var(--font-px11);
+  font-weight: 700;
+  color: var(--hi);
+  text-shadow:
+    2px 0 0 var(--ink),
+    -2px 0 0 var(--ink),
+    0 2px 0 var(--ink),
+    0 -2px 0 var(--ink),
+    2px 2px 0 var(--ink),
+    -2px -2px 0 var(--ink),
+    2px -2px 0 var(--ink),
+    -2px 2px 0 var(--ink),
+    2px 4px 0 var(--bg);
+  /* Hidden until its (staggered) start; `forwards` keeps it hidden after the last frame. */
+  opacity: 0;
+  animation: float-pop 0.9s forwards;
+}
+
+.floatMain {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.floatSub {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text);
+  --ink: var(--bg);
+}
+
+.damage {
+  --ink: var(--hp);
+}
+
+.blocked {
+  --ink: var(--block);
+}
+
+.block {
+  --ink: var(--block);
+}
+
+.heal {
+  --ink: var(--buff);
+  color: var(--hi);
+}
+
+.buff,
+.debuff {
+  --ink: var(--bg);
+}
+
+.buff .floatMain,
+.debuff .floatMain {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.buff {
+  color: var(--buff);
+}
+
+.debuff {
+  color: var(--debuff);
+}
+
+@keyframes float-pop {
+  0% {
+    opacity: 1;
+    transform: translate(var(--dx), 10px);
+    animation-timing-function: steps(1, end);
+  }
+  4% {
+    transform: translate(var(--dx), -12px);
+    animation-timing-function: steps(1, end);
+  }
+  10% {
+    transform: translate(var(--dx), -8px);
+    animation-timing-function: steps(1, end);
+  }
+  16% {
+    opacity: 1;
+    transform: translate(var(--dx), -10px);
+    animation-timing-function: steps(8, end);
+  }
+  76% {
+    opacity: 1;
+    transform: translate(var(--dx), -26px);
+    animation-timing-function: steps(3, end);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), -32px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lunge,
+  .hop,
+  .jab,
+  .acting .intent {
+    animation: none;
+  }
+}
+
+.name {
+  color: var(--light);
+}
+
+@keyframes target-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 2px rgb(216 183 110 / 40%),
+      0 0 0 4px rgb(216 183 110 / 12%);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgb(216 183 110 / 80%),
+      0 0 0 6px rgb(216 183 110 / 28%);
+  }
+}
+
+@keyframes reticle-in {
+  from {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+/* Everything but the floating numbers, so a killing blow's number still reads. */
+.dead > :not(.floats) {
   opacity: 0.25;
   filter: grayscale(1);
 }

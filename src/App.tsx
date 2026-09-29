@@ -6,6 +6,7 @@ import { Backdrop } from './ui/components/Backdrop';
 import { TopBar } from './ui/components/TopBar';
 import { CombatScreen } from './ui/screens/CombatScreen';
 import { EventScreen } from './ui/screens/EventScreen';
+import { replayView } from './ui/replay';
 import { MainMenu } from './ui/screens/MainMenu';
 import { MapScreen } from './ui/screens/MapScreen';
 import { RestScreen } from './ui/screens/RestScreen';
@@ -52,6 +53,7 @@ export default function App() {
   const run = useGame((s) => s.run);
   const view = useGame((s) => s.view);
   const goToMenu = useGame((s) => s.goToMenu);
+  const replay = useGame((s) => s.replay);
 
   // If the saved run disappears (e.g. storage cleared), fall back to the menu.
   useEffect(() => {
@@ -73,7 +75,8 @@ export default function App() {
   return (
     <>
       <Backdrop scene={sceneFor(run)} />
-      <TopBar run={run} />
+      {/* During an enemy-turn replay the top bar follows the frame on screen, not the result. */}
+      <TopBar run={replay && run.screen === 'combat' ? replayView(replay).run : run} />
       <main>
         <ScreenFor run={run} />
       </main>

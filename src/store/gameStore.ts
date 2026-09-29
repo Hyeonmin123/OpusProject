@@ -12,11 +12,24 @@ export interface MetaStats {
 
 type View = 'menu' | 'game';
 
+export interface Replay {
+  frames: engine.EnemyTurnFrame[];
+  /** Beat index: 0 = the player's turn ending, then a wind-up and an impact per enemy action. */
+  beat: number;
+}
+
 interface GameStore {
   run: RunState | null;
   meta: MetaStats;
   /** Not persisted: the app always opens on the main menu. */
   view: View;
+  /**
+   * Not persisted: the enemy turn being replayed on the combat screen (see `ui/replay.ts`).
+   * `run` already holds the result; this only drives what is shown meanwhile.
+   */
+  replay: Replay | null;
+  /** Moves the replay on one beat, clearing it after the last. */
+  advanceReplay: () => void;
 
   newRun: (seed?: number) => void;
   continueRun: () => void;
@@ -28,6 +41,10 @@ interface GameStore {
   selectNode: (nodeId: string) => void;
 
   playCard: (cardUid: string, targetIndex?: number) => void;
+  /**
+   * Ends the turn. The run jumps straight to the next player turn (that is what is saved),
+   * and `replay` gets the frames the combat screen plays the enemy turn back from.
+   */
   endTurn: () => void;
   /** Spend candle wax to reveal intents hidden by darkness. */
   revealIntents: () => void;
@@ -67,18 +84,21 @@ export const useGame = create<GameStore>()(
           const run = get().run;
           if (!run) return;
           const next = fn(run, ...args);
-          if (next !== run) set({ run: next });
+          // Any other action also ends an enemy-turn replay that might still be showing.
+          if (next !== run) set({ run: next, replay: null });
         };
 
       return {
         run: null,
         meta: { runsStarted: 0, victories: 0, bestFloor: 0 },
         view: 'menu',
+        replay: null,
 
         newRun: (seed) =>
           set((s) => ({
             run: engine.createRun(seed),
             view: 'game',
+            replay: null,
             meta: { ...s.meta, runsStarted: s.meta.runsStarted + 1 },
           })),
         continueRun: () => {
@@ -104,7 +124,21 @@ export const useGame = create<GameStore>()(
         selectNode: act(engine.selectNode),
 
         playCard: act(engine.playCard),
-        endTurn: act(engine.endTurn),
+        endTurn: () => {
+          const run = get().run;
+          if (!run) return;
+          const { run: next, frames } = engine.endTurnWithFrames(run);
+          if (next !== run)
+            set({ run: next, replay: frames.length > 0 ? { frames, beat: 0 } : null });
+        },
+        advanceReplay: () =>
+          set((s) => {
+            if (!s.replay) return {};
+            const last = 2 * (s.replay.frames.length - 1);
+            return {
+              replay: s.replay.beat >= last ? null : { ...s.replay, beat: s.replay.beat + 1 },
+            };
+          }),
         revealIntents: act(engine.revealIntents),
         finishCombat: act(engine.finishCombat),
 

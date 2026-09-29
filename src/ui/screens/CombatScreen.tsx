@@ -10,26 +10,35 @@ import {
   cardNeedsTarget,
   describeIntent,
   energyPerTurn,
+  getCardDef,
   lightLevel,
   type DescribeView,
 } from '../../engine';
 import { useGame } from '../../store/gameStore';
-import type { CardInstance, RunState } from '../../types';
+import type { CardInstance, CombatFx, RunState } from '../../types';
 import { ICONS, PORTRAITS } from '../art';
 import { CandleGauge } from '../components/CandleGauge';
 import { CardView } from '../components/CardView';
 import { Creature } from '../components/Creature';
 import { DeckModal } from '../components/DeckModal';
 import { Icon } from '../components/Icon';
+import { replayView } from '../replay';
 import styles from './CombatScreen.module.css';
 
 type PileView = 'draw' | 'discard' | 'exhaust' | null;
 
-export function CombatScreen({ run }: { run: RunState }) {
+const NO_CUES: CombatFx[] = [];
+
+export function CombatScreen({ run: live }: { run: RunState }) {
   const playCard = useGame((s) => s.playCard);
   const endTurn = useGame((s) => s.endTurn);
   const finishCombat = useGame((s) => s.finishCombat);
   const revealIntents = useGame((s) => s.revealIntents);
+  const replay = useGame((s) => s.replay);
+  const advanceReplay = useGame((s) => s.advanceReplay);
+  // While the enemy turn plays back, draw its snapshots; `live` already holds the result.
+  const beat = replay ? replayView(replay) : null;
+  const run = beat?.run.combat ? beat.run : live;
   const combat = run.combat!;
   const light = lightLevel(run.player);
   const anyHidden = combat.enemies.some((e) => e.hp > 0 && e.intentHidden);
@@ -39,10 +48,12 @@ export function CombatScreen({ run }: { run: RunState }) {
   const [hoverEnemy, setHoverEnemy] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [pileView, setPileView] = useState<PileView>(null);
+  const [jab, setJab] = useState(0);
   const logRef = useRef<HTMLDivElement>(null);
 
   const living = combat.enemies.map((e, i) => ({ e, i })).filter(({ e }) => e.hp > 0);
-  const playerTurn = combat.phase === 'player';
+  const playerTurn = !beat && combat.phase === 'player';
+  const cues = combat.fx ?? NO_CUES;
   // Derived so a stale selection (card left hand / fight ended) is simply ignored.
   const selected = (playerTurn && combat.hand.find((c) => c.uid === selectedUid)) || null;
 
@@ -59,7 +70,20 @@ export function CombatScreen({ run }: { run: RunState }) {
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
-  }, [combat.log.length]);
+  }, [combat.logCounter]);
+
+  // Step the enemy-turn playback one beat at a time.
+  const beatMs = beat?.ms;
+  useEffect(() => {
+    if (beatMs === undefined) return;
+    const t = setTimeout(advanceReplay, beatMs);
+    return () => clearTimeout(t);
+  }, [replay, beatMs, advanceReplay]);
+
+  function play(card: CardInstance, target?: number) {
+    if (getCardDef(card.defId).type === 'attack') setJab((n) => n + 1);
+    playCard(card.uid, target);
+  }
 
   function onCardClick(card: CardInstance) {
     if (!playerTurn) return;
@@ -77,12 +101,12 @@ export function CombatScreen({ run }: { run: RunState }) {
       return;
     }
     setSelectedUid(null);
-    playCard(card.uid);
+    play(card);
   }
 
   function onEnemyClick(index: number) {
     if (!selected) return;
-    playCard(selected.uid, index);
+    play(selected, index);
     setSelectedUid(null);
   }
 
@@ -99,7 +123,7 @@ export function CombatScreen({ run }: { run: RunState }) {
         e.stopPropagation();
         onEnemyClick(living[0].i);
       } else if ((e.key === 'e' || e.key === 'E') && playerTurn) handleEndTurn();
-      else if ((e.key === 'r' || e.key === 'R') && revealCheck.ok) revealIntents();
+      else if ((e.key === 'r' || e.key === 'R') && playerTurn && revealCheck.ok) revealIntents();
       else if (/^[1-9]$/.test(e.key)) {
         const card = combat.hand[Number(e.key) - 1];
         if (card) onCardClick(card);
@@ -161,6 +185,9 @@ export function CombatScreen({ run }: { run: RunState }) {
             block={combat.player.block}
             statuses={combat.player.statuses}
             variant="player"
+            cues={cuesFor(cues, 'player')}
+            motion={jab > 0 ? 'attack' : null}
+            motionKey={jab}
           />
           <div className={styles.candlePanel}>
             <CandleGauge
@@ -172,7 +199,7 @@ export function CombatScreen({ run }: { run: RunState }) {
               <button
                 className={`btn ${styles.revealBtn}`}
                 onClick={revealIntents}
-                disabled={!revealCheck.ok}
+                disabled={!playerTurn || !revealCheck.ok}
                 title={
                   revealCheck.ok
                     ? `촛농 ${REVEAL_WAX_COST}을 태워 가려진 적의 의도를 모두 드러냅니다 (단축키: R)`
@@ -200,6 +227,8 @@ export function CombatScreen({ run }: { run: RunState }) {
               variant={combat.tier === 'normal' ? 'normal' : combat.tier}
               intent={describeIntent(run, i)}
               targetable={!!selected}
+              cues={cuesFor(cues, i)}
+              motion={beat?.actor === i ? beat.motion : null}
               onClick={() => onEnemyClick(i)}
               onHover={(h) => setHoverEnemy(h ? i : null)}
             />
@@ -289,7 +318,7 @@ export function CombatScreen({ run }: { run: RunState }) {
         />
       )}
 
-      {combat.phase !== 'player' && (
+      {!beat && combat.phase !== 'player' && (
         <div className={styles.overlay}>
           <div className={`${styles.banner} panel`}>
             {combat.phase === 'won' ? (
@@ -320,4 +349,14 @@ export function CombatScreen({ run }: { run: RunState }) {
       )}
     </div>
   );
+}
+
+/** The cues for one combatant, memoised per source list so unchanged props stay equal. */
+const cueCache = new WeakMap<CombatFx[], Map<'player' | number, CombatFx[]>>();
+function cuesFor(all: CombatFx[], who: 'player' | number): CombatFx[] {
+  let byWho = cueCache.get(all);
+  if (!byWho) cueCache.set(all, (byWho = new Map()));
+  let list = byWho.get(who);
+  if (!list) byWho.set(who, (list = all.filter((c) => c.who === who)));
+  return list;
 }

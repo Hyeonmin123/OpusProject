@@ -193,6 +193,15 @@ hundred seeds), most runs must reach Act 2, and the careless bot must win less o
 - **Deterministic runs.** All randomness goes through a seeded RNG whose state is stored in
   `RunState`, so the same seed and the same choices always give the same run, and a reload resumes
   exactly where you left off.
+- **Combat feedback without touching the rules.** The engine records presentation cues
+  (`CombatState.fx`: a hit and how much block soaked, block gained, a status applied, HP lost or
+  healed, per combatant) next to the log, and `endTurnWithFrames` returns the same result as
+  `endTurn` plus a snapshot after each enemy acts. The store saves the result at once, and the
+  combat screen replays the snapshots one beat at a time (`ui/replay.ts`): each enemy winds up
+  and lunges (or hops, for a move that is not an attack) in turn, and its hit lands on the
+  lunge's peak with a white-then-red impact frame on the portrait and floating numbers. Player
+  cards get the same numbers and flashes, and an attack card makes the warrior jab. All of it
+  moves in hard stepped frames, like the sprites, rather than smooth tweens.
 - **Status timing** follows Slay the Spire: duration debuffs (Vulnerable/Weak/Frail) tick down at
   the end of each round, and debuffs that enemies apply during their turn skip one tick so they
   actually affect your next turn.
@@ -365,7 +374,8 @@ cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets r
   chart, the map-node and portrait frame outlines (CSS circles and arches, with pixel shading on
   the nodes) and the buff/debuff intent glyphs are still Figma vector art or CSS rather than
   pixel art. Animation is
-  limited to small CSS transitions (hits, intents, card hover/deal-in, targeting, turn change).
+  CSS only: the enemy-turn replay (lunges, impact frames, floating numbers) and small
+  transitions (intents, card hover/deal-in, targeting, turn change).
   There is no sound.
 - **Balance**: tuned with the bot simulation. The candle-aware greedy bot reaches Act 2 in about
   three quarters of runs, Act 3 in about two fifths, and wins about a fifth of them. Each boss is
