@@ -32,6 +32,15 @@
   height: 156px;
 }
 
+/* Large: the whole normal card at exactly 2x (`zoom` scales layout, sprites and type
+   together), so the face's art pixels become 4x4 and the 12px type 24px, all still on their
+   grids. Only where the screen is tall enough to show it without scrolling. */
+@media (min-width: 1000px) and (min-height: 860px) {
+  .large {
+    zoom: 2;
+  }
+}
+
 .attack {
   background-image: url('../../assets/ui/card/attack.png');
 }

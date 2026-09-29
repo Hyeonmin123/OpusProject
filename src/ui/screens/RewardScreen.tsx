@@ -25,7 +25,7 @@ export function RewardScreen({ run }: { run: RunState }) {
 
   return (
     <div className={styles.screen}>
-      <div className={`${styles.box} panel`}>
+      <div className={`${styles.box} ${styles.wideBox} panel`}>
         <div className={styles.head}>
           <div className={styles.icon}>
             <Icon src={ICONS.reward} size={64} />
@@ -38,51 +38,51 @@ export function RewardScreen({ run }: { run: RunState }) {
           </div>
         </div>
 
-        <button
-          className={`btn ${styles.rewardRow} ${reward.goldClaimed ? styles.claimed : ''}`}
-          onClick={claimGold}
-          disabled={reward.goldClaimed}
-        >
-          <span className={styles.rewardIcon}>◉</span>
-          <span>골드 {reward.gold}</span>
-        </button>
-
-        {relic && (
+        <div className={styles.rewardRows}>
           <button
-            className={`btn ${styles.rewardRow} ${reward.relicClaimed ? styles.claimed : ''}`}
-            onClick={claimRelic}
-            disabled={reward.relicClaimed}
-            title={relic.description}
+            className={`btn ${styles.rewardRow} ${reward.goldClaimed ? styles.claimed : ''}`}
+            onClick={claimGold}
+            disabled={reward.goldClaimed}
           >
-            <span className={styles.rewardIcon}>
-              <Icon src={RELIC_ICONS[relic.id]} size={32} />
-            </span>
-            <span>
-              유물: <span className={styles.rewardName}>{relic.name}</span>{' '}
-              <span className={styles.rewardDesc}>— {relic.description}</span>
-            </span>
+            <span className={styles.rewardIcon}>◉</span>
+            <span>골드 {reward.gold}</span>
           </button>
-        )}
+
+          {relic && (
+            <button
+              className={`btn ${styles.rewardRow} ${reward.relicClaimed ? styles.claimed : ''}`}
+              onClick={claimRelic}
+              disabled={reward.relicClaimed}
+              title={relic.description}
+            >
+              <span className={styles.rewardIcon}>
+                <Icon src={RELIC_ICONS[relic.id]} size={32} />
+              </span>
+              <span>
+                유물: <span className={styles.rewardName}>{relic.name}</span>{' '}
+                <span className={styles.rewardDesc}>— {relic.description}</span>
+              </span>
+            </button>
+          )}
+        </div>
 
         <div className={styles.sectionTitle}>
           {reward.cardResolved ? '카드 보상 완료' : '덱에 추가할 카드를 1장 선택하세요'}
         </div>
         {!reward.cardResolved && (
-          <>
-            <div className={styles.cards}>
-              {reward.cardChoices.map((card, i) => (
-                <CardView key={card.uid} card={card} onClick={() => pickCard(i)} />
-              ))}
-            </div>
-            <div className={styles.center}>
-              <button className="btn" onClick={skipCard}>
-                카드 받지 않기
-              </button>
-            </div>
-          </>
+          <div className={styles.cards}>
+            {reward.cardChoices.map((card, i) => (
+              <CardView key={card.uid} card={card} size="large" onClick={() => pickCard(i)} />
+            ))}
+          </div>
         )}
 
         <div className={styles.footer}>
+          {!reward.cardResolved && (
+            <button className={`btn btn-large ${styles.footerStart}`} onClick={skipCard}>
+              카드 받지 않기
+            </button>
+          )}
           <button className="btn btn-primary btn-large" onClick={leave}>
             {leaveLabel}
           </button>

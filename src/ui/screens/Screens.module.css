@@ -21,6 +21,12 @@
   background-color: var(--panel);
 }
 
+/* Rewards and the run summary show as much as the event: the card picks at 2x, the summary's
+   stats and deck in full. */
+.wideBox {
+  width: min(1000px, 100%);
+}
+
 /* Events are nothing but text and choices: the panel sits well down into the room at full
    width, with a bigger niche and title, roomier options and brighter option text. (A fixed
    offset rather than vertical centring, so the panel does not jump when the choices give way
@@ -186,6 +192,13 @@
   color: #cfe3c2;
 }
 
+/* Gold and the relic side by side, so the card choice below gets the height. */
+.rewardRows {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+}
+
 /* Reward rows read in the body face at 15px (the plaque's 12px label face is for short
    button captions); the relic's name is gilt, its effect in full-strength text. */
 .rewardRow {
@@ -195,6 +208,10 @@
   width: 100%;
   padding: 10px 16px 8px;
   text-align: left;
+}
+
+/* Two classes deep to win over the global .btn label face (global.css loads last). */
+.rewardRows .rewardRow {
   font-family: var(--font-px14);
   font-size: 15px;
   font-weight: 400;
@@ -229,20 +246,21 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 18px;
+  gap: 18px 28px;
   padding: 18px 0 6px;
 }
 
 .footer {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.center {
-  display: flex;
-  justify-content: center;
+/* A secondary action on the footer's left (skipping the card reward). */
+.footerStart {
+  margin-right: auto;
 }
 
 .price {
@@ -325,6 +343,51 @@
 
 .restChoice .relicIcon {
   font-size: 42px;
+}
+
+/* The run summary heads its page like the event (niche and icon at 2x), and lists the final
+   deck and relics as chips on the compact slab rather than a dim run of text. */
+.summaryBox .icon {
+  width: 128px;
+  height: 140px;
+  background-size: 128px 140px;
+}
+
+.subtitle {
+  color: var(--text);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  composes: panel-sm from global;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 7px 1px 4px;
+  font-family: var(--font-px11);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  color: var(--text);
+}
+
+.chipUpgraded {
+  color: #9fd18a;
+}
+
+.chipCount {
+  color: var(--accent-strong);
+}
+
+.seed {
+  font-family: var(--font-px11);
+  font-size: 12px;
+  color: var(--text-dim);
 }
 
 .statsGrid {

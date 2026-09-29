@@ -38,7 +38,8 @@ interface Props {
   energy?: number;
   /** Live combat numbers for the rules text. */
   view?: DescribeView;
-  size?: 'normal' | 'small';
+  /** 'large' is the normal card drawn at 2x (reward picks), where the screen has room. */
+  size?: 'normal' | 'small' | 'large';
   footer?: ReactNode;
   title?: string;
 }
@@ -62,6 +63,7 @@ export function CardView({
     styles[def.type],
     resonance !== 'neutral' && styles[resonance],
     size === 'small' && styles.small,
+    size === 'large' && styles.large,
     card.upgraded && styles.upgraded,
     onClick && !disabled && styles.clickable,
     selected && styles.selected,
