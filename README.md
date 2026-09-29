@@ -47,11 +47,12 @@ dropped on GitHub Pages, Netlify, itch.io, or any static host.
    drops a relic), event (?), shop (coins), rest site (campfire), boss (skull).
 3. **Combat**: you have **3 energy** and draw **5 cards** each turn. Click a card to play it. If it
    needs a target and there are several enemies, click an enemy (right-click or Esc cancels).
-   Enemies show their **intent** (🗡️ attack for N, 🛡️ block, ⬆️ buff, 🌀 debuff) above their heads.
+   Enemies show their **intent** (a sword and attack for N, a shield and block, buff, debuff, or a
+   gilt `?` for a special move such as shuffling a status card into your deck) above their heads.
    Block expires at the start of your next turn. Shortcuts: `1`–`9` play the card in that slot,
    `E` ends the turn, `R` raises the wick (reveals hidden intents).
    The **candle gauge** under your character burns 1 wax per turn. When it runs low, some intents
-   show as `???`. Pay 3 wax with **🔍 심지 돋우기** (raise the wick) to reveal them.
+   show as `???`. Pay 3 wax with **심지 돋우기** (raise the wick) to reveal them.
 4. **Rewards**: gold, sometimes a relic, and a choice of 1 of 3 cards (or skip).
 5. **Rest site**: heal 30% of max HP, **rekindle the candle** (+50% of max wax), or upgrade a
    card. **Shop**: buy cards or relics, a **candle** (+20 wax, once per visit), or pay to remove a
@@ -279,7 +280,12 @@ What is in it:
   `assets/icons/`, registered in `ICONS`): the reward trophy, the shop's card removal (a card
   struck through in blood red), the victory crown (clean gold, unlike the cursed-crown relic),
   the defeat headstone and the top bar's HP heart (`r1`, kept apart from the candle's golds). The
-  rest and shop screens head their pages with the rest and shop map-node icons.
+  rest and shop screens head their pages with the rest and shop map-node icons. The rest site's
+  choices are a bone crescent moon with drifting z's (sleep) and a hammer over an anvil
+  (upgrade), beside the rekindle candle. Combat's blackout banner carries an eclipse (a black
+  disc, a sliver of pale rim, the hidden intent's violet corona), the raise-the-wick button a
+  gilt magnifying glass, and a special intent a gilt lozenge stamped with `?`, which is kept
+  apart from the hidden intent's dark disc: a special move is seen, only unusual.
 
 Other effects around the chrome follow the same rule: shadows and glows are hard offsets or
 rings (never blurred), and hover and pressed states move whole pixels (cards lift without
@@ -349,8 +355,8 @@ cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets r
 
 - **Acts 2 and 3 content depth**: they reuse the Act 1 monster roster with more HP and starting
   Strength. Only their bosses (_뼈의 여왕_, _심연의 눈_) are unique.
-- **Art, animation and sound**: a few UI glyphs (the rest-site choices, the blackout banner, the
-  raise-the-wick button, the special intent) are still emoji, and the map
+- **Art, animation and sound**: the combat log's candle lines (the candle going out and being
+  relit) still start with a 🕯️ emoji written by the engine, and the map
   chart, the map-node and portrait frame outlines (CSS circles and arches, with pixel shading on
   the nodes) and the buff/debuff intent glyphs are still Figma vector art or CSS rather than
   pixel art. Animation is
