@@ -623,15 +623,27 @@
   }
 }
 
-/* Names sit straight on the scene art: body face at 15px with a hard d0 outline. */
+/* Names sit straight on the scene art: the bold 12px face with a hard d0 outline. */
 .name {
-  font-family: var(--font-px14);
-  font-size: 15px;
-  line-height: 20px;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 18px;
   text-align: center;
   color: var(--light);
   text-shadow: var(--outline-1);
   transition: color 0.15s;
+}
+
+/* Under the 4x portraits the 12px name is lost beside a 212px frame, so it takes the body
+   face (Galmuri14 15px) there. */
+@media (min-width: 1680px) and (min-height: 1000px) {
+  .name {
+    font-family: var(--font-px14);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 20px;
+  }
 }
 
 .intent {

@@ -32,16 +32,16 @@
   color: #f0c8c8;
 }
 
-/* Intents are the most important thing to read on the field, so their numbers use the
-   display face at 2x (Galmuri9 20px). */
+/* Intents are the most important thing to read on the field, so they use the body face
+   (Galmuri14 15px), a step above the 12px bar numbers around them. */
 .intent {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   padding: 1px 7px 1px 5px;
   border-radius: 0;
-  font-family: var(--font-px9);
-  font-size: 20px;
+  font-family: var(--font-px14);
+  font-size: 15px;
   line-height: 20px;
   text-shadow: 1px 1px 0 var(--bg);
   background: var(--bg-2);

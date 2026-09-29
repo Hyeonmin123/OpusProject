@@ -38,7 +38,7 @@ const INTENT_ART: Record<IntentKind, string> = {
 };
 
 function IntentIcon({ kind }: { kind: IntentKind }) {
-  return <Icon src={INTENT_ART[kind]} size={24} />;
+  return <Icon src={INTENT_ART[kind]} size={20} />;
 }
 
 const INTENT_HINT: Record<IntentKind, string> = {

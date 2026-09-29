@@ -21,7 +21,7 @@ export function TopBar({ run }: { run: RunState }) {
         <Icon src={ICONS.attack} size={18} /> {p.className}
       </span>
       <span className={`${styles.stat} ${styles.hp}`} title="체력">
-        <Icon src={ICONS.hp} size={24} /> {p.hp}/{p.maxHp}
+        <Icon src={ICONS.hp} size={20} /> {p.hp}/{p.maxHp}
       </span>
       <CandleGauge candle={p.candle} maxCandle={p.maxCandle} size="small" />
       <span className={`${styles.stat} ${styles.gold}`} title="골드">

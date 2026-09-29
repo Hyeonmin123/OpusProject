@@ -340,12 +340,14 @@ kana/kanji and the monochrome dingbats (about 150 KB per face).
 A bitmap font is only sharp at whole multiples of its pixel grid, so every `font-size` in the UI
 is one of these (the families are the `--font-px9/11/14` tokens in `global.css`):
 
-| Face           | Sizes            | Used for                                                                             |
-| -------------- | ---------------- | ------------------------------------------------------------------------------------ |
-| Galmuri14      | 15px             | body copy (the root size), combatant names, the combat log                           |
-| Galmuri11      | 12px             | card rules text, hints, secondary lines                                              |
-| Galmuri11 Bold | 12px, 24/36/48px | buttons, labels and bar numbers; headings and titles                                 |
-| Galmuri9       | 10px, 20px       | tiny labels (card type line); large buttons, cost gems, intents, top-bar HP and gold |
+| Face           | Sizes            | Used for                                                              |
+| -------------- | ---------------- | --------------------------------------------------------------------- |
+| Galmuri14      | 15px             | body copy (the root size), intents, top-bar HP and gold, reward rows  |
+| Galmuri11      | 12px             | card rules text, the combat log, hints, secondary lines               |
+| Galmuri11 Bold | 12px, 24/36/48px | buttons, labels, combatant names and bar numbers; headings and titles |
+| Galmuri9       | 10px, 20px       | tiny labels (card type line); large buttons, cost gems                |
+
+Under the 4x portraits (screens from 1680×1000) combatant names step up to Galmuri14 15px.
 
 `font-synthesis: none` keeps the browser from smearing a fake bold onto the faces without a bold
 cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets rather than blurs.
