@@ -62,7 +62,7 @@ export const ACTS: ActDef[] = [
     eliteEncounters: ELITES,
     bossEncounters: [enc('boneQueen', 'boss', ['boneQueen'])],
     easyCombats: 0,
-    scaling: { hpMult: 1.5, strength: 2 },
+    scaling: { hpMult: 1.3, strength: 1 },
   },
   {
     act: 3,
@@ -72,7 +72,7 @@ export const ACTS: ActDef[] = [
     eliteEncounters: ELITES,
     bossEncounters: [enc('abyssalEye', 'boss', ['abyssalEye'])],
     easyCombats: 0,
-    scaling: { hpMult: 2, strength: 4 },
+    scaling: { hpMult: 1.8, strength: 2 },
   },
 ];
 
