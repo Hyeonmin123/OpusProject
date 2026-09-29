@@ -276,7 +276,11 @@ What is in it:
   the grid at any width.
 - Panels: the `.panel` slab frame (10px of rings, 24px gilt corner caps) and the compact
   `.panel-sm` frame over a repeating slab texture (`slab-tex`, d2 at 92%), the targeting
-  reticle, the modal header rule, the room-icon niche and the crest.
+  reticle, the modal header rule, the room-icon niche and the crest. The room panels (rewards,
+  shop, rest, events, the run summary) back the texture with solid d2, so the scene never shows
+  through the text the player acts on; the shop, rest and event scenes also take the deeper
+  combat scrim, and the event, which is all text and choices, stacks the dim-light field scrim
+  on it and shows its panel wider, with the niche and icon at 2x.
 - Card chrome: one full face per type × resonance × size (rim, header plate, the sunken art well
   with a dithered type tint, and a body that shades down in dithered bands; shadow cards sink
   into violet), the wax pills, and the light / shadow corner ornaments.

@@ -16,11 +16,11 @@ export function EventScreen({ run }: { run: RunState }) {
   const chosen = event.chosenOption !== null ? def.options[event.chosenOption] : null;
 
   return (
-    <div className={styles.screen}>
-      <div className={`${styles.box} panel`}>
+    <div className={`${styles.screen} ${styles.eventScreen}`}>
+      <div className={`${styles.box} ${styles.eventBox} panel`}>
         <div className={styles.head}>
           <div className={styles.icon}>
-            <Icon src={EVENT_ICONS[def.id]} size={64} />
+            <Icon src={EVENT_ICONS[def.id]} size={128} />
           </div>
           <h2>{def.title}</h2>
         </div>

@@ -50,8 +50,17 @@
 .backdrop[data-scene='act1']::after,
 .backdrop[data-scene='act2']::after,
 .backdrop[data-scene='act3']::after,
-.backdrop[data-scene='wall']::after {
+.backdrop[data-scene='wall']::after,
+.backdrop[data-scene='shop']::after,
+.backdrop[data-scene='rest']::after {
   background-image: url('../../assets/ui/scrim-combat.png');
+}
+
+/* The room screens (shop, rest and above all the event, which is only text and choices) had
+   their scenes pulling the eye from the panel, so they take the deeper scrim too, and the
+   event stacks the dim-light field scrim on top (both pixel art on the scene grid). */
+.backdrop[data-scene='event']::after {
+  background-image: url('../../assets/ui/scrim-dim.png'), url('../../assets/ui/scrim-combat.png');
 }
 
 @keyframes scene-in {

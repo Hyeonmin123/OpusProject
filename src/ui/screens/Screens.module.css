@@ -14,6 +14,77 @@
   margin-top: 12px;
 }
 
+/* Room panels hold the text and choices the player acts on, so their slab is solid: the flat
+   d2 fill under the slab texture stops the scene art showing through (the .panel default lets
+   it read faintly). */
+.box::before {
+  background-color: var(--panel);
+}
+
+/* Events are nothing but text and choices: the panel sits well down into the room at full
+   width, with a bigger niche and title, roomier options and brighter option text. (A fixed
+   offset rather than vertical centring, so the panel does not jump when the choices give way
+   to the shorter result.) */
+.eventScreen {
+  padding-top: clamp(28px, 10vh, 110px);
+}
+
+.eventBox {
+  width: min(1000px, 100%);
+  padding: 44px 52px 40px;
+  gap: 24px;
+  margin-top: 0;
+}
+
+.eventBox .head {
+  gap: 22px;
+}
+
+/* The niche and the event icon at exactly 2x (niche 32x35 grid, icon 32px grid). */
+.eventBox .icon {
+  width: 128px;
+  height: 140px;
+  background-size: 128px 140px;
+}
+
+.eventBox .head h2 {
+  font-size: 36px;
+  line-height: 44px;
+}
+
+.eventBox .text {
+  font-size: 15px;
+  line-height: 28px;
+  color: var(--hi);
+  margin: 0;
+}
+
+.eventBox .option {
+  padding: 14px 20px 12px;
+}
+
+.eventBox .optionDetail {
+  color: var(--text);
+}
+
+/* Option names in the body face at 15px (Galmuri14's own size), gilt like the title. */
+.eventBox .optionLabel {
+  font-family: var(--font-px14);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--accent-strong);
+}
+
+.eventBox .option:hover:not(:disabled) .optionLabel {
+  color: var(--light);
+}
+
+.eventBox .option:disabled .optionLabel,
+.eventBox .option:disabled .optionDetail {
+  color: inherit;
+}
+
 /* Candle-in-the-arch crest (pixel art, ui/crest.png) riding on the top edge of every room
    panel. On ::after because the panel's frame is its ::before. */
 .box::after {
