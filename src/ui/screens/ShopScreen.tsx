@@ -3,7 +3,7 @@ import { RELICS } from '../../data/relics';
 import { SHOP_CANDLE_AMOUNT } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
-import { ICONS } from '../art';
+import { ICONS, RELIC_ICONS } from '../art';
 import { CardView } from '../components/CardView';
 import { DeckModal } from '../components/DeckModal';
 import { Icon } from '../components/Icon';
@@ -71,7 +71,9 @@ export function ShopScreen({ run }: { run: RunState }) {
                     disabled={slot.sold || gold < slot.price}
                     onClick={() => buyRelic(i)}
                   >
-                    <span className={styles.relicIcon}>{relic.icon}</span>
+                    <span className={styles.relicIcon}>
+                      <Icon src={RELIC_ICONS[slot.relicId]} size={32} />
+                    </span>
                     <span className={styles.relicName}>{relic.name}</span>
                     <span className={styles.relicDesc}>{relic.description}</span>
                     {slot.sold ? (

@@ -4,7 +4,6 @@ const EVENT_LIST: EventDef[] = [
   {
     id: 'altar',
     title: '버려진 제단',
-    icon: '🕯️',
     text: '먼지 덮인 제단 위에서 희미한 빛이 새어 나온다. 제단 앞 바닥에는 오래된 핏자국이 말라붙어 있다.',
     options: [
       {
@@ -33,7 +32,6 @@ const EVENT_LIST: EventDef[] = [
   {
     id: 'corpse',
     title: '모험가의 시체',
-    icon: '⚰️',
     text: '벽에 기대어 쓰러진 모험가의 시체. 배낭은 아직 멀쩡해 보인다. 그 주변에는 덫의 흔적이 있다.',
     options: [
       {
@@ -62,7 +60,6 @@ const EVENT_LIST: EventDef[] = [
   {
     id: 'spring',
     title: '검은 샘',
-    icon: '⛲',
     text: '칠흑 같은 물이 고인 샘. 물에서는 쇠 맛이 나는 냉기가 올라온다.',
     options: [
       {
@@ -88,7 +85,6 @@ const EVENT_LIST: EventDef[] = [
   {
     id: 'whisper',
     title: '속삭이는 그림자',
-    icon: '👤',
     text: '어둠 속에서 목소리가 들린다. "대가를 치르면… 너의 기술을 벼려 주마."',
     options: [
       {
@@ -118,7 +114,6 @@ const EVENT_LIST: EventDef[] = [
   {
     id: 'forge',
     title: '버려진 대장간',
-    icon: '⚒️',
     text: '아직 불씨가 남아 있는 화로와 낡은 모루. 누군가 급히 떠난 흔적이다.',
     options: [
       {
@@ -144,7 +139,6 @@ const EVENT_LIST: EventDef[] = [
   {
     id: 'chandler',
     title: '양초장이의 작업실',
-    icon: '🕯️',
     text: '녹아내린 밀랍이 켜켜이 쌓인 작업대. 반쯤 만들다 만 양초들 사이로, 검게 물든 초 하나가 스스로 타고 있다.',
     options: [
       {

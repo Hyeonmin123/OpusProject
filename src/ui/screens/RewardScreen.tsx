@@ -2,7 +2,9 @@ import { FINAL_ACT } from '../../data/acts';
 import { RELICS } from '../../data/relics';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
+import { RELIC_ICONS } from '../art';
 import { CardView } from '../components/CardView';
+import { Icon } from '../components/Icon';
 import styles from './Screens.module.css';
 
 export function RewardScreen({ run }: { run: RunState }) {
@@ -50,7 +52,9 @@ export function RewardScreen({ run }: { run: RunState }) {
             disabled={reward.relicClaimed}
             title={relic.description}
           >
-            <span className={styles.rewardIcon}>{relic.icon}</span>
+            <span className={styles.rewardIcon}>
+              <Icon src={RELIC_ICONS[relic.id]} size={32} />
+            </span>
             <span>
               유물: <b>{relic.name}</b> <span className="dim">— {relic.description}</span>
             </span>

@@ -2,7 +2,9 @@ import { EVENTS } from '../../data/events';
 import { canChooseEventOption, canUpgrade } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
+import { EVENT_ICONS } from '../art';
 import { DeckModal } from '../components/DeckModal';
+import { Icon } from '../components/Icon';
 import styles from './Screens.module.css';
 
 export function EventScreen({ run }: { run: RunState }) {
@@ -17,7 +19,9 @@ export function EventScreen({ run }: { run: RunState }) {
     <div className={`${styles.screen} fade-in`}>
       <div className={`${styles.box} panel`}>
         <div className={styles.head}>
-          <div className={styles.icon}>{def.icon}</div>
+          <div className={styles.icon}>
+            <Icon src={EVENT_ICONS[def.id]} size={64} />
+          </div>
           <h2>{def.title}</h2>
         </div>
         <p className={styles.text}>{def.text}</p>

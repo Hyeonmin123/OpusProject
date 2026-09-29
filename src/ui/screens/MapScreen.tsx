@@ -3,7 +3,8 @@ import { getAct } from '../../data/acts';
 import { reachableNodeIds } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { MapNode, NodeType, RunState } from '../../types';
-import { MAP_CHART } from '../art';
+import { MAP_CHART, NODE_ICONS } from '../art';
+import { Icon } from '../components/Icon';
 import { NODE_INFO } from '../nodeInfo';
 import styles from './MapScreen.module.css';
 
@@ -113,7 +114,7 @@ export function MapScreen({ run }: { run: RunState }) {
                 aria-label={`${info.label}${canGo ? ' (이동 가능)' : ''}`}
                 data-node-reachable={canGo}
               >
-                {info.icon}
+                <Icon src={NODE_ICONS[n.type]} size={n.type === 'boss' ? 64 : 32} />
               </button>
             );
           })}
@@ -127,7 +128,7 @@ export function MapScreen({ run }: { run: RunState }) {
               className={styles.legendDot}
               style={{ '--node-color': NODE_INFO[t].color } as CSSProperties}
             >
-              {NODE_INFO[t].icon}
+              <Icon src={NODE_ICONS[t]} size={20} />
             </span>
             {NODE_INFO[t].label}
           </div>

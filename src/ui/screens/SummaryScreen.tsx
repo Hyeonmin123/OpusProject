@@ -3,6 +3,8 @@ import { RELICS } from '../../data/relics';
 import { cardName } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
+import { RELIC_ICONS } from '../art';
+import { Icon } from '../components/Icon';
 import styles from './Screens.module.css';
 
 export function SummaryScreen({ run }: { run: RunState }) {
@@ -64,7 +66,12 @@ export function SummaryScreen({ run }: { run: RunState }) {
 
         <div className={styles.sectionTitle}>유물</div>
         <div className="dim">
-          {run.player.relics.map((id) => `${RELICS[id].icon} ${RELICS[id].name}`).join(', ')}
+          {run.player.relics.map((id, i) => (
+            <span key={id}>
+              {i > 0 && ', '}
+              <Icon src={RELIC_ICONS[id]} size={16} /> {RELICS[id].name}
+            </span>
+          ))}
         </div>
 
         <div className="dim" style={{ fontFamily: 'var(--font-px11)', fontSize: 12 }}>

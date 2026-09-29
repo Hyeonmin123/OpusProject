@@ -3,7 +3,7 @@ import { getAct } from '../../data/acts';
 import { RELICS } from '../../data/relics';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
-import { ICONS } from '../art';
+import { ICONS, RELIC_ICONS } from '../art';
 import { CandleGauge } from './CandleGauge';
 import { DeckModal } from './DeckModal';
 import { Icon } from './Icon';
@@ -35,7 +35,7 @@ export function TopBar({ run }: { run: RunState }) {
           const r = RELICS[id];
           return (
             <span key={id} className={styles.relic} title={`${r.name}: ${r.description}`}>
-              {r.icon}
+              <Icon src={RELIC_ICONS[id]} size={32} label={r.name} />
             </span>
           );
         })}

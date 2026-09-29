@@ -29,7 +29,6 @@ export interface EventOption {
 export interface EventDef {
   id: string;
   title: string;
-  icon: string;
   text: string;
   options: EventOption[];
 }

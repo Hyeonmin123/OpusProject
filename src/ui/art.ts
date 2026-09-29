@@ -13,10 +13,15 @@
  * `scripts/pixelart/uikit.py`. It is referenced from the stylesheets (as `border-image`s and
  * background tiles) rather than from here.
  *
+ * The map-node, relic and event icons are hand-built pixel art on the same 32px grid as the
+ * gameplay icons (`scripts/pixelart/icons.py`), round-tripped through the kit's "Icons" page and
+ * exported into `assets/nodes/`, `assets/relics/` and `assets/events/`, keyed by node type,
+ * relic id and event id.
+ *
  * The remaining SVGs (intent buff/debuff and generic status glyphs, the map chart) come from
  * the project's Figma file "끝없는 지하실 — Art Assets"
  * (https://www.figma.com/design/SP8IxP7Nwge0zkGVkRNB8C).
- * Components fall back to the emoji in `data/` when an entry is missing.
+ * Status and enemy components fall back to the emoji in `data/` when an entry is missing.
  */
 import keyArt from '../assets/art/keyart.png';
 import bgAct1 from '../assets/bg/act1.png';
@@ -28,6 +33,12 @@ import bgMap from '../assets/bg/map.png';
 import bgMenu from '../assets/bg/menu.png';
 import bgRest from '../assets/bg/rest.png';
 import bgShop from '../assets/bg/shop.png';
+import eventAltar from '../assets/events/altar.png';
+import eventChandler from '../assets/events/chandler.png';
+import eventCorpse from '../assets/events/corpse.png';
+import eventForge from '../assets/events/forge.png';
+import eventSpring from '../assets/events/spring.png';
+import eventWhisper from '../assets/events/whisper.png';
 import candle from '../assets/icons/candle.png';
 import candleOut from '../assets/icons/candle-out.png';
 import energy from '../assets/icons/energy.png';
@@ -40,6 +51,12 @@ import shadow from '../assets/icons/shadow.png';
 import shield from '../assets/icons/shield.png';
 import status from '../assets/icons/status.svg';
 import sword from '../assets/icons/sword.png';
+import nodeBoss from '../assets/nodes/boss.png';
+import nodeCombat from '../assets/nodes/combat.png';
+import nodeElite from '../assets/nodes/elite.png';
+import nodeEvent from '../assets/nodes/event.png';
+import nodeRest from '../assets/nodes/rest.png';
+import nodeShop from '../assets/nodes/shop.png';
 import abyssalEye from '../assets/portraits/abyssalEye.png';
 import bat from '../assets/portraits/bat.png';
 import boneQueen from '../assets/portraits/boneQueen.png';
@@ -51,6 +68,22 @@ import rottingGolem from '../assets/portraits/rottingGolem.png';
 import skeleton from '../assets/portraits/skeleton.png';
 import slime from '../assets/portraits/slime.png';
 import warrior from '../assets/portraits/warrior.png';
+import anchor from '../assets/relics/anchor.png';
+import bagOfMarbles from '../assets/relics/bagOfMarbles.png';
+import blackCandle from '../assets/relics/blackCandle.png';
+import bloodVial from '../assets/relics/bloodVial.png';
+import bronzeScales from '../assets/relics/bronzeScales.png';
+import burningBlood from '../assets/relics/burningBlood.png';
+import cursedCrown from '../assets/relics/cursedCrown.png';
+import eternalFlame from '../assets/relics/eternalFlame.png';
+import goldenIdol from '../assets/relics/goldenIdol.png';
+import ironHeart from '../assets/relics/ironHeart.png';
+import lantern from '../assets/relics/lantern.png';
+import owlEye from '../assets/relics/owlEye.png';
+import silverCandlestick from '../assets/relics/silverCandlestick.png';
+import vajra from '../assets/relics/vajra.png';
+import waxSeal from '../assets/relics/waxSeal.png';
+import wildBerry from '../assets/relics/wildBerry.png';
 import dexterity from '../assets/status/dexterity.png';
 import frail from '../assets/status/frail.png';
 import kindle from '../assets/status/kindle.png';
@@ -60,7 +93,7 @@ import strength from '../assets/status/strength.png';
 import thorns from '../assets/status/thorns.png';
 import vulnerable from '../assets/status/vulnerable.png';
 import weak from '../assets/status/weak.png';
-import type { CardType, StatusId } from '../types';
+import type { CardType, NodeType, StatusId } from '../types';
 
 /** The main menu's candle, lifted out of the archway key art (the archway is `SCENES.menu`). */
 export const KEY_ART = keyArt;
@@ -147,4 +180,44 @@ export const PORTRAITS: Record<string, string> = {
   rottingGolem,
   boneQueen,
   abyssalEye,
+};
+
+/** Map node icons by node type (32×32 grid: 1× on a map node, 2× on the boss node). */
+export const NODE_ICONS: Record<NodeType, string> = {
+  combat: nodeCombat,
+  elite: nodeElite,
+  event: nodeEvent,
+  shop: nodeShop,
+  rest: nodeRest,
+  boss: nodeBoss,
+};
+
+/** Relic icons by relic id (32×32 grid). */
+export const RELIC_ICONS: Record<string, string> = {
+  burningBlood,
+  anchor,
+  vajra,
+  bagOfMarbles,
+  lantern,
+  bloodVial,
+  bronzeScales,
+  wildBerry,
+  goldenIdol,
+  waxSeal,
+  silverCandlestick,
+  owlEye,
+  cursedCrown,
+  blackCandle,
+  eternalFlame,
+  ironHeart,
+};
+
+/** Event icons by event id (32×32 grid, shown 2× in the room niche). */
+export const EVENT_ICONS: Record<string, string> = {
+  altar: eventAltar,
+  corpse: eventCorpse,
+  spring: eventSpring,
+  whisper: eventWhisper,
+  forge: eventForge,
+  chandler: eventChandler,
 };

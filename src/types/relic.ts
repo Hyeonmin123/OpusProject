@@ -19,7 +19,6 @@ export type RelicTrigger =
 export interface RelicDef {
   id: string;
   name: string;
-  icon: string;
   description: string;
   rarity: RelicRarity;
   triggers: RelicTrigger[];
