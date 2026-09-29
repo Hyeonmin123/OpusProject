@@ -92,6 +92,20 @@ def arc(p: Pic, cx, cy, r, width, a0, a1, ch, taper=True):
     return p.fill(t, ch)
 
 
+def slash(p: Pic, x0, y0, x1, y1, width, ch):
+    """A straight cut, tapering to a point at both ends and thickest in the middle."""
+    dx, dy = x1 - x0, y1 - y0
+    ll = dx * dx + dy * dy
+
+    def t(x, y):
+        u = ((x - x0) * dx + (y - y0) * dy) / ll
+        if not 0.0 <= u <= 1.0:
+            return False
+        px_, py_ = x0 + u * dx, y0 + u * dy
+        return math.hypot(x - px_, y - py_) <= width / 2 * math.sin(math.pi * u)
+    return p.fill(t, ch)
+
+
 def fist(p: Pic, x0, y0, mat='S', cuff='N'):
     """A gauntleted fist seen from the front, knuckles up, thumb folded across the fingers,
     over a cuff: 14 x 13 from (x0, y0)."""
@@ -716,6 +730,277 @@ def card_wound():
     return render(p)
 
 
+# --------------------------------------------------------------------------------------------
+# Added cards
+# --------------------------------------------------------------------------------------------
+
+
+def card_wild_swing():
+    """난도질: three wild hacks cut at odd angles, blood flying off them."""
+    p = Pic()
+    for (x0, y0, x1, y1) in [(1.0, 11.0, 15.0, 1.0), (12.0, 24.0, 25.0, 6.0),
+                             (1.0, 15.0, 11.0, 25.0)]:
+        slash(p, x0, y0, x1, y1, 4.0, 'h')
+    for x, y, ch in [(12, 8, 'r'), (9, 11, 'r'), (13, 12, 'q'), (17, 3, 'r'), (7, 14, 'r')]:
+        p.put(x, y, ch)
+    return render(p)
+
+
+def card_heavy_slash():
+    """내려찍기: a broad sword driven point-first into the ground, the stone cracking."""
+    p = Pic()
+    p.rows(['T' * 24] * 4, 1, 21)
+    for x, y in [(8, 21), (7, 22), (6, 23), (17, 21), (18, 22), (19, 23), (12, 22), (13, 23)]:
+        p.put(x, y, 'k')
+    blade = Pic()
+    sword(blade, 12.5, 7.0, 12.5, 22.5, blade=4.0, guard_len=5.0)
+    over(p, blade)
+    for x, y0 in [(5, 3), (20, 3), (3, 10), (22, 10)]:
+        for y in range(y0, y0 + 5):
+            p.put(x, y, 'p')
+    for x, y in [(8, 19), (17, 19), (6, 18), (19, 18)]:
+        p.put(x, y, 'y')
+    return render(p)
+
+
+def card_reckless_charge():
+    """무모한 돌진: a lance couched and thrust ahead, speed lines behind, a drop of the rider's
+    own blood."""
+    p = Pic()
+    p.stroke(1.0, 18.0, 17.0, 10.0, 2.4, 'W')
+    p.poly([(15.0, 8.0), (25.0, 5.0), (19.0, 13.5)], 'S')
+    p.poly([(7.5, 11.5), (11.5, 17.5), (8.0, 18.5), (5.0, 13.5)], 'I')
+    for x0, y, n in [(2, 7, 7), (0, 11, 4), (4, 23, 7)]:
+        p.rows(['p' * n], x0, y)
+    drop(p, 19.0, 16.0, 7.0)
+    return render(p)
+
+
+def card_sidestep():
+    """흘려내기: a blow swerving off a raised buckler, its path bent away."""
+    p = Pic()
+    arc(p, 12.5, 12.5, 10.5, 3.0, 150, 330, 'p', taper=False)
+    p.poly([(21.0, 2.0), (25.0, 9.0), (18.0, 8.0)], 'p')
+    b = Pic()
+    b.disc(12.5, 13.0, 6.6, 'S')
+    b.disc(12.5, 13.0, 4.6, 'L')
+    b.disc(12.5, 13.0, 1.6, 'G')
+    over(p, b)
+    return render(p)
+
+
+def card_hemokinesis():
+    """피의 일격: a sword whose blade is blood, drawn from the wielder's own veins."""
+    p = Pic()
+    sword(p, 8.0, 17.0, 22.5, 2.5, blade=3.4, mat='R', guard='S', grip='W')
+    drop(p, 20.0, 12.0, 6.0)
+    drop(p, 15.0, 17.0, 6.0)
+    return render(p)
+
+
+def card_war_cry():
+    """전장의 포효: a bronze war horn sounding, the blast rolling out of its bell."""
+    p = Pic()
+    arc(p, 17.0, 12.5, 6.5, 1.4, 290, 70, 'p', taper=False)
+    arc(p, 17.0, 12.5, 9.5, 1.4, 300, 60, 'p', taper=False)
+    horn = Pic()
+    horn.fill(lambda x, y: 3.0 <= x <= 18.0 and abs(y - (16.0 - 0.02 * (x - 3.0) ** 2))
+              <= 1.2 + (x - 3.0) * 0.32, 'N')
+    horn.rows(['yy'], 16, 10)
+    horn.stroke(6.0, 16.5, 6.0, 20.0, 1.2, 'W')
+    horn.stroke(13.0, 16.5, 13.0, 21.0, 1.2, 'W')
+    horn.stroke(6.0, 20.0, 13.0, 21.0, 1.2, 'W')
+    over(p, horn)
+    return render(p)
+
+
+def card_footwork():
+    """발놀림: a quick leather boot, steel at the toe, a dust of motion behind its heel."""
+    rows = [
+        '.....WWWWWW.....',
+        '.....WWWWWW.....',
+        '.....WWWWWW.....',
+        '.....nnnnnn.....',
+        '.....WWWWWW.....',
+        '.....WWWWWW.....',
+        '.....WWWWWW.....',
+        '.....WWWWWWW....',
+        '.....WWWWWWWWW..',
+        '....WWWWWWWWWWW.',
+        '....WWWWWWWWWSSS',
+        '....WWWWWWWWWSSS',
+        '....kkkkkkkkkkkk',
+        '....IIIIIIIIIIII',
+    ]
+    p = Pic().rows(rows, 7, 5)
+    for x0, y, n in [(1, 9, 4), (0, 13, 5), (2, 17, 3)]:
+        p.rows(['p' * n], x0, y)
+    return render(p)
+
+
+def card_blade_storm():
+    """칼날 폭풍: three blades spinning round a gilt hub, each trailing a swirl of steel."""
+    p = Pic()
+    for ang in (270, 30, 150):
+        arc(p, 12.5, 12.5, 10.0, 3.4, ang + 25, ang + 105, 'p')
+    for ang in (270, 30, 150):
+        a = math.radians(ang)
+        q = Pic()
+        sword(q, 12.5 + 4.2 * math.cos(a), 12.5 + 4.2 * math.sin(a),
+              12.5 + 12.5 * math.cos(a), 12.5 + 12.5 * math.sin(a), blade=3.0, guard_len=1.2,
+              pommel=False, grip='G')
+        over(p, q)
+    p.disc(12.5, 12.5, 2.4, 'G')
+    p.put(11, 11, 'y')
+    return render(p)
+
+
+def card_offering():
+    """제물: a heart laid in a gilt offering bowl, a flame rising off it."""
+    p = Pic()
+    flame(p, 12.5, 0.0, 8.0, 3.0, layers='roy',
+          steps=[(0, 0, 0), (1.2, 0.8, 1.0), (2.8, 1.8, 1.9)])
+    heart = Pic()
+    heart.disc(9.5, 11.5, 3.6, 'R')
+    heart.disc(15.5, 11.5, 3.6, 'R')
+    heart.poly([(5.8, 12.5), (19.2, 12.5), (12.5, 19.0)], 'R')
+    heart.rows(['.h', 'h.'], 7, 9)
+    over(p, heart)
+    bowl = Pic()
+    bowl.fill(lambda x, y: y >= 16.0 and ((x - 12.5) / 10.5) ** 2 + ((y - 16.0) / 5.0) ** 2 <= 1,
+              'G')
+    bowl.rows(['G' * 21], 2, 16)
+    bowl.stroke(12.5, 20.0, 12.5, 23.0, 2.6, 'G')
+    bowl.rows(['.GGGGGGG.', 'GGGGGGGGG'], 8, 23)
+    over(p, bowl)
+    return render(p)
+
+
+def card_vigil():
+    """불빛 경계: a watchful eye whose pupil is a candle flame."""
+    p = Pic()
+    p.fill(lambda x, y: abs(y - 13.0) <= 7.6 * (1 - ((x - 12.5) / 12.0) ** 2), 'G')
+    eye = Pic()
+    eye.fill(lambda x, y: abs(y - 13.0) <= 5.2 * (1 - ((x - 12.5) / 9.6) ** 2), 'B')
+    over(p, eye, 'n')
+    fire = Pic()
+    flame(fire, 12.5, 7.0, 17.5, 3.2, layers='roYh',
+          steps=[(0, 0, 0), (1.0, 0.6, 0.9), (2.2, 1.4, 1.7), (3.4, 2.0, 2.4)])
+    over(p, fire, 'k')
+    for x, y in [(12, 1), (4, 4), (20, 4)]:
+        p.rows(['y', 'y'], x, y)
+    return render(p)
+
+
+def card_flash_burst():
+    """섬광: a blinding starburst of candlelight."""
+    p = Pic()
+    for i in range(16):
+        a = i * math.pi / 8
+        r = 12.5 if i % 4 == 0 else (9.0 if i % 2 == 0 else 6.5)
+        p.stroke(12.5, 12.5, 12.5 + r * math.cos(a), 12.5 + r * math.sin(a),
+                 2.2 if i % 4 == 0 else 1.4, 'Y')
+    p.disc(12.5, 12.5, 4.6, 'Y')
+    p.disc(12.5, 12.5, 2.6, 'h')
+    return render(p)
+
+
+def card_mending_glow():
+    """치유의 온기: a heart held in a ring of warm light."""
+    p = Pic()
+    for a in range(0, 360, 30):
+        r = math.radians(a)
+        p.stroke(12.5 + 9.0 * math.cos(r), 13.0 + 9.0 * math.sin(r),
+                 12.5 + 11.5 * math.cos(r), 13.0 + 11.5 * math.sin(r), 1.4, 'y')
+    heart = Pic()
+    heart.disc(9.0, 10.5, 4.2, 'R')
+    heart.disc(16.0, 10.5, 4.2, 'R')
+    heart.poly([(4.8, 11.5), (20.2, 11.5), (12.5, 20.5)], 'R')
+    heart.rows(['.hh', 'h..', 'h..'], 6, 8)
+    over(p, heart)
+    return render(p)
+
+
+def card_holy_flame():
+    """성화의 가호: a sacred flame crowned with a gilt halo."""
+    p = Pic()
+    flames(p, [(12.5, 4.0, 24.0, 7.0, 0.0), (7.0, 11.0, 24.0, 3.6, -2.0),
+               (18.0, 11.0, 24.0, 3.6, 2.0)])
+    halo = Pic()
+    halo.fill(lambda x, y: 0.4 <= ((x - 12.5) / 9.5) ** 2 + ((y - 3.5) / 3.4) ** 2 <= 1.0, 'G')
+    over(p, halo)
+    return render(p)
+
+
+def card_shadow_flurry():
+    """그림자 연격: three violet slashes raked through the dark at once."""
+    p = Pic()
+    for off in (-6.0, 0.0, 6.0):
+        arc(p, 2.0 - off, 25.0 + off, 18.0, 3.4, 272, 358, 'v')
+    for off in (-6.0, 0.0, 6.0):
+        arc(p, 2.0 - off, 25.0 + off, 18.0, 1.2, 285, 345, 'p')
+    return render(p)
+
+
+def card_ambush():
+    """매복: violet eyes in a mass of shadow, a dagger already drawn out of it."""
+    p = Pic()
+    p.disc(10.0, 15.0, 9.0, 'H')
+    p.disc(16.5, 17.0, 7.0, 'H')
+    p.rows(['vv...vv', 'hv...hv'], 7, 12)
+    d = Pic()
+    sword(d, 17.0, 11.0, 24.5, 2.0, blade=2.4, mat='S', guard='V', grip='D', guard_len=2.8)
+    over(p, d)
+    return render(p)
+
+
+def card_nightfall():
+    """해질녘: the sun sinking behind black hills under a violet sky."""
+    p = Pic()
+    p.fill(lambda x, y: (x - 12.5) ** 2 + (y - 16.0) ** 2 <= 11.5 ** 2 and y <= 16.0, 'V')
+    p.fill(lambda x, y: (x - 12.5) ** 2 + (y - 16.0) ** 2 <= 6.8 ** 2 and y <= 16.0, 'Y')
+    hills = Pic()
+    hills.fill(lambda x, y: 0.5 <= x <= 24.5 and y >= 15.0 + 2.5 * math.sin(x * 0.45 + 1.0)
+               and y <= 22.0, 'D')
+    over(p, hills, 'k')
+    for x, y in [(4, 7), (21, 5), (18, 9)]:
+        p.put(x, y, 'h')
+    return render(p)
+
+
+def card_thorn_shade():
+    """가시 그림자: a briar of violet shadow, coiled and bristling with thorns."""
+    p = Pic()
+    pts = [(3.0, 22.0), (8.0, 14.0), (15.0, 17.0), (18.0, 9.0), (12.0, 5.0), (8.0, 8.0)]
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+        p.stroke(x0, y0, x1, y1, 3.2, 'V')
+    for (bx, by, tx, ty) in [(6.0, 17.0, 2.0, 15.0), (10.5, 15.0, 11.0, 11.5),
+                             (13.0, 16.5, 14.0, 21.5), (17.0, 13.0, 21.5, 14.0),
+                             (16.5, 7.0, 19.5, 3.5), (10.0, 5.5, 9.0, 1.5),
+                             (4.5, 20.0, 1.0, 23.5)]:
+        nx, ny = ty - by, bx - tx
+        ln = math.hypot(nx, ny)
+        nx, ny = nx / ln * 1.8, ny / ln * 1.8
+        p.poly([(bx + nx, by + ny), (bx - nx, by - ny), (tx, ty)], 'V')
+    return render(p)
+
+
+def card_soul_rend():
+    """영혼 가르기: a pale wisp of a soul, split by a violet cut."""
+    p = Pic()
+    p.disc(12.5, 9.0, 7.5, 'B')
+    p.fill(lambda x, y: abs(x - 12.5) <= 7.5 and 9.0 <= y <= 21.0, 'B')
+    for i, x in enumerate(range(5, 21, 3)):
+        p.poly([(x, 20.0), (x + 3.0, 20.0), (x + 1.5, 24.0 if i % 2 else 22.5)], 'B')
+    p.rows(['kk..kk', 'kk..kk'], 9, 8)
+    p.rows(['.kk.'], 10, 13)
+    cut = Pic()
+    cut.stroke(2.0, 23.0, 23.0, 2.0, 2.4, 'v')
+    cut.stroke(2.0, 23.0, 23.0, 2.0, 0.9, 'h')
+    over(p, cut)
+    return render(p)
+
+
 CARDS = {
     'strike': card_strike,
     'defend': card_defend,
@@ -752,6 +1037,24 @@ CARDS = {
     'umbralForm': card_umbral_form,
     'slimed': card_slimed,
     'wound': card_wound,
+    'wildSwing': card_wild_swing,
+    'heavySlash': card_heavy_slash,
+    'recklessCharge': card_reckless_charge,
+    'sidestep': card_sidestep,
+    'hemokinesis': card_hemokinesis,
+    'warCry': card_war_cry,
+    'footwork': card_footwork,
+    'bladeStorm': card_blade_storm,
+    'offering': card_offering,
+    'vigil': card_vigil,
+    'flashBurst': card_flash_burst,
+    'mendingGlow': card_mending_glow,
+    'holyFlame': card_holy_flame,
+    'shadowFlurry': card_shadow_flurry,
+    'ambush': card_ambush,
+    'nightfall': card_nightfall,
+    'thornShade': card_thorn_shade,
+    'soulRend': card_soul_rend,
 }
 
 

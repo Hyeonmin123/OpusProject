@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { CARDS } from '../data/cards';
 import type { RunState } from '../types';
 import { MAX_CANDLE, SHOP_CANDLE_AMOUNT } from './candle';
 import { playCard, startCombat } from './combat';
@@ -180,9 +181,7 @@ describe('candle across the run', () => {
     expect(shadow.player.candle).toBe(24);
     expect(shadow.player.deck).toHaveLength(11);
     const added = shadow.player.deck[shadow.player.deck.length - 1];
-    expect(added.defId).toMatch(
-      /shadowStrike|duskVeil|gazeIntoDark|nightStalker|devouringDark|umbralForm/,
-    );
+    expect(CARDS[added.defId].resonance).toBe('shadow');
     // Burning never goes below zero.
     run = structuredClone(run);
     run.player.candle = 3;

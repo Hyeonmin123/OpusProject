@@ -143,6 +143,59 @@ const CARD_LIST: CardDef[] = [
     },
   },
 
+  {
+    id: 'wildSwing',
+    name: '난도질',
+    type: 'attack',
+    rarity: 'common',
+    cost: 1,
+    effects: [{ type: 'damage', amount: 3, times: 3, target: 'random' }],
+    upgrade: { effects: [{ type: 'damage', amount: 3, times: 4, target: 'random' }] },
+  },
+  {
+    id: 'heavySlash',
+    name: '내려찍기',
+    type: 'attack',
+    rarity: 'common',
+    cost: 2,
+    effects: [{ type: 'damage', amount: 14 }],
+    upgrade: { effects: [{ type: 'damage', amount: 18 }] },
+  },
+  {
+    id: 'recklessCharge',
+    name: '무모한 돌진',
+    type: 'attack',
+    rarity: 'common',
+    cost: 0,
+    effects: [
+      { type: 'damage', amount: 6 },
+      { type: 'addCard', cardId: 'wound', count: 1, pile: 'draw' },
+    ],
+    upgrade: {
+      effects: [
+        { type: 'damage', amount: 9 },
+        { type: 'addCard', cardId: 'wound', count: 1, pile: 'draw' },
+      ],
+    },
+  },
+  {
+    id: 'sidestep',
+    name: '흘려내기',
+    type: 'skill',
+    rarity: 'common',
+    cost: 1,
+    effects: [
+      { type: 'block', amount: 5 },
+      { type: 'applyStatus', status: 'weak', amount: 1, target: 'target' },
+    ],
+    upgrade: {
+      effects: [
+        { type: 'block', amount: 7 },
+        { type: 'applyStatus', status: 'weak', amount: 2, target: 'target' },
+      ],
+    },
+  },
+
   // ---- Uncommon ------------------------------------------------------------
   {
     id: 'uppercut',
@@ -244,6 +297,46 @@ const CARD_LIST: CardDef[] = [
     },
   },
 
+  {
+    id: 'hemokinesis',
+    name: '피의 일격',
+    type: 'attack',
+    rarity: 'uncommon',
+    cost: 1,
+    effects: [
+      { type: 'loseHp', amount: 2 },
+      { type: 'damage', amount: 12 },
+    ],
+    upgrade: {
+      effects: [
+        { type: 'loseHp', amount: 2 },
+        { type: 'damage', amount: 16 },
+      ],
+    },
+  },
+  {
+    id: 'warCry',
+    name: '전장의 포효',
+    type: 'skill',
+    rarity: 'uncommon',
+    cost: 1,
+    effects: [{ type: 'applyStatus', status: 'vulnerable', amount: 2, target: 'allEnemies' }],
+    upgrade: {
+      effects: [{ type: 'applyStatus', status: 'vulnerable', amount: 3, target: 'allEnemies' }],
+    },
+  },
+  {
+    id: 'footwork',
+    name: '발놀림',
+    type: 'power',
+    rarity: 'uncommon',
+    cost: 1,
+    effects: [{ type: 'applyStatus', status: 'dexterity', amount: 2, target: 'self' }],
+    upgrade: {
+      effects: [{ type: 'applyStatus', status: 'dexterity', amount: 3, target: 'self' }],
+    },
+  },
+
   // ---- Rare ----------------------------------------------------------------
   {
     id: 'bludgeon',
@@ -274,6 +367,36 @@ const CARD_LIST: CardDef[] = [
     exhaust: true,
     effects: [{ type: 'block', amount: 30 }],
     upgrade: { effects: [{ type: 'block', amount: 40 }] },
+  },
+
+  {
+    id: 'bladeStorm',
+    name: '칼날 폭풍',
+    type: 'attack',
+    rarity: 'rare',
+    cost: 2,
+    effects: [{ type: 'damage', amount: 4, times: 3, target: 'allEnemies' }],
+    upgrade: { effects: [{ type: 'damage', amount: 6, times: 3, target: 'allEnemies' }] },
+  },
+  {
+    id: 'offering',
+    name: '제물',
+    type: 'skill',
+    rarity: 'rare',
+    cost: 0,
+    exhaust: true,
+    effects: [
+      { type: 'loseHp', amount: 6 },
+      { type: 'gainEnergy', amount: 2 },
+      { type: 'draw', amount: 3 },
+    ],
+    upgrade: {
+      effects: [
+        { type: 'loseHp', amount: 6 },
+        { type: 'gainEnergy', amount: 2 },
+        { type: 'draw', amount: 5 },
+      ],
+    },
   },
 
   // ---- Light (빛): restore wax, weaker per energy ------------------------------
@@ -356,6 +479,78 @@ const CARD_LIST: CardDef[] = [
     upgrade: { candle: 10, effects: [{ type: 'block', amount: 14 }] },
   },
 
+  {
+    id: 'vigil',
+    name: '불빛 경계',
+    type: 'skill',
+    rarity: 'common',
+    resonance: 'light',
+    cost: 1,
+    candle: 1,
+    effects: [
+      { type: 'block', amount: 4 },
+      { type: 'draw', amount: 1 },
+    ],
+    upgrade: {
+      effects: [
+        { type: 'block', amount: 7 },
+        { type: 'draw', amount: 1 },
+      ],
+    },
+  },
+  {
+    id: 'flashBurst',
+    name: '섬광',
+    type: 'attack',
+    rarity: 'uncommon',
+    resonance: 'light',
+    cost: 1,
+    candle: 1,
+    effects: [
+      { type: 'damage', amount: 4, target: 'allEnemies' },
+      { type: 'applyStatus', status: 'weak', amount: 1, target: 'allEnemies' },
+    ],
+    upgrade: {
+      candle: 2,
+      effects: [
+        { type: 'damage', amount: 6, target: 'allEnemies' },
+        { type: 'applyStatus', status: 'weak', amount: 1, target: 'allEnemies' },
+      ],
+    },
+    flavor: '심지를 한껏 돋우면, 어둠에 익은 눈부터 먼다.',
+  },
+  {
+    id: 'mendingGlow',
+    name: '치유의 온기',
+    type: 'skill',
+    rarity: 'uncommon',
+    resonance: 'light',
+    cost: 1,
+    candle: 2,
+    exhaust: true,
+    effects: [{ type: 'heal', amount: 4 }],
+    upgrade: { effects: [{ type: 'heal', amount: 6 }] },
+  },
+  {
+    id: 'holyFlame',
+    name: '성화의 가호',
+    type: 'power',
+    rarity: 'rare',
+    resonance: 'light',
+    cost: 2,
+    candle: 2,
+    effects: [
+      { type: 'applyStatus', status: 'kindle', amount: 1, target: 'self' },
+      { type: 'applyStatus', status: 'dexterity', amount: 1, target: 'self' },
+    ],
+    upgrade: {
+      effects: [
+        { type: 'applyStatus', status: 'kindle', amount: 1, target: 'self' },
+        { type: 'applyStatus', status: 'dexterity', amount: 2, target: 'self' },
+      ],
+    },
+  },
+
   // ---- Shadow (그림자): burn wax, stronger per energy --------------------------
   {
     id: 'shadowStrike',
@@ -432,6 +627,94 @@ const CARD_LIST: CardDef[] = [
     effects: [{ type: 'applyStatus', status: 'strength', amount: 3, target: 'self' }],
     upgrade: {
       effects: [{ type: 'applyStatus', status: 'strength', amount: 4, target: 'self' }],
+    },
+  },
+
+  {
+    id: 'shadowFlurry',
+    name: '그림자 연격',
+    type: 'attack',
+    rarity: 'common',
+    resonance: 'shadow',
+    cost: 1,
+    candle: -2,
+    effects: [{ type: 'damage', amount: 4, times: 3 }],
+    upgrade: { effects: [{ type: 'damage', amount: 5, times: 3 }] },
+  },
+  {
+    id: 'ambush',
+    name: '매복',
+    type: 'attack',
+    rarity: 'uncommon',
+    resonance: 'shadow',
+    cost: 0,
+    candle: -2,
+    effects: [
+      { type: 'damage', amount: 5 },
+      {
+        type: 'ifDark',
+        effects: [{ type: 'applyStatus', status: 'vulnerable', amount: 2, target: 'target' }],
+      },
+    ],
+    upgrade: {
+      effects: [
+        { type: 'damage', amount: 8 },
+        {
+          type: 'ifDark',
+          effects: [{ type: 'applyStatus', status: 'vulnerable', amount: 2, target: 'target' }],
+        },
+      ],
+    },
+  },
+  {
+    id: 'nightfall',
+    name: '해질녘',
+    type: 'skill',
+    rarity: 'uncommon',
+    resonance: 'shadow',
+    cost: 1,
+    candle: -3,
+    effects: [
+      { type: 'block', amount: 7 },
+      { type: 'draw', amount: 2 },
+    ],
+    upgrade: {
+      effects: [
+        { type: 'block', amount: 10 },
+        { type: 'draw', amount: 2 },
+      ],
+    },
+  },
+  {
+    id: 'thornShade',
+    name: '가시 그림자',
+    type: 'power',
+    rarity: 'uncommon',
+    resonance: 'shadow',
+    cost: 1,
+    candle: -3,
+    effects: [{ type: 'applyStatus', status: 'thorns', amount: 4, target: 'self' }],
+    upgrade: {
+      effects: [{ type: 'applyStatus', status: 'thorns', amount: 6, target: 'self' }],
+    },
+  },
+  {
+    id: 'soulRend',
+    name: '영혼 가르기',
+    type: 'attack',
+    rarity: 'rare',
+    resonance: 'shadow',
+    cost: 2,
+    candle: -4,
+    effects: [
+      { type: 'damage', amount: 18 },
+      { type: 'applyStatus', status: 'vulnerable', amount: 2, target: 'target' },
+    ],
+    upgrade: {
+      effects: [
+        { type: 'damage', amount: 24 },
+        { type: 'applyStatus', status: 'vulnerable', amount: 2, target: 'target' },
+      ],
     },
   },
 
