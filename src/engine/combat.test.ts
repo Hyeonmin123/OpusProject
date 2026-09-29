@@ -6,6 +6,7 @@ import {
   canRevealIntents,
   describeIntent,
   endTurn,
+  endTurnWithFrames,
   playCard,
   revealIntents,
   startCombat,
@@ -142,6 +143,32 @@ describe('combat engine', () => {
     expect(s.combat!.discardPile.find((c) => c.uid === hand[1].uid)).toBeUndefined();
     s = playCard(s, hand[0].uid);
     s.combat!.enemies.forEach((e, i) => expect(e.hp).toBe(Math.max(0, before[i] - 10)));
+  });
+
+  it('records presentation cues for hits, block and statuses', () => {
+    const base = combatRun(['cultist']);
+    const { run, hand } = withHand(base, ['bash', 'defend']);
+    let s = playCard(run, hand[0].uid, 0);
+    const cues = s.combat!.fx!.slice(-2);
+    expect(cues[0]).toMatchObject({ who: 0, kind: 'damage', amount: 8, blocked: 0 });
+    expect(cues[1]).toMatchObject({ who: 0, kind: 'status', status: 'vulnerable', amount: 2 });
+    s = playCard(s, hand[1].uid);
+    expect(s.combat!.fx!.at(-1)).toMatchObject({ who: 'player', kind: 'block', amount: 5 });
+  });
+
+  it('endTurnWithFrames matches endTurn and snapshots each enemy action in order', () => {
+    const run = combatRun(['rat', 'rat']);
+    const { run: next, frames } = endTurnWithFrames(run);
+    expect(next).toEqual(endTurn(run));
+    expect(frames.map((f) => f.actor)).toEqual([null, 0, 1]);
+    expect(frames[1].moveId).toBe(run.combat!.enemies[0].intent);
+    // Each frame is a snapshot, not a live reference.
+    expect(frames[0].run.combat!.hand).toHaveLength(0);
+    expect(next.combat!.hand.length).toBeGreaterThan(0);
+    // A rejected action yields no frames.
+    const over = structuredClone(run);
+    over.combat!.phase = 'won';
+    expect(endTurnWithFrames(over)).toEqual({ run: over, frames: [] });
   });
 });
 

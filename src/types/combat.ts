@@ -26,6 +26,21 @@ export interface CombatLogEntry {
   side: 'player' | 'enemy' | 'system';
 }
 
+/**
+ * A presentation cue for the UI (floating numbers, hit flashes): what just happened to whom.
+ * It never feeds back into the rules. `who` is 'player' or the enemy's index.
+ */
+export interface CombatFx {
+  id: number;
+  who: 'player' | number;
+  kind: 'damage' | 'hpLoss' | 'block' | 'status' | 'heal';
+  /** damage: the full hit, block included; hpLoss/heal: HP; block: block gained; status: stacks. */
+  amount: number;
+  /** damage: the part of `amount` that block absorbed. */
+  blocked?: number;
+  status?: StatusId;
+}
+
 export interface CombatState {
   tier: EnemyTier;
   encounterId: string;
@@ -41,4 +56,7 @@ export interface CombatState {
   phase: CombatPhase;
   log: CombatLogEntry[];
   logCounter: number;
+  /** Recent presentation cues, newest last (optional: older saves have none). */
+  fx?: CombatFx[];
+  fxCounter?: number;
 }

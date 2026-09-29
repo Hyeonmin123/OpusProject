@@ -4,6 +4,7 @@ import { RELICS } from '../data/relics';
 import { STATUSES } from '../data/statuses';
 import type {
   CardInstance,
+  CombatFx,
   CombatState,
   Effect,
   EncounterDef,
@@ -100,6 +101,15 @@ function log(ctx: Ctx, text: string, side: 'player' | 'enemy' | 'system' = 'syst
   if (combat.log.length > 60) combat.log.splice(0, combat.log.length - 60);
 }
 
+/** Records a presentation cue for the UI (see `CombatFx`); it never affects the rules. */
+function fx(ctx: Ctx, ref: FighterRef, cue: Omit<CombatFx, 'id' | 'who'>): void {
+  const combat = combatOf(ctx);
+  combat.fxCounter = (combat.fxCounter ?? 0) + 1;
+  const list = (combat.fx ??= []);
+  list.push({ id: combat.fxCounter, who: ref.kind === 'player' ? 'player' : ref.index, ...cue });
+  if (list.length > 40) list.splice(0, list.length - 40);
+}
+
 // ---- Primitive operations ------------------------------------------------------------
 
 function resolveTargets(
@@ -144,6 +154,7 @@ function applyDamage(ctx: Ctx, ref: FighterRef, amount: number): number {
   f.block -= blocked;
   const hpLoss = Math.min(f.hp, amount - blocked);
   f.hp -= hpLoss;
+  fx(ctx, ref, { kind: 'damage', amount, blocked });
   if (ref.kind === 'enemy') ctx.run.stats.damageDealt += hpLoss;
   else ctx.run.stats.damageTaken += hpLoss;
   if (f.hp <= 0 && ref.kind === 'enemy') handleEnemyDeath(ctx, combatOf(ctx).enemies[ref.index]);
@@ -155,6 +166,7 @@ function loseHp(ctx: Ctx, ref: FighterRef, amount: number): void {
   if (f.hp <= 0) return;
   const loss = Math.min(f.hp, amount);
   f.hp -= loss;
+  fx(ctx, ref, { kind: 'hpLoss', amount: loss });
   if (ref.kind === 'player') ctx.run.stats.damageTaken += loss;
   else {
     ctx.run.stats.damageDealt += loss;
@@ -260,6 +272,7 @@ function gainBlock(ctx: Ctx, ref: FighterRef, amount: number): void {
   const f = fighter(ctx, ref);
   if (f.hp <= 0 || amount <= 0) return;
   f.block += amount;
+  fx(ctx, ref, { kind: 'block', amount });
 }
 
 function applyStatusTo(
@@ -272,6 +285,7 @@ function applyStatusTo(
   const f = fighter(ctx, target);
   if (f.hp <= 0) return;
   addStatus(f.statuses, status, amount);
+  fx(ctx, target, { kind: 'status', amount, status });
   const combat = combatOf(ctx);
   if (
     actor.kind === 'enemy' &&
@@ -396,7 +410,9 @@ export function executeEffects(
         break;
       case 'heal': {
         const f = fighter(ctx, actor);
-        f.hp = Math.min(f.maxHp, f.hp + effect.amount);
+        const healed = Math.min(f.maxHp, f.hp + effect.amount) - f.hp;
+        f.hp += healed;
+        if (healed > 0) fx(ctx, actor, { kind: 'heal', amount: healed });
         break;
       }
       case 'addCard':
@@ -652,52 +668,83 @@ export function revealIntents(run: RunState): RunState {
   });
 }
 
+/**
+ * A snapshot taken while `endTurnWithFrames` resolves the enemy turn, so the UI can replay it
+ * one beat at a time. `actor` is the enemy index that just acted (null for the end of the
+ * player's turn, before any enemy moves) and `moveId` the move it used.
+ */
+export interface EnemyTurnFrame {
+  run: RunState;
+  actor: number | null;
+  moveId: string | null;
+}
+
+type FrameHook = (ctx: Ctx, actor: number | null, moveId: string | null) => void;
+
+function resolveEndTurn(ctx: Ctx, onFrame?: FrameHook): boolean | void {
+  const combat = ctx.run.combat;
+  if (!combat || combat.phase !== 'player') return false;
+
+  // -- End of player turn
+  combat.discardPile.push(...combat.hand);
+  combat.hand = [];
+  const metal = getStatus(combat.player.statuses, 'metallicize');
+  if (metal > 0) gainBlock(ctx, PLAYER, metal);
+  onFrame?.(ctx, null, null);
+
+  // -- Enemy turn
+  for (let i = 0; i < combat.enemies.length; i++) {
+    const enemy = combat.enemies[i];
+    if (enemy.hp <= 0) continue;
+    const ref: FighterRef = { kind: 'enemy', index: i };
+    enemy.block = 0;
+    const ritual = getStatus(enemy.statuses, 'ritual');
+    if (ritual > 0 && enemy.history.length > 0) applyStatusTo(ctx, ref, ref, 'strength', ritual);
+
+    const def = enemyDef(enemy);
+    const move = enemy.intent ? def.moves[enemy.intent] : undefined;
+    if (move) {
+      log(ctx, `${enemy.name}: ${move.name}`, 'enemy');
+      executeEffects(ctx, ref, move.effects, PLAYER);
+      enemy.history.push(move.id);
+    }
+    if (enemy.hp > 0) {
+      const eMetal = getStatus(enemy.statuses, 'metallicize');
+      if (eMetal > 0) gainBlock(ctx, ref, eMetal);
+    }
+    checkCombatEnd(ctx);
+    onFrame?.(ctx, i, move?.id ?? null);
+    if (combatOver(ctx)) return;
+  }
+
+  // -- End of round: duration statuses tick down
+  decayDurationStatuses(combat.player.statuses, combat.player.skipDecay);
+  combat.player.skipDecay = [];
+  for (const enemy of combat.enemies) {
+    if (enemy.hp > 0) decayDurationStatuses(enemy.statuses);
+  }
+
+  chooseIntents(ctx);
+  startPlayerTurn(ctx);
+}
+
 /** Ends the player's turn, resolves every enemy action, and starts the next turn. */
 export function endTurn(run: RunState): RunState {
-  return transact(run, (ctx) => {
-    const combat = ctx.run.combat;
-    if (!combat || combat.phase !== 'player') return false;
+  return transact(run, (ctx) => resolveEndTurn(ctx));
+}
 
-    // -- End of player turn
-    combat.discardPile.push(...combat.hand);
-    combat.hand = [];
-    const metal = getStatus(combat.player.statuses, 'metallicize');
-    if (metal > 0) gainBlock(ctx, PLAYER, metal);
-
-    // -- Enemy turn
-    for (let i = 0; i < combat.enemies.length; i++) {
-      const enemy = combat.enemies[i];
-      if (enemy.hp <= 0) continue;
-      const ref: FighterRef = { kind: 'enemy', index: i };
-      enemy.block = 0;
-      const ritual = getStatus(enemy.statuses, 'ritual');
-      if (ritual > 0 && enemy.history.length > 0) applyStatusTo(ctx, ref, ref, 'strength', ritual);
-
-      const def = enemyDef(enemy);
-      const move = enemy.intent ? def.moves[enemy.intent] : undefined;
-      if (move) {
-        log(ctx, `${enemy.name}: ${move.name}`, 'enemy');
-        executeEffects(ctx, ref, move.effects, PLAYER);
-        enemy.history.push(move.id);
-      }
-      if (enemy.hp > 0) {
-        const eMetal = getStatus(enemy.statuses, 'metallicize');
-        if (eMetal > 0) gainBlock(ctx, ref, eMetal);
-      }
-      checkCombatEnd(ctx);
-      if (combatOver(ctx)) return;
-    }
-
-    // -- End of round: duration statuses tick down
-    decayDurationStatuses(combat.player.statuses, combat.player.skipDecay);
-    combat.player.skipDecay = [];
-    for (const enemy of combat.enemies) {
-      if (enemy.hp > 0) decayDurationStatuses(enemy.statuses);
-    }
-
-    chooseIntents(ctx);
-    startPlayerTurn(ctx);
-  });
+/**
+ * `endTurn`, plus a snapshot after the player's turn ends and after each enemy acts. The
+ * returned `run` is exactly what `endTurn` returns; the frames are only for presentation.
+ */
+export function endTurnWithFrames(run: RunState): { run: RunState; frames: EnemyTurnFrame[] } {
+  const frames: EnemyTurnFrame[] = [];
+  const next = transact(run, (ctx) =>
+    resolveEndTurn(ctx, (c, actor, moveId) =>
+      frames.push({ run: structuredClone(c.run), actor, moveId }),
+    ),
+  );
+  return { run: next, frames: next === run ? [] : frames };
 }
 
 // ---- UI helpers ----------------------------------------------------------------------------
