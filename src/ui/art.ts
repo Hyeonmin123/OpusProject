@@ -21,16 +21,16 @@
  * eclipse, the raise-the-wick glass, the special intent, the buff and debuff intents and the
  * status-card glyph), exported into `assets/icons/`.
  *
- * The map chart is still vector art from the project's Figma file "끝없는 지하실 — Art Assets"
- * (https://www.figma.com/design/SP8IxP7Nwge0zkGVkRNB8C).
- * Status and enemy components fall back to the emoji in `data/` when an entry is missing.
+ * The map's vellum chart is pixel art too, drawn on its own grid by `scripts/pixelart/chart.py`.
+ * No vector art is left. Status and enemy components fall back to the emoji in `data/` when an
+ * entry is missing.
  */
 import keyArt from '../assets/art/keyart.png';
 import bgAct1 from '../assets/bg/act1.png';
 import bgAct2 from '../assets/bg/act2.png';
 import bgAct3 from '../assets/bg/act3.png';
 import bgEvent from '../assets/bg/event.png';
-import mapChart from '../assets/bg/map-chart.svg';
+import mapChart from '../assets/bg/map-chart.png';
 import bgMap from '../assets/bg/map.png';
 import bgMenu from '../assets/bg/menu.png';
 import bgRest from '../assets/bg/rest.png';
@@ -136,7 +136,10 @@ export function combatScene(act: number): SceneId {
   return act <= 1 ? 'act1' : act === 2 ? 'act2' : 'act3';
 }
 
-/** Dark vellum chart the map's node graph is drawn on (2× of the 444×850 map). */
+/**
+ * Dark vellum chart the map's node graph is drawn on: a 222×425 pixel grid at 2× (the map is
+ * 444×850 CSS px), drawn by `scripts/pixelart/chart.py`.
+ */
 export const MAP_CHART = mapChart;
 
 /** Core UI icons (32×32 pixel grid, readable at 14–32px). */

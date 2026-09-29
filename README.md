@@ -303,7 +303,16 @@ What is in it:
   (upgrade), beside the rekindle candle. Combat's blackout banner carries an eclipse (a black
   disc, a sliver of pale rim, the hidden intent's violet corona), the raise-the-wick button a
   gilt magnifying glass, and a special intent a gilt lozenge stamped with `?`, which is kept
-  apart from the hidden intent's dark disc: a special move is seen, only unusual.
+  apart from the hidden intent's dark disc: a special move is seen, only unusual. The last
+  vector glyphs went the same way: the buff intent is two sage chevrons, the debuff intent a
+  violet hex spiral flinging two drops of blood, and the status-card glyph a clot of grey muck
+  with a drip.
+
+The map's vellum chart is drawn directly on its final grid by `scripts/pixelart/chart.py`
+(222×425 at 2x, shown 1:1 under the 444×850 node graph): the vellum lit toward the middle in
+dithered dark steps, faint wavy survey lines and a dotted grid, a few stains, a compass rose
+behind the boss and a thin rounded border. The paths between the nodes are drawn aliased
+(`shape-rendering: crispEdges`), so they step across it in whole pixels.
 
 Other effects around the chrome follow the same rule: shadows and glows are hard offsets or
 rings (never blurred), and hover and pressed states move whole pixels (cards lift without
@@ -374,10 +383,9 @@ cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets r
 - **Acts 2 and 3 content depth**: they reuse the Act 1 monster roster with more HP and starting
   Strength. Only their bosses (_뼈의 여왕_, _심연의 눈_) are unique.
 - **Art, animation and sound**: the combat log's candle lines (the candle going out and being
-  relit) still start with a 🕯️ emoji written by the engine, and the map
-  chart, the map-node and portrait frame outlines (CSS circles and arches, with pixel shading on
-  the nodes) and the buff/debuff intent glyphs are still Figma vector art or CSS rather than
-  pixel art. Animation is
+  relit) still start with a 🕯️ emoji written by the engine, and the map-node and portrait
+  frame outlines are still CSS circles and arches (with pixel shading on the nodes) rather than
+  pixel art; no vector image art is left. Animation is
   CSS only: the enemy-turn replay (lunges, impact frames, floating numbers), screen
   transitions (every screen enters with the shared `fade-in`; the map fades out behind the
   picked room's node, and the room you return to rings once) and small transitions (intents,

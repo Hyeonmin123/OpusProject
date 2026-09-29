@@ -31,12 +31,14 @@
   text-shadow: 1px 1px 0 var(--bg);
 }
 
-/* The node graph is drawn on a dark vellum chart (Figma: bg/mapChart, set inline from art.ts). */
+/* The node graph is drawn on a dark vellum chart (pixel art on a 222x425 grid at 2x, drawn by
+   scripts/pixelart/chart.py and set inline from art.ts). Square corners: the chart draws its
+   own rounded border in pixels. */
 .map {
   position: relative;
   margin: 0 auto;
-  border-radius: var(--radius-sm);
-  background-color: #1b1719;
+  background-color: var(--bg-2);
+  image-rendering: pixelated;
   background-position: center top;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -52,17 +54,20 @@
   pointer-events: none;
 }
 
+/* Paths are drawn aliased (crispEdges, square caps), so they step across the chart in whole
+   pixels like hand-placed pixel lines instead of smooth vector strokes. */
 .edge {
-  stroke: #54494a;
+  stroke: var(--border-strong);
   stroke-width: 2;
   stroke-dasharray: 4 6;
-  stroke-linecap: round;
+  stroke-linecap: butt;
+  shape-rendering: crispEdges;
 }
 
 .edgeTaken {
   stroke: var(--accent);
   stroke-dasharray: none;
-  stroke-width: 3;
+  stroke-width: 4;
 }
 
 /* Paths you can take next march slowly toward the reachable rooms. */
