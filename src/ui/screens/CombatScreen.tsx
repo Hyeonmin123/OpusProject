@@ -68,12 +68,16 @@ export function CombatScreen({ run }: { run: RunState }) {
       setMessage(check.reason ?? '사용할 수 없습니다.');
       return;
     }
-    if (cardNeedsTarget(card) && living.length > 1) {
+    // A targeted card is only armed by the first click, even when there is a single enemy:
+    // the play resolves on a second, deliberate action (clicking the enemy, or Enter when
+    // there is only one target), so looking at a card never spends it by accident. Clicking
+    // the armed card again disarms it.
+    if (cardNeedsTarget(card)) {
       setSelectedUid(selected?.uid === card.uid ? null : card.uid);
       return;
     }
     setSelectedUid(null);
-    playCard(card.uid, cardNeedsTarget(card) ? living[0]?.i : undefined);
+    playCard(card.uid);
   }
 
   function onEnemyClick(index: number) {
@@ -82,20 +86,27 @@ export function CombatScreen({ run }: { run: RunState }) {
     setSelectedUid(null);
   }
 
-  // Keyboard: E = end turn, Esc = cancel targeting, 1-9 = pick card.
+  // Keyboard: E = end turn, Esc = cancel targeting, 1-9 = pick card, Enter = play the armed
+  // card on the only enemy.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (pileView || e.target instanceof HTMLInputElement) return;
       if (e.key === 'Escape') setSelectedUid(null);
-      else if ((e.key === 'e' || e.key === 'E') && playerTurn) handleEndTurn();
+      else if (e.key === 'Enter' && selected && living.length === 1) {
+        // Capture phase + stopPropagation: the focused card would otherwise take the Enter as
+        // a click and disarm itself.
+        e.preventDefault();
+        e.stopPropagation();
+        onEnemyClick(living[0].i);
+      } else if ((e.key === 'e' || e.key === 'E') && playerTurn) handleEndTurn();
       else if ((e.key === 'r' || e.key === 'R') && revealCheck.ok) revealIntents();
       else if (/^[1-9]$/.test(e.key)) {
         const card = combat.hand[Number(e.key) - 1];
         if (card) onCardClick(card);
       }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
   });
 
   const targetForText =
@@ -209,7 +220,12 @@ export function CombatScreen({ run }: { run: RunState }) {
 
       <section className={styles.handArea}>
         {(message || selected) && (
-          <div className={styles.hintBar}>{message ?? '대상을 선택하세요 (우클릭/Esc: 취소)'}</div>
+          <div className={styles.hintBar}>
+            {message ??
+              (living.length === 1
+                ? '적을 클릭해 사용하세요 (Enter: 사용 · 우클릭/Esc: 취소)'
+                : '대상을 선택하세요 (우클릭/Esc: 취소)')}
+          </div>
         )}
         <div className={styles.leftCluster}>
           <div

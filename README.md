@@ -45,11 +45,13 @@ dropped on GitHub Pages, Netlify, itch.io, or any static host.
 2. **Map**: start from any bottom node and climb toward the boss. Node types (the legend beside
    the map shows their icons): combat (crossed swords), elite (a horned demon; mid-boss, always
    drops a relic), event (?), shop (coins), rest site (campfire), boss (skull).
-3. **Combat**: you have **3 energy** and draw **5 cards** each turn. Click a card to play it. If it
-   needs a target and there are several enemies, click an enemy (right-click or Esc cancels).
+3. **Combat**: you have **3 energy** and draw **5 cards** each turn. Click a card to play it. A
+   card that needs a target is only readied by the first click, even against a single enemy:
+   click an enemy to play it (with one enemy left, Enter also plays it; clicking the card again,
+   right-click or Esc cancels).
    Enemies show their **intent** (a sword and attack for N, a shield and block, buff, debuff, or a
    gilt `?` for a special move such as shuffling a status card into your deck) above their heads.
-   Block expires at the start of your next turn. Shortcuts: `1`–`9` play the card in that slot,
+   Block expires at the start of your next turn. Shortcuts: `1`–`9` pick the card in that slot,
    `E` ends the turn, `R` raises the wick (reveals hidden intents).
    The **candle gauge** under your character burns 1 wax per turn. When it runs low, some intents
    show as `???`. Pay 3 wax with **심지 돋우기** (raise the wick) to reveal them.
