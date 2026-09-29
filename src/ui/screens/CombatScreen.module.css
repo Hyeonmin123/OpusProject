@@ -1,9 +1,14 @@
 .screen {
-  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: 1fr auto;
+  /* The log gets its own row (sized to its content, capped below) instead of floating over
+     the field: an absolutely-positioned overlay's safe height depends on how tall the field is
+     and how low the vertically-centred creatures sit, which both shrink at smaller viewports —
+     a cap tuned safe on a large screen still clipped a 3-enemy formation's top on a small one.
+     A real row can never overlap what comes after it, at any size. */
+  grid-template-rows: auto 1fr auto;
   grid-template-areas:
+    'log'
     'field'
     'hand';
   height: calc(100vh - 50px);
@@ -145,20 +150,16 @@
   gap: 12px;
 }
 
-/* Floats over the field's top-right corner instead of claiming its own grid column, so the
-   field spans the full width and the player/enemy stage centers on the true screen edges
-   (the whole point of splitting the two sides apart is undone if a sidebar throws that off).
-   The `.screen >` combinator beats the global `.panel { position: relative }` class also on
-   this element, which otherwise wins on source order and un-floats it (same quirk as
-   MapScreen's `.screen > .legend`). */
-.screen > .log {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 2;
+/* Its own row above the field (not an overlay — see .screen), pinned to the top-right of that
+   row so the field below still spans the full width and the player/enemy stage centers on the
+   true screen edges. The list scrolls internally (and auto-scrolls to the newest entry) rather
+   than the box growing, so a long fight keeps this row's height fixed. */
+.log {
+  grid-area: log;
+  justify-self: end;
+  margin: 12px 12px 0 0;
   width: 260px;
-  max-height: min(60%, 420px);
-  min-height: 0;
+  height: 150px;
   display: flex;
   flex-direction: column;
   padding: 14px 14px 12px;
@@ -458,6 +459,7 @@
 @media (max-width: 900px) {
   .screen {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
     grid-template-areas:
       'field'
       'hand';
