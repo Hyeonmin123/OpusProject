@@ -3,7 +3,8 @@
 //
 // Builds, idempotently, in the "Endless Cellar — Pixel UI Kit" Figma file:
 //   - the "Pixel palette" variable collection (locked/* = pxlib.py, midpoint/* = uikit.EXTRA),
-//   - the batch's page and its "Export sheet" frame (transparent, exports PNG @2x),
+//   - the batch's page and its "Export sheet" frame (transparent, exports PNG @2x, the Icons
+//     page @4x),
 //   - one component per asset at its sheet position, drawn 1 unit = 1 art pixel as one vector
 //     per palette colour (row runs of unit squares), each fill bound to its palette variable.
 // 9-slice assets are split into nine region frames with MIN / STRETCH / MAX constraints, so an
@@ -54,8 +55,9 @@ if (!sheet) {
   sheet.y = 160;
   sheet.fills = [];
   sheet.clipsContent = false;
-  sheet.exportSettings = [{ format: 'PNG', suffix: '', constraint: { type: 'SCALE', value: 2 } }];
 }
+const SCALE = D.sheet.scale || 2;
+sheet.exportSettings = [{ format: 'PNG', suffix: '', constraint: { type: 'SCALE', value: SCALE } }];
 sheet.resize(D.sheet.w, D.sheet.h);
 
 // ---- pixels ------------------------------------------------------------------------------------
@@ -193,7 +195,7 @@ for (const a of D.assets) {
   c.clipsContent = false;
   const sl = a.slice ? ` 9-slice (art px) ${a.slice.join(' ')}.` : '';
   c.description =
-    `${a.w}x${a.h} art px, exported @2x to src/assets/${a.out || `ui/${a.name}.png`}.${sl} ${a.note || ''}`.trim();
+    `${a.w}x${a.h} art px, exported @${SCALE}x to src/assets/${a.out || `ui/${a.name}.png`}.${sl} ${a.note || ''}`.trim();
   if (!a.slice) {
     out.vectors += drawRegion(a, px, tokens, c, 0, 0, a.w, a.h, false);
   } else {

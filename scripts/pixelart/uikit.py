@@ -15,7 +15,9 @@ pixel data) that build or rebuild those components; `import` takes the sheets ex
 Figma at 2x (PNG, the sheets' export setting), crops each component out, checks that every
 pixel is on the palette and on the 2x2 grid, and writes src/assets/ui/*.png (and the card
 ornaments in src/assets/art/). Nothing is ever resampled: the PNGs are 2x and shown 1:1 in the
-CSS (`image-rendering: pixelated` keeps them hard on high-DPI screens). `check` reports any
+CSS (`image-rendering: pixelated` keeps them hard on high-DPI screens). The one exception is
+the Icons page (map nodes, relics, events; drawn in icons.py): those are on the gameplay icons'
+32px grid and export at 4x, like `src/assets/icons/*.png`. `check` reports any
 asset that no longer matches its drawing here (i.e. was edited in Figma).
 
 Rules every asset follows (the same discipline as the Gemini-derived portraits, icons and
@@ -192,12 +194,13 @@ ASSETS_SPEC: list[dict] = []
 
 
 def asset(page: str, name: str, g: Grid, out: str | None = None, slice_=None, note: str = '',
-          gen: dict | None = None):
+          gen: dict | None = None, row_break: bool = False):
     """Register an asset. `slice_` = (top, right, bottom, left) 9-slice insets in grid px;
-    `gen` = the parameters figma_seed.js regenerates a scrim from (instead of pixel data)."""
+    `gen` = the parameters figma_seed.js regenerates a scrim from (instead of pixel data);
+    `row_break` starts a new row on the export sheet."""
     ASSETS_SPEC.append({'page': page, 'name': name, 'grid': g,
                         'out': out if out is not None else f'ui/{name}.png',
-                        'slice': slice_, 'note': note, 'gen': gen})
+                        'slice': slice_, 'note': note, 'gen': gen, 'row_break': row_break})
 
 
 # ---- Buttons --------------------------------------------------------------------------------
@@ -798,6 +801,28 @@ def build_scrims():
     asset('Scrims & Shading', 'node-shade-sm', node_shade(13), note='legend dot shading (26px)')
 
 
+# ---- Icons ----------------------------------------------------------------------------------
+# Map-node, relic and event icons, drawn in icons.py on the gameplay icons' 32px grid.
+
+ICON_DIRS = {'node': 'nodes', 'relic': 'relics', 'event': 'events'}
+ICON_NOTES = {'node': 'map node icon', 'relic': 'relic icon', 'event': 'event icon'}
+
+
+def build_icons():
+    import icons  # the drawings (icons.py)
+
+    last = None
+    for group, key, keys in icons.all_icons():
+        g = Grid(icons.SIZE, icons.SIZE)
+        for y, row in enumerate(keys):
+            for x, k in enumerate(row):
+                if k:
+                    g.px(x, y, k)
+        asset('Icons', f'{group}-{key}', g, out=f'{ICON_DIRS[group]}/{key}.png',
+              note=f'{ICON_NOTES[group]} (32px grid, @4x)', row_break=group != last)
+        last = group
+
+
 def build_all():
     ASSETS_SPEC.clear()
     build_buttons()
@@ -806,6 +831,7 @@ def build_all():
     build_bars()
     build_topbar()
     build_scrims()
+    build_icons()
     return ASSETS_SPEC
 
 
@@ -814,8 +840,15 @@ def build_all():
 # --------------------------------------------------------------------------------------------
 
 PAGES = ['Buttons', 'Panels & Frames', 'Card Chrome', 'Bars & Gauges', 'Top Bar',
-         'Scrims & Shading']
+         'Scrims & Shading', 'Icons']
+# Export scale per page (Figma "Export sheet" setting): the chrome is 2x, the icons 4x like the
+# gameplay and status icons.
+PAGE_SCALE = {'Icons': 4}
 GAP = 4
+
+
+def page_scale(page: str) -> int:
+    return PAGE_SCALE.get(page, SCALE)
 
 
 def layout(spec):
@@ -829,7 +862,7 @@ def layout(spec):
         row_h = 0
         for a in items:
             g = a['grid']
-            if x + g.w + GAP > sheet_w:
+            if x + g.w + GAP > sheet_w or (a.get('row_break') and x > GAP):
                 x = GAP
                 y += row_h + GAP
                 row_h = 0
@@ -923,7 +956,8 @@ def seed():
             used = sorted({i for e in b for i in e.get('rows', [])})
             remap = {old: new for new, old in enumerate(used)}
             b = [dict(e, rows=[remap[i] for i in e['rows']]) if 'rows' in e else e for e in b]
-            payload = {'sheet': {'page': page, 'w': sheets[page][0], 'h': sheets[page][1]},
+            payload = {'sheet': {'page': page, 'w': sheets[page][0], 'h': sheets[page][1],
+                                 'scale': page_scale(page)},
                        'palette': palette, 'tokens': tokens,
                        'rows': [row_list[i] for i in used],
                        'scrimAlphas': list(SCRIM_ALPHAS), 'assets': b}
@@ -978,11 +1012,12 @@ def import_sheets(paths: list[str]):
             continue
         sheet = by_page[a['page']]
         sw, sh = sheets[a['page']]
-        assert sheet.shape[1] == sw * SCALE and sheet.shape[0] == sh * SCALE, \
-            f"{a['page']}: sheet is {sheet.shape[1]}x{sheet.shape[0]}, want {sw * SCALE}x{sh * SCALE}"
-        x, y, w, h = (v * SCALE for v in (a['x'], a['y'], a['grid'].w, a['grid'].h))
+        k = page_scale(a['page'])
+        assert sheet.shape[1] == sw * k and sheet.shape[0] == sh * k, \
+            f"{a['page']}: sheet is {sheet.shape[1]}x{sheet.shape[0]}, want {sw * k}x{sh * k}"
+        x, y, w, h = (v * k for v in (a['x'], a['y'], a['grid'].w, a['grid'].h))
         crop = snap(sheet[y:y + h, x:x + w].copy(), cols, alphas, a['name'])
-        check_grid(crop, a['name'])
+        check_grid(crop, a['name'], k)
         path = os.path.join(ASSETS, a['out'])
         os.makedirs(os.path.dirname(path), exist_ok=True)
         Image.fromarray(crop, 'RGBA').save(path, optimize=True)
@@ -1011,13 +1046,13 @@ def snap(px: np.ndarray, cols, alphas, name: str, tol: int = 3) -> np.ndarray:
     return fixed[inv.ravel()].reshape(px.shape).astype(np.uint8)
 
 
-def check_grid(px: np.ndarray, name: str):
-    """Every 2x2 block must be one colour (the art is exported at exactly 2x)."""
+def check_grid(px: np.ndarray, name: str, k: int = SCALE):
+    """Every k x k block must be one colour (the art is exported at exactly k x)."""
     h, w = px.shape[:2]
-    assert h % SCALE == 0 and w % SCALE == 0, f'{name}: size {w}x{h} not on the 2x grid'
-    blocks = px.reshape(h // SCALE, SCALE, w // SCALE, SCALE, 4)
+    assert h % k == 0 and w % k == 0, f'{name}: size {w}x{h} not on the {k}x grid'
+    blocks = px.reshape(h // k, k, w // k, k, 4)
     same = (blocks == blocks[:, :1, :, :1]).all(axis=(1, 3, 4))
-    assert same.all(), f'{name}: {int((~same).sum())} blocks are not solid 2x2'
+    assert same.all(), f'{name}: {int((~same).sum())} blocks are not solid {k}x{k}'
 
 
 def check():
@@ -1027,8 +1062,9 @@ def check():
     for a in spec:
         path = os.path.join(ASSETS, a['out'])
         px = np.asarray(Image.open(path).convert('RGBA'))
+        k = page_scale(a['page'])
         try:
-            check_grid(px, a['name'])
+            check_grid(px, a['name'], k)
             flat = px.reshape(-1, 4)
             vis = flat[flat[:, 3] > 0]
             off_c = {tuple(int(v) for v in c[:3]) for c in vis} - cols
@@ -1036,7 +1072,7 @@ def check():
             assert not off_c, f"{a['name']}: off-palette {sorted(off_c)[:4]}"
             assert not off_a, f"{a['name']}: off alpha levels {sorted(off_a)[:4]}"
             want = a['grid'].rgba()
-            got = px[::SCALE, ::SCALE]
+            got = px[::k, ::k]
             if not np.array_equal(want, got):
                 print(f"  note: {a['out']} differs from the seed drawing (edited in Figma)")
         except AssertionError as e:
@@ -1059,7 +1095,8 @@ if __name__ == '__main__':
             path = os.path.join(ASSETS, a['out'])
             os.makedirs(os.path.dirname(path), exist_ok=True)
             img = Image.fromarray(a['grid'].rgba(), 'RGBA')
-            img.resize((img.width * SCALE, img.height * SCALE), Image.NEAREST).save(path, optimize=True)
+            k = page_scale(a['page'])
+            img.resize((img.width * k, img.height * k), Image.NEAREST).save(path, optimize=True)
     elif cmd == 'check':
         sys.exit(0 if check() else 1)
     else:
