@@ -16,6 +16,7 @@ export function RewardScreen({ run }: { run: RunState }) {
   const leave = useGame((s) => s.leaveReward);
   const relic = reward.relicId ? RELICS[reward.relicId] : null;
   const isBoss = reward.tier === 'boss';
+  const unclaimed = !reward.goldClaimed || (relic !== null && !reward.relicClaimed);
 
   const leaveLabel = isBoss
     ? run.act >= FINAL_ACT
@@ -40,17 +41,18 @@ export function RewardScreen({ run }: { run: RunState }) {
 
         <div className={styles.rewardRows}>
           <button
-            className={`btn ${styles.rewardRow} ${reward.goldClaimed ? styles.claimed : ''}`}
+            className={`btn ${styles.rewardRow} ${reward.goldClaimed ? styles.claimed : `btn-primary ${styles.unclaimed}`}`}
             onClick={claimGold}
             disabled={reward.goldClaimed}
           >
             <span className={styles.rewardIcon}>◉</span>
-            <span>골드 {reward.gold}</span>
+            <span className={styles.rewardText}>골드 {reward.gold}</span>
+            <ClaimTag claimed={reward.goldClaimed} />
           </button>
 
           {relic && (
             <button
-              className={`btn ${styles.rewardRow} ${reward.relicClaimed ? styles.claimed : ''}`}
+              className={`btn ${styles.rewardRow} ${reward.relicClaimed ? styles.claimed : `btn-primary ${styles.unclaimed}`}`}
               onClick={claimRelic}
               disabled={reward.relicClaimed}
               title={relic.description}
@@ -58,10 +60,11 @@ export function RewardScreen({ run }: { run: RunState }) {
               <span className={styles.rewardIcon}>
                 <Icon src={RELIC_ICONS[relic.id]} size={32} />
               </span>
-              <span>
+              <span className={styles.rewardText}>
                 유물: <span className={styles.rewardName}>{relic.name}</span>{' '}
                 <span className={styles.rewardDesc}>— {relic.description}</span>
               </span>
+              <ClaimTag claimed={reward.relicClaimed} />
             </button>
           )}
         </div>
@@ -83,11 +86,21 @@ export function RewardScreen({ run }: { run: RunState }) {
               카드 받지 않기
             </button>
           )}
+          {unclaimed && <span className={styles.leaveWarn}>! 받지 않은 보상은 사라집니다</span>}
           <button className="btn btn-primary btn-large" onClick={leave}>
             {leaveLabel}
           </button>
         </div>
       </div>
     </div>
+  );
+}
+
+/** The row's call to action: a gilt "받기" tag that blinks until the reward is taken. */
+function ClaimTag({ claimed }: { claimed: boolean }) {
+  return (
+    <span className={`${styles.claimTag} ${claimed ? styles.claimTagDone : ''}`}>
+      {claimed ? '받음' : '받기'}
+    </span>
   );
 }

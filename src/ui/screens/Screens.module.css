@@ -237,9 +237,122 @@
   color: var(--hi);
 }
 
+.rewardText {
+  flex: 1;
+  min-width: 0;
+}
+
+/* An unclaimed reward is a call to action, not a line of text: the bronze primary plaque,
+   a gilt 받기 tag on its right, and a hard ring round it that blinks gilt / dim gilt / off
+   in whole frames (steps, like the blackout banner), in step with the tag's 2px hop. Any
+   reward left unclaimed is lost on leaving, and players walked past plain rows. */
+.unclaimed {
+  animation: claim-ring 1.2s steps(1, end) infinite;
+}
+
+.unclaimed:hover:not(:disabled) {
+  animation: none;
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--hi);
+}
+
+@keyframes claim-ring {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 4px var(--light);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 4px var(--accent);
+  }
+  75% {
+    box-shadow: 0 0 0 2px var(--bg);
+  }
+}
+
+/* The tag: a gilt plate with a hard d0 rim, a lit top row and a shade row, in the large
+   button face (Galmuri9 at 2x). */
+.claimTag {
+  flex: none;
+  margin-left: auto;
+  padding: 1px 12px 0;
+  border: 2px solid var(--bg);
+  background: var(--light);
+  box-shadow:
+    inset 0 2px 0 var(--hi),
+    inset 0 -2px 0 var(--candle),
+    2px 2px 0 var(--bg);
+  font-family: var(--font-px9);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--bg);
+  text-shadow: none;
+  animation: claim-hop 1.2s steps(1, end) infinite;
+}
+
+.unclaimed:hover .claimTag {
+  animation: none;
+  background: var(--hi);
+}
+
+@keyframes claim-hop {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+  75% {
+    transform: none;
+  }
+}
+
+.unclaimed .rewardName {
+  color: var(--light);
+}
+
+.claimTagDone {
+  border-color: transparent;
+  background: none;
+  box-shadow: none;
+  color: var(--text-faint);
+  animation: none;
+}
+
 .claimed {
-  text-decoration: line-through;
   opacity: 0.45;
+}
+
+.claimed .rewardText {
+  text-decoration: line-through;
+}
+
+/* Next to the leave button while a reward is still unclaimed. */
+.leaveWarn {
+  font-family: var(--font-px14);
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--debuff);
+  text-shadow: var(--outline-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unclaimed,
+  .claimTag {
+    animation: none;
+  }
+
+  .unclaimed {
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 4px var(--light);
+  }
 }
 
 .cards {
