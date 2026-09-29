@@ -1,4 +1,8 @@
 .creature {
+  /* Portrait frame size: the sprite grid (52px, bosses 66px) at 2x plus the 2px ring. On
+     roomy screens (below) the frame goes to 3x, and 4x on the largest, so the combatants fill
+     the stage. */
+  --frame: 108px;
   position: relative;
   isolation: isolate;
   width: 170px;
@@ -10,20 +14,66 @@
   border-radius: var(--radius);
 }
 
+.boss {
+  --frame: 136px;
+}
+
 .creature > * {
   transition: opacity 0.3s;
 }
 
-/* A pool of shadow behind each combatant separates it from the scene art (ui/pool.png: an
-   ellipse of d0 in dithered alpha steps). */
+/* Each combatant stands in a pool of dark (ui/stage-pool*.png from scripts/pixelart/stage.py:
+   a d0 ellipse, solid in the middle, falling off in the scrims' dithered alpha steps) that
+   darkens the scene around it, so it reads as lit on a dark stage and its name and HP have a
+   dark ground. Shown 1:1 (fixed size, centred) so the dither stays on the grid. */
 .creature::before {
   content: '';
   position: absolute;
-  inset: -4px -26px -8px;
+  inset: -60px -70px;
   z-index: -1;
-  background: url('../../assets/ui/pool.png') center / 100% 100% no-repeat;
+  background: url('../../assets/ui/stage-pool.png') center / 280px 360px no-repeat;
   image-rendering: pixelated;
   pointer-events: none;
+}
+
+.boss::before {
+  background-image: url('../../assets/ui/stage-pool-boss.png');
+  background-size: 328px 412px;
+}
+
+@media (min-width: 1200px) and (min-height: 820px) {
+  .creature {
+    --frame: 160px;
+    width: 204px;
+  }
+
+  .boss {
+    --frame: 202px;
+    width: 236px;
+  }
+}
+
+/* 4x on the largest screens. */
+@media (min-width: 1680px) and (min-height: 1000px) {
+  .creature {
+    --frame: 212px;
+    width: 256px;
+  }
+
+  .boss {
+    --frame: 268px;
+    width: 300px;
+  }
+
+  .creature::before {
+    background-image: url('../../assets/ui/stage-pool-lg.png');
+    background-size: 336px 428px;
+  }
+
+  .boss::before {
+    background-image: url('../../assets/ui/stage-pool-boss-lg.png');
+    background-size: 392px 488px;
+  }
 }
 
 /* Targeting: every valid target's portrait breathes a gilt ring; the hovered one locks on
@@ -87,17 +137,23 @@
   filter: grayscale(1);
 }
 
+/* The arched frame: a 2px ring (p0 for common foes, the tier colour for elites and bosses,
+   gilt for the warrior), a solid d0 ring and a hard drop shadow. Inside it the sprite stands
+   in a lit well (ui/well-*.png, on the sprite's own grid): the warrior in candlelight, enemies
+   in a blood-red ember glow, so the sprite's d0 outline reads against a lighter ground. */
 .portrait {
-  width: 108px;
-  height: 108px;
+  width: var(--frame);
+  height: var(--frame);
   border-radius: 50% 50% 14px 14px;
   display: grid;
   place-items: center;
   font-size: 54px;
-  background: var(--panel-2);
-  border: 2px solid var(--border-strong);
+  background: url('../../assets/ui/well-ember.png') 0 0 / 100% 100% no-repeat var(--bg);
+  background-origin: padding-box;
+  image-rendering: pixelated;
+  border: 2px solid var(--text-faint);
   box-shadow:
-    0 0 0 2px rgb(11 10 13 / 85%),
+    0 0 0 2px var(--bg),
     0 4px 0 rgb(15 14 17 / 60%);
   transition:
     transform 0.15s ease-out,
@@ -108,7 +164,6 @@
 .hasArt {
   position: relative;
   overflow: hidden;
-  background: var(--bg);
 }
 
 .hasArt::after {
@@ -120,8 +175,8 @@
   pointer-events: none;
 }
 
-/* Pixel-art portraits: the grid (52px, bosses 66px) is exactly half the frame's inner size,
-   so nearest-neighbour scaling keeps every pixel a crisp 2×2 block. */
+/* Pixel-art portraits: the frame's inner size is exactly 2x (3x on roomy screens) the grid,
+   so nearest-neighbour scaling keeps every pixel a crisp block. */
 .art {
   display: block;
   width: 100%;
@@ -133,13 +188,13 @@
 
 .player .portrait {
   border-color: var(--accent);
+  background-image: url('../../assets/ui/well-warm.png');
 }
 
 .boss .portrait {
-  width: 136px;
-  height: 136px;
   font-size: 70px;
   border-color: #7a2f4a;
+  background-image: url('../../assets/ui/well-ember-boss.png');
 }
 
 .elite .portrait {
@@ -270,7 +325,7 @@
   }
   75% {
     box-shadow:
-      0 0 0 2px rgb(11 10 13 / 85%),
+      0 0 0 2px var(--bg),
       0 4px 0 rgb(15 14 17 / 60%);
   }
 }
@@ -295,7 +350,7 @@
   }
   75% {
     box-shadow:
-      0 0 0 2px rgb(11 10 13 / 85%),
+      0 0 0 2px var(--bg),
       0 4px 0 rgb(15 14 17 / 60%);
   }
 }
@@ -565,117 +620,6 @@
   .jab,
   .acting .intent {
     animation: none;
-  }
-}
-
-.name {
-  color: var(--light);
-}
-
-@keyframes target-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 0 2px rgb(216 183 110 / 40%),
-      0 0 0 4px rgb(216 183 110 / 12%);
-  }
-  50% {
-    box-shadow:
-      0 0 0 3px rgb(216 183 110 / 80%),
-      0 0 0 6px rgb(216 183 110 / 28%);
-  }
-}
-
-@keyframes reticle-in {
-  from {
-    opacity: 0;
-    transform: scale(1.08);
-  }
-}
-
-/* Everything but the floating numbers, so a killing blow's number still reads. */
-.dead > :not(.floats) {
-  opacity: 0.25;
-  filter: grayscale(1);
-}
-
-.portrait {
-  width: 108px;
-  height: 108px;
-  border-radius: 50% 50% 14px 14px;
-  display: grid;
-  place-items: center;
-  font-size: 54px;
-  background: var(--panel-2);
-  border: 2px solid var(--border-strong);
-  box-shadow:
-    0 0 0 2px rgb(11 10 13 / 85%),
-    0 4px 0 rgb(15 14 17 / 60%);
-  transition:
-    transform 0.15s ease-out,
-    box-shadow 0.15s;
-}
-
-/* Pixel portrait art fills the arched frame; a hard 2px inner shade line sits on top. */
-.hasArt {
-  position: relative;
-  overflow: hidden;
-  background: var(--bg);
-}
-
-.hasArt::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 2px rgb(15 14 17 / 45%);
-  pointer-events: none;
-}
-
-/* Pixel-art portraits: the grid (52px, bosses 66px) is exactly half the frame's inner size,
-   so nearest-neighbour scaling keeps every pixel a crisp 2×2 block. */
-.art {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  image-rendering: pixelated;
-  user-select: none;
-}
-
-.player .portrait {
-  border-color: var(--accent);
-}
-
-.boss .portrait {
-  width: 136px;
-  height: 136px;
-  font-size: 70px;
-  border-color: #7a2f4a;
-}
-
-.elite .portrait {
-  border-color: #a0453a;
-}
-
-.hit .portrait {
-  animation: hit 0.35s ease-out;
-}
-
-@keyframes hit {
-  0% {
-    transform: translateX(0);
-    filter: brightness(2) saturate(0.2) sepia(1) hue-rotate(-30deg);
-  }
-  25% {
-    transform: translateX(-6px);
-  }
-  50% {
-    transform: translateX(5px);
-  }
-  100% {
-    transform: none;
-    filter: none;
   }
 }
 

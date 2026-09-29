@@ -232,8 +232,8 @@ The pixel art starts as Gemini image exports, kept unprocessed in `art-src/gemin
    two extra sage steps; scenes also use midpoints between neighbouring palette steps so
    stonework keeps its texture), then exports the grid upscaled 4× with nearest-neighbour.
 
-Grids are chosen so pixels land on whole CSS pixels: portraits 52px and boss portraits 66px (2× in
-their frames), icons and status icons 32px, scenes 256×144. The UI draws them with
+Grids are chosen so pixels land on whole CSS pixels: portraits 52px and boss portraits 66px (2×,
+3× or 4× in their frames), icons and status icons 32px, scenes 256×144. The UI draws them with
 `image-rendering: pixelated` wherever they are shown larger than their grid.
 
 #### UI chrome
@@ -289,8 +289,8 @@ What is in it:
 - Top bar: the lintel tile, the gilt lower edge with a dithered drop shadow, the relic sockets.
 - Scrims: the scene vignettes (on the scenes' own 256×144 grid, positioned like the scene so the
   pixels line up), the combat field in dim light and blackout, the hand's ledge, the shadow pool
-  behind each combatant and the map-node shading, all d0 in alpha steps of 16 with ordered
-  dither between steps.
+  behind each combatant (combat now uses the larger stage pools, below) and the map-node
+  shading, all d0 in alpha steps of 16 with ordered dither between steps.
 - Icons: the six map-node icons (`assets/nodes/`), the 16 relics (`assets/relics/`) and the six
   event rooms (`assets/events/`), keyed by node type, relic id and event id. The altar and the
   chandler's workshop are both candle rooms, so one is a stone altar with a single candle and
@@ -313,6 +313,16 @@ The map's vellum chart is drawn directly on its final grid by `scripts/pixelart/
 dithered dark steps, faint wavy survey lines and a dotted grid, a few stains, a compass rose
 behind the boss and a thin rounded border. The paths between the nodes are drawn aliased
 (`shape-rendering: crispEdges`), so they step across it in whole pixels.
+
+The combat stage is drawn the same way by `scripts/pixelart/stage.py`. The portraits are grey
+sprites with a d0 outline, so over a dark frame and the dim stone scenes they melted into the
+wall. Each portrait now stands in a lit well inside its frame, on the sprite's own grid and
+exported at 4x like the portraits: `well-warm` (the warrior, in candlelight) and `well-ember`
+/ `well-ember-boss` (the enemies, in a dull blood-red glow), both lit from behind the creature
+and darkening to the rim and into a floor band. Around each combatant a `stage-pool` (a d0
+ellipse in the scrims' dithered alpha steps, shown 1:1) darkens the scene, so the combatants
+read as lit on a dark stage and their names and HP have a dark ground. The frame shows the
+sprite at 2x, 3x on screens at least 1200×820 and 4x from 1680×1000 (with the `-lg` pools).
 
 Other effects around the chrome follow the same rule: shadows and glows are hard offsets or
 rings (never blurred), and hover and pressed states move whole pixels (cards lift without
