@@ -2,7 +2,7 @@ import { FINAL_ACT } from '../../data/acts';
 import { RELICS } from '../../data/relics';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
-import { RELIC_ICONS } from '../art';
+import { ICONS, RELIC_ICONS } from '../art';
 import { CardView } from '../components/CardView';
 import { Icon } from '../components/Icon';
 import styles from './Screens.module.css';
@@ -27,7 +27,9 @@ export function RewardScreen({ run }: { run: RunState }) {
     <div className={`${styles.screen} fade-in`}>
       <div className={`${styles.box} panel`}>
         <div className={styles.head}>
-          <div className={styles.icon}>🏆</div>
+          <div className={styles.icon}>
+            <Icon src={ICONS.reward} size={64} />
+          </div>
           <div>
             <h2>전리품</h2>
             <div className="dim">

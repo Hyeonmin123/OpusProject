@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { canUpgrade, restHealAmount, restRekindleAmount } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
-import { ICONS } from '../art';
+import { ICONS, NODE_ICONS } from '../art';
 import { DeckModal } from '../components/DeckModal';
 import { Icon } from '../components/Icon';
 import styles from './Screens.module.css';
@@ -23,7 +23,9 @@ export function RestScreen({ run }: { run: RunState }) {
     <div className={`${styles.screen} fade-in`}>
       <div className={`${styles.box} panel`}>
         <div className={styles.head}>
-          <div className={styles.icon}>🔥</div>
+          <div className={styles.icon}>
+            <Icon src={NODE_ICONS.rest} size={64} />
+          </div>
           <div>
             <h2>휴식처</h2>
             <div className="dim">꺼져 가는 모닥불. 잠시 숨을 돌릴 수 있을 것 같다.</div>

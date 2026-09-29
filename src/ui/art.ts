@@ -16,7 +16,8 @@
  * The map-node, relic and event icons are hand-built pixel art on the same 32px grid as the
  * gameplay icons (`scripts/pixelart/icons.py`), round-tripped through the kit's "Icons" page and
  * exported into `assets/nodes/`, `assets/relics/` and `assets/events/`, keyed by node type,
- * relic id and event id.
+ * relic id and event id. So are the screen icons in `ICONS` (HP heart, reward trophy, victory
+ * crown, defeat headstone, card removal), exported into `assets/icons/`.
  *
  * The remaining SVGs (intent buff/debuff and generic status glyphs, the map chart) come from
  * the project's Figma file "끝없는 지하실 — Art Assets"
@@ -41,16 +42,21 @@ import eventSpring from '../assets/events/spring.png';
 import eventWhisper from '../assets/events/whisper.png';
 import candle from '../assets/icons/candle.png';
 import candleOut from '../assets/icons/candle-out.png';
+import crown from '../assets/icons/crown.png';
 import energy from '../assets/icons/energy.png';
+import heart from '../assets/icons/heart.png';
 import hidden from '../assets/icons/hidden.png';
 import intentBuff from '../assets/icons/intent-buff.svg';
 import intentDebuff from '../assets/icons/intent-debuff.svg';
 import light from '../assets/icons/light.png';
 import power from '../assets/icons/power.png';
+import remove from '../assets/icons/remove.png';
 import shadow from '../assets/icons/shadow.png';
 import shield from '../assets/icons/shield.png';
 import status from '../assets/icons/status.svg';
 import sword from '../assets/icons/sword.png';
+import tombstone from '../assets/icons/tombstone.png';
+import trophy from '../assets/icons/trophy.png';
 import nodeBoss from '../assets/nodes/boss.png';
 import nodeCombat from '../assets/nodes/combat.png';
 import nodeElite from '../assets/nodes/elite.png';
@@ -142,6 +148,14 @@ export const ICONS = {
   hidden,
   intentBuff,
   intentDebuff,
+  /** Player HP (top bar). */
+  hp: heart,
+  /** Screen headers (room niche): rewards, run won, run lost. Rest and shop use NODE_ICONS. */
+  reward: trophy,
+  victory: crown,
+  defeat: tombstone,
+  /** The shop's card removal. */
+  removeCard: remove,
 } as const;
 
 export const STATUS_ICONS: Record<StatusId, string> = {

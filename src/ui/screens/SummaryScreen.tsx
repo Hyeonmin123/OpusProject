@@ -3,7 +3,7 @@ import { RELICS } from '../../data/relics';
 import { cardName } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
-import { RELIC_ICONS } from '../art';
+import { ICONS, RELIC_ICONS } from '../art';
 import { Icon } from '../components/Icon';
 import styles from './Screens.module.css';
 
@@ -35,7 +35,9 @@ export function SummaryScreen({ run }: { run: RunState }) {
     <div className={`${styles.screen} fade-in`}>
       <div className={`${styles.box} panel`}>
         <div className={styles.head}>
-          <div className={styles.icon}>{victory ? '👑' : '🪦'}</div>
+          <div className={styles.icon}>
+            <Icon src={victory ? ICONS.victory : ICONS.defeat} size={64} />
+          </div>
           <div>
             <h2 className={victory ? styles.victoryTitle : styles.defeatTitle}>
               {victory ? '지하실을 정복했다' : '탐험 실패'}

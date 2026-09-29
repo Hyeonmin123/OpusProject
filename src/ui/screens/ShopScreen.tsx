@@ -3,7 +3,7 @@ import { RELICS } from '../../data/relics';
 import { SHOP_CANDLE_AMOUNT } from '../../engine';
 import { useGame } from '../../store/gameStore';
 import type { RunState } from '../../types';
-import { ICONS, RELIC_ICONS } from '../art';
+import { ICONS, NODE_ICONS, RELIC_ICONS } from '../art';
 import { CardView } from '../components/CardView';
 import { DeckModal } from '../components/DeckModal';
 import { Icon } from '../components/Icon';
@@ -33,7 +33,9 @@ export function ShopScreen({ run }: { run: RunState }) {
     <div className={`${styles.screen} fade-in`}>
       <div className={`${styles.box} panel`}>
         <div className={styles.head}>
-          <div className={styles.icon}>💰</div>
+          <div className={styles.icon}>
+            <Icon src={NODE_ICONS.shop} size={64} />
+          </div>
           <div>
             <h2>떠돌이 상인</h2>
             <div className="dim">"살아서 돌아올 생각이라면… 뭐든 사 두는 게 좋을걸."</div>
@@ -95,7 +97,9 @@ export function ShopScreen({ run }: { run: RunState }) {
             disabled={!canRemove}
             onClick={() => setRemoving(true)}
           >
-            <span className={styles.relicIcon}>🗑️</span>
+            <span className={styles.relicIcon}>
+              <Icon src={ICONS.removeCard} size={32} />
+            </span>
             <span className={styles.relicName}>카드 제거</span>
             <span className={styles.relicDesc}>덱에서 카드 1장을 영구히 제거합니다.</span>
             {shop.removeUsed ? (
