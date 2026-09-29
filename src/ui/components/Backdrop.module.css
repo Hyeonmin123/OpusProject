@@ -41,10 +41,12 @@
 }
 
 /* Combat is the busiest foreground, so its scenes sit a step further back: a deeper vignette
-   and a darker floor. */
+   and a darker floor. The map/reward/summary wall was reading too bright next to the flanking
+   candle sconces, so it gets the same deeper scrim. */
 .backdrop[data-scene='act1']::after,
 .backdrop[data-scene='act2']::after,
-.backdrop[data-scene='act3']::after {
+.backdrop[data-scene='act3']::after,
+.backdrop[data-scene='wall']::after {
   background-image: url('../../assets/ui/scrim-combat.png');
 }
 
