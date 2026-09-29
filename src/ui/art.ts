@@ -17,7 +17,8 @@
  * gameplay icons (`scripts/pixelart/icons.py`), round-tripped through the kit's "Icons" page and
  * exported into `assets/nodes/`, `assets/relics/` and `assets/events/`, keyed by node type,
  * relic id and event id. So are the screen icons in `ICONS` (HP heart, reward trophy, victory
- * crown, defeat headstone, card removal), exported into `assets/icons/`.
+ * crown, defeat headstone, card removal, the rest site's sleep and upgrade, the blackout
+ * eclipse, the raise-the-wick glass, the special intent), exported into `assets/icons/`.
  *
  * The remaining SVGs (intent buff/debuff and generic status glyphs, the map chart) come from
  * the project's Figma file "끝없는 지하실 — Art Assets"
@@ -40,6 +41,7 @@ import eventCorpse from '../assets/events/corpse.png';
 import eventForge from '../assets/events/forge.png';
 import eventSpring from '../assets/events/spring.png';
 import eventWhisper from '../assets/events/whisper.png';
+import blackout from '../assets/icons/blackout.png';
 import candle from '../assets/icons/candle.png';
 import candleOut from '../assets/icons/candle-out.png';
 import crown from '../assets/icons/crown.png';
@@ -51,12 +53,16 @@ import intentDebuff from '../assets/icons/intent-debuff.svg';
 import light from '../assets/icons/light.png';
 import power from '../assets/icons/power.png';
 import remove from '../assets/icons/remove.png';
+import reveal from '../assets/icons/reveal.png';
 import shadow from '../assets/icons/shadow.png';
 import shield from '../assets/icons/shield.png';
+import sleep from '../assets/icons/sleep.png';
+import special from '../assets/icons/special.png';
 import status from '../assets/icons/status.svg';
 import sword from '../assets/icons/sword.png';
 import tombstone from '../assets/icons/tombstone.png';
 import trophy from '../assets/icons/trophy.png';
+import upgrade from '../assets/icons/upgrade.png';
 import nodeBoss from '../assets/nodes/boss.png';
 import nodeCombat from '../assets/nodes/combat.png';
 import nodeElite from '../assets/nodes/elite.png';
@@ -146,6 +152,8 @@ export const ICONS = {
   status,
   /** An enemy intent hidden by the dark. */
   hidden,
+  /** A seen but unusual enemy move (special intent), unlike `hidden`. */
+  special,
   intentBuff,
   intentDebuff,
   /** Player HP (top bar). */
@@ -156,6 +164,12 @@ export const ICONS = {
   defeat: tombstone,
   /** The shop's card removal. */
   removeCard: remove,
+  /** Rest site choices: sleep (heal) and upgrade a card (rekindle uses `candle`). */
+  restHeal: sleep,
+  restUpgrade: upgrade,
+  /** Combat: the blackout banner and the raise-the-wick (reveal intents) button. */
+  blackout,
+  reveal,
 } as const;
 
 export const STATUS_ICONS: Record<StatusId, string> = {

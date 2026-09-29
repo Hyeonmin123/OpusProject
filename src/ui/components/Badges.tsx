@@ -27,27 +27,18 @@ export function StatusBadges({ statuses }: { statuses: StatusMap }) {
   );
 }
 
-/** Icon per intent kind; `special` keeps its emoji (no art yet). */
-const INTENT_ART: Partial<Record<IntentKind, string>> = {
+/** Icon per intent kind. */
+const INTENT_ART: Record<IntentKind, string> = {
   attack: ICONS.attack,
   defend: ICONS.block,
   buff: ICONS.intentBuff,
   debuff: ICONS.intentDebuff,
+  special: ICONS.special,
   hidden: ICONS.hidden,
 };
 
-const INTENT_EMOJI: Record<IntentKind, string> = {
-  attack: '🗡️',
-  defend: '🛡️',
-  buff: '⬆️',
-  debuff: '🌀',
-  special: '❔',
-  hidden: '🌑',
-};
-
 function IntentIcon({ kind }: { kind: IntentKind }) {
-  const art = INTENT_ART[kind];
-  return art ? <Icon src={art} size={18} /> : <span aria-hidden>{INTENT_EMOJI[kind]}</span>;
+  return <Icon src={INTENT_ART[kind]} size={18} />;
 }
 
 const INTENT_HINT: Record<IntentKind, string> = {

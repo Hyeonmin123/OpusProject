@@ -35,7 +35,9 @@ export function RestScreen({ run }: { run: RunState }) {
         {!rest.done ? (
           <div className={styles.restChoices}>
             <button className={`btn ${styles.restChoice}`} onClick={heal}>
-              <span className={styles.relicIcon}>💤</span>
+              <span className={styles.relicIcon}>
+                <Icon src={ICONS.restHeal} size={42} />
+              </span>
               <span className={styles.relicName}>휴식</span>
               <span className={styles.relicDesc}>
                 최대 체력의 30%를 회복합니다. (+{healAmount})
@@ -60,7 +62,9 @@ export function RestScreen({ run }: { run: RunState }) {
               onClick={() => setPicking(true)}
               disabled={!anyUpgradable}
             >
-              <span className={styles.relicIcon}>⚒️</span>
+              <span className={styles.relicIcon}>
+                <Icon src={ICONS.restUpgrade} size={42} />
+              </span>
               <span className={styles.relicName}>단련</span>
               <span className={styles.relicDesc}>카드 1장을 강화합니다.</span>
             </button>

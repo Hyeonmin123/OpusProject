@@ -136,8 +136,8 @@ export function CombatScreen({ run }: { run: RunState }) {
         )}
         {light === 'dark' && playerTurn && (
           <div className={styles.blackoutBanner} data-testid="blackout-banner">
-            🌑 암전 — 턴마다 체력 {BLACKOUT_DAMAGE} 잃음 · 적 공격 피해 +
-            {BLACKOUT_ENEMY_DAMAGE_BONUS}%
+            <Icon src={ICONS.blackout} size={16} /> 암전 — 턴마다 체력 {BLACKOUT_DAMAGE} 잃음 · 적
+            공격 피해 +{BLACKOUT_ENEMY_DAMAGE_BONUS}%
           </div>
         )}
         <div className={styles.playerSide}>
@@ -169,7 +169,8 @@ export function CombatScreen({ run }: { run: RunState }) {
                 }
                 data-testid="reveal-intents"
               >
-                🔍 심지 돋우기 <span className={styles.revealCost}>촛농 -{REVEAL_WAX_COST}</span>
+                <Icon src={ICONS.reveal} size={16} /> 심지 돋우기{' '}
+                <span className={styles.revealCost}>촛농 -{REVEAL_WAX_COST}</span>
               </button>
             )}
           </div>
