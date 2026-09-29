@@ -58,7 +58,8 @@ export function RewardScreen({ run }: { run: RunState }) {
               <Icon src={RELIC_ICONS[relic.id]} size={32} />
             </span>
             <span>
-              유물: <b>{relic.name}</b> <span className="dim">— {relic.description}</span>
+              유물: <span className={styles.rewardName}>{relic.name}</span>{' '}
+              <span className={styles.rewardDesc}>— {relic.description}</span>
             </span>
           </button>
         )}

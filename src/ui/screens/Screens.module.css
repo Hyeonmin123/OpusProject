@@ -186,17 +186,38 @@
   color: #cfe3c2;
 }
 
+/* Reward rows read in the body face at 15px (the plaque's 12px label face is for short
+   button captions); the relic's name is gilt, its effect in full-strength text. */
 .rewardRow {
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 12px 16px;
+  padding: 10px 16px 8px;
   text-align: left;
+  font-family: var(--font-px14);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
 }
 
 .rewardRow .rewardIcon {
+  display: grid;
+  place-items: center;
+  width: 32px;
   font-size: 24px;
+}
+
+.rewardName {
+  color: var(--accent-strong);
+}
+
+.rewardDesc {
+  color: var(--text);
+}
+
+.rewardRow:hover:not(:disabled) .rewardDesc {
+  color: var(--hi);
 }
 
 .claimed {

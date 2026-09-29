@@ -50,7 +50,9 @@
   --border: #3b3542;
   --border-strong: #5a5162;
   --text: #ddd6ca;
-  --text-dim: #948b80;
+  /* Secondary text: the midpoint of p1 and p2 (uikit.py `mid`), one step brighter than p1,
+     which read too faint in the thin bitmap faces on the dark slabs. */
+  --text-dim: #b8b0a5;
   --text-faint: #6b645c;
   --accent: #b89a5e;
   --accent-strong: #d8b76e;
@@ -88,6 +90,15 @@
   --node-shop: #a08545;
   --node-rest: #b0703a;
   --node-boss: #7a2f4a;
+
+  /* Pixel outlines for text that sits on scene art or on a busy fill: the glyph stamped in d0
+     one (or two) pixels out in all eight directions, plus a hard drop row. No blur. */
+  --outline-1:
+    1px 0 0 #0f0e11, -1px 0 0 #0f0e11, 0 1px 0 #0f0e11, 0 -1px 0 #0f0e11, 1px 1px 0 #0f0e11,
+    -1px 1px 0 #0f0e11, 1px -1px 0 #0f0e11, -1px -1px 0 #0f0e11, 1px 2px 0 #0f0e11;
+  --outline-2:
+    2px 0 0 #0f0e11, -2px 0 0 #0f0e11, 0 2px 0 #0f0e11, 0 -2px 0 #0f0e11, 2px 2px 0 #0f0e11,
+    -2px 2px 0 #0f0e11, 2px -2px 0 #0f0e11, -2px -2px 0 #0f0e11, 2px 4px 0 #0f0e11;
 
   --radius: 10px;
   --radius-sm: 6px;

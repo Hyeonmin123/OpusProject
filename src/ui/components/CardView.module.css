@@ -254,7 +254,8 @@
   font-weight: 700;
   font-size: 12px;
   line-height: 16px;
-  text-shadow: 1px 1px 0 var(--bg);
+  color: var(--hi);
+  text-shadow: var(--outline-1);
   margin: 2px 0 4px 14px;
   white-space: nowrap;
   overflow: hidden;
@@ -297,6 +298,8 @@
   font-family: var(--font-px11);
   font-size: 12px;
   line-height: 16px;
+  color: var(--hi);
+  text-shadow: 1px 1px 0 var(--bg);
   padding: 0 2px;
 }
 

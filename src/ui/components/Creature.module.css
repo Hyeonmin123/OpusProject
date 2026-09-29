@@ -679,13 +679,14 @@
   }
 }
 
+/* Names sit straight on the scene art: body face at 15px with a hard d0 outline. */
 .name {
-  font-family: var(--font-title);
-  font-weight: 700;
-  font-size: 12px;
-  line-height: 16px;
+  font-family: var(--font-px14);
+  font-size: 15px;
+  line-height: 20px;
   text-align: center;
-  text-shadow: 1px 1px 0 var(--bg);
+  color: var(--light);
+  text-shadow: var(--outline-1);
   transition: color 0.15s;
 }
 

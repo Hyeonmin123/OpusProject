@@ -133,9 +133,9 @@
   flex-direction: column;
   margin: 12px 12px 0 0;
   padding: 14px 14px 12px;
-  font-family: var(--font-px11);
-  font-size: 12px;
-  line-height: 16px;
+  font-family: var(--font-px14);
+  font-size: 15px;
+  line-height: 20px;
   min-height: 0;
 }
 
@@ -151,7 +151,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .logplayer {
@@ -386,17 +386,36 @@
   }
 }
 
+/* The end-of-fight banner: the reward trophy (or the headstone) in the rooms' arched niche,
+   a 48px title with a 2px outline and the line under it in full-strength body text. */
 .banner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 30px 48px;
+  gap: 14px;
+  min-width: 400px;
+  padding: 36px 56px 34px;
   text-align: center;
 }
 
+.bannerIcon {
+  width: 64px;
+  height: 70px;
+  display: grid;
+  place-items: center;
+  background: url('../../assets/ui/niche.png') 0 0 / 64px 70px no-repeat;
+  image-rendering: pixelated;
+}
+
 .banner h2 {
-  font-size: 36px;
+  font-size: 48px;
+  line-height: 56px;
+  text-shadow: var(--outline-2);
+}
+
+.bannerText {
+  color: var(--text);
+  margin-bottom: 6px;
 }
 
 .victory {

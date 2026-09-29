@@ -47,10 +47,7 @@
   line-height: 12px;
   font-variant-numeric: tabular-nums;
   color: var(--hi);
-  text-shadow:
-    1px 1px 0 var(--bg),
-    -1px 0 0 var(--bg),
-    0 -1px 0 var(--bg);
+  text-shadow: var(--outline-1);
 }
 
 /* Block: a pixel heater shield (ui/shield.png, 15x13 grid) with the number on its face. */
@@ -66,7 +63,7 @@
   font-weight: 700;
   line-height: 12px;
   color: var(--hi);
-  text-shadow: 1px 1px 0 var(--bg);
+  text-shadow: var(--outline-1);
   background: url('../../assets/ui/shield.png') center / 30px 26px no-repeat;
   image-rendering: pixelated;
 }

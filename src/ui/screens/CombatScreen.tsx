@@ -323,8 +323,11 @@ export function CombatScreen({ run: live }: { run: RunState }) {
           <div className={`${styles.banner} panel`}>
             {combat.phase === 'won' ? (
               <>
+                <div className={styles.bannerIcon}>
+                  <Icon src={ICONS.reward} size={64} />
+                </div>
                 <h2 className={styles.victory}>승리</h2>
-                <div className="dim">
+                <div className={styles.bannerText}>
                   {combat.tier === 'boss'
                     ? '지하실의 주인이 쓰러졌다.'
                     : combat.tier === 'elite'
@@ -337,8 +340,11 @@ export function CombatScreen({ run: live }: { run: RunState }) {
               </>
             ) : (
               <>
+                <div className={styles.bannerIcon}>
+                  <Icon src={ICONS.defeat} size={64} />
+                </div>
                 <h2 className={styles.defeat}>쓰러졌다</h2>
-                <div className="dim">지하실의 어둠이 당신을 삼켰다…</div>
+                <div className={styles.bannerText}>지하실의 어둠이 당신을 삼켰다…</div>
                 <button className="btn btn-large" onClick={finishCombat}>
                   결과 보기
                 </button>

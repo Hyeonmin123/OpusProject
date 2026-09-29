@@ -330,15 +330,20 @@ kana/kanji and the monochrome dingbats (about 150 KB per face).
 A bitmap font is only sharp at whole multiples of its pixel grid, so every `font-size` in the UI
 is one of these (the families are the `--font-px9/11/14` tokens in `global.css`):
 
-| Face           | Sizes            | Used for                                                            |
-| -------------- | ---------------- | ------------------------------------------------------------------- |
-| Galmuri14      | 15px             | body copy (the root size)                                           |
-| Galmuri11      | 12px             | card rules text, logs, hints, secondary lines                       |
-| Galmuri11 Bold | 12px, 24/36/48px | names, buttons, labels and numbers; headings and titles             |
-| Galmuri9       | 10px, 20px       | tiny labels (card type line, small gauge); large buttons, cost gems |
+| Face           | Sizes            | Used for                                                                             |
+| -------------- | ---------------- | ------------------------------------------------------------------------------------ |
+| Galmuri14      | 15px             | body copy (the root size), combatant names, the combat log                           |
+| Galmuri11      | 12px             | card rules text, hints, secondary lines                                              |
+| Galmuri11 Bold | 12px, 24/36/48px | buttons, labels and bar numbers; headings and titles                                 |
+| Galmuri9       | 10px, 20px       | tiny labels (card type line); large buttons, cost gems, intents, top-bar HP and gold |
 
 `font-synthesis: none` keeps the browser from smearing a fake bold onto the faces without a bold
 cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets rather than blurs.
+Text that sits on scene art or a busy fill (combatant names, bar numbers, the top bar's vitals,
+card names, the end-of-fight title) gets a pixel outline instead: the glyph stamped in d0 one
+pixel out in all eight directions plus a drop row (`--outline-1`, `--outline-2` at 2px for the
+48px titles in `global.css`). Secondary text (`--text-dim`) is the p1·p2 midpoint, one step
+brighter than p1.
 
 ### Tests
 
