@@ -10,15 +10,28 @@
 }
 
 /* The two sides face each other across a contained stage in the middle of the field rather
-   than from its far edges, so the fight does not leave a wide empty corridor between them. */
+   than from its far edges, so the fight does not leave a wide empty corridor between them,
+   but with clear ground between them: the warrior holds the left of the stage, the enemies
+   the right. */
 .field {
   grid-area: field;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(40px, 7vw, 132px);
   padding: 20px 32px;
   min-width: 0;
+}
+
+/* The ground between the two sides: a spacer that opens to a fifth of the viewport (96px to
+   400px, about one and a half combatants, so the two lit pools stand well apart) and gives
+   way first, down to 64px, when a wide formation needs the room. */
+.field::after {
+  content: '';
+  order: 1;
+  flex: 1 1 0;
+  min-width: 64px;
+  max-width: clamp(96px, 20vw, 400px);
+  pointer-events: none;
 }
 
 .playerSide {
@@ -121,6 +134,7 @@
 }
 
 .enemies {
+  order: 2;
   flex: 0 1 auto;
   min-width: 0;
   display: flex;
@@ -448,7 +462,11 @@
   }
   .field {
     flex-direction: column;
+    gap: clamp(40px, 7vw, 132px);
     padding: 16px;
+  }
+  .field::after {
+    display: none;
   }
   .enemies {
     justify-content: center;
