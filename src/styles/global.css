@@ -120,6 +120,10 @@
   font-size: 15px;
   color: var(--text);
   line-height: 1.6;
+  /* Korean wraps at spaces (between words), not inside a word; a word too long for its box
+     still breaks. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
   font-synthesis: none;
   font-kerning: none;
   -webkit-font-smoothing: none;
