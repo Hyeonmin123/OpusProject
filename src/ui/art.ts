@@ -18,10 +18,10 @@
  * exported into `assets/nodes/`, `assets/relics/` and `assets/events/`, keyed by node type,
  * relic id and event id. So are the screen icons in `ICONS` (HP heart, reward trophy, victory
  * crown, defeat headstone, card removal, the rest site's sleep and upgrade, the blackout
- * eclipse, the raise-the-wick glass, the special intent), exported into `assets/icons/`.
+ * eclipse, the raise-the-wick glass, the special intent, the buff and debuff intents and the
+ * status-card glyph), exported into `assets/icons/`.
  *
- * The remaining SVGs (intent buff/debuff and generic status glyphs, the map chart) come from
- * the project's Figma file "끝없는 지하실 — Art Assets"
+ * The map chart is still vector art from the project's Figma file "끝없는 지하실 — Art Assets"
  * (https://www.figma.com/design/SP8IxP7Nwge0zkGVkRNB8C).
  * Status and enemy components fall back to the emoji in `data/` when an entry is missing.
  */
@@ -48,8 +48,8 @@ import crown from '../assets/icons/crown.png';
 import energy from '../assets/icons/energy.png';
 import heart from '../assets/icons/heart.png';
 import hidden from '../assets/icons/hidden.png';
-import intentBuff from '../assets/icons/intent-buff.svg';
-import intentDebuff from '../assets/icons/intent-debuff.svg';
+import intentBuff from '../assets/icons/intent-buff.png';
+import intentDebuff from '../assets/icons/intent-debuff.png';
 import light from '../assets/icons/light.png';
 import power from '../assets/icons/power.png';
 import remove from '../assets/icons/remove.png';
@@ -58,7 +58,7 @@ import shadow from '../assets/icons/shadow.png';
 import shield from '../assets/icons/shield.png';
 import sleep from '../assets/icons/sleep.png';
 import special from '../assets/icons/special.png';
-import status from '../assets/icons/status.svg';
+import status from '../assets/icons/status.png';
 import sword from '../assets/icons/sword.png';
 import tombstone from '../assets/icons/tombstone.png';
 import trophy from '../assets/icons/trophy.png';

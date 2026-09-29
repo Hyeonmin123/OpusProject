@@ -2,7 +2,8 @@
 grid. The screen icons are the few glyphs the screens drew as emoji: the reward trophy, the
 shop's card removal, the run summary's crown and headstone, the top bar's HP heart, the rest
 site's sleep and upgrade choices, combat's blackout banner and raise-the-wick button, and the
-special enemy intent.
+special enemy intent, and the glyphs that were still vector art: the buff and debuff intents
+and the status-card glyph.
 
 Seeded into the "Icons" page of the Figma pixel UI kit by `uikit.py seed` and imported back
 from its export sheet (exported @4x, like `src/assets/icons/*.png`) by `uikit.py import`; see
@@ -1114,6 +1115,48 @@ def ui_special():
     return render(p)
 
 
+def ui_intent_buff():
+    """강화 의도: two sage chevrons stacked upward, the upper one leading."""
+    p = Pic()
+    for top in (1.5, 12.0):
+        p.stroke(3.0, top + 9.5, 12.5, top, 3.8, 'E')
+        p.stroke(12.5, top, 22.0, top + 9.5, 3.8, 'E')
+    return render(p)
+
+
+def ui_intent_debuff():
+    """약화 의도: a violet hex spiral coiling out, two drops of blood flung off it."""
+    p = Pic()
+    cx, cy, a, b, width = 12.5, 12.5, 0.4, 0.86, 2.4
+    turns = 1.8 * 2 * math.pi
+
+    def on_spiral(x, y):
+        r = math.hypot(x - cx, y - cy)
+        phi = math.atan2(y - cy, x - cx) % (2 * math.pi)
+        for k in range(3):
+            t = phi + 2 * math.pi * k
+            if t <= turns and abs(r - (a + b * t)) <= width / 2:
+                return True
+        return False
+    p.fill(on_spiral, 'v')
+    p.disc(cx, cy, 1.2, 'v')
+    p.rows(['.r.', 'rrr', '.q.'], 20, 1)
+    p.rows(['.r', 'rq'], 2, 20)
+    return render(p)
+
+
+def ui_status():
+    """상태 이상 카드: a clot of grey muck, one drip falling off it."""
+    p = Pic()
+    for cx, cy, r in [(6.0, 12.0, 4.6), (10.5, 8.0, 5.4), (16.0, 7.5, 5.0), (20.0, 12.0, 4.4),
+                      (15.0, 13.5, 5.0), (9.0, 14.0, 4.6)]:
+        p.disc(cx, cy, r, 'T')
+    p.rows(['..pp', '.p..', 'p...'], 6, 5)
+    p.rows(['TT', 'TT', 'TT', '.T'], 11, 18)
+    p.rows(['.T.', 'TTT', 'TTT', '.T.'], 14, 21)
+    return render(p)
+
+
 SCREENS = {
     'trophy': ui_trophy,
     'remove': ui_remove,
@@ -1125,6 +1168,9 @@ SCREENS = {
     'blackout': ui_blackout,
     'reveal': ui_reveal,
     'special': ui_special,
+    'intent-buff': ui_intent_buff,
+    'intent-debuff': ui_intent_debuff,
+    'status': ui_status,
 }
 
 
