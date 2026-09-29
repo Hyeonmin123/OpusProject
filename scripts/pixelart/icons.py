@@ -1,6 +1,8 @@
 """Map-node, relic, event and screen icons: hand-built pixel grids on the gameplay icons' 32px
 grid. The screen icons are the few glyphs the screens drew as emoji: the reward trophy, the
-shop's card removal, the run summary's crown and headstone, and the top bar's HP heart.
+shop's card removal, the run summary's crown and headstone, the top bar's HP heart, the rest
+site's sleep and upgrade choices, combat's blackout banner and raise-the-wick button, and the
+special enemy intent.
 
 Seeded into the "Icons" page of the Figma pixel UI kit by `uikit.py seed` and imported back
 from its export sheet (exported @4x, like `src/assets/icons/*.png`) by `uikit.py import`; see
@@ -1027,12 +1029,102 @@ def ui_heart():
     return render(p)
 
 
+def ui_sleep():
+    """휴식: a bone-pale crescent moon, two z's drifting off its horns."""
+    p = Pic()
+    p.fill(lambda x, y: (x - 10.5) ** 2 + (y - 14.5) ** 2 <= 9.6 ** 2
+           and (x - 15.5) ** 2 + (y - 10.5) ** 2 > 8.0 ** 2, 'B')
+    p.rows(['h', 'h', '.h'], 3, 12)
+    # a big Z and a small one, 2px strokes so they hold at button size
+    p.rows(['pppppp',
+            'pppppp',
+            '...pp.',
+            '..pp..',
+            '.pp...',
+            'pppppp',
+            'pppppp'], 18, 5)
+    p.rows(['pppp',
+            '..p.',
+            '.p..',
+            'pppp'], 14, 0)
+    return render(p)
+
+
+def ui_upgrade():
+    """단련: a hammer raised over an iron anvil, sparks off the strike."""
+    p = Pic()
+    p.poly([(1.5, 15.0), (7.0, 15.5), (7.0, 14.0), (23.5, 14.0), (23.5, 17.5), (19.0, 17.5),
+            (16.5, 19.5), (16.5, 21.0), (20.0, 23.5), (20.0, 25.0), (5.0, 25.0), (5.0, 23.5),
+            (8.5, 21.0), (8.5, 19.5), (7.0, 17.5), (4.0, 17.0)], 'I')
+    p.rows(['s' * 15], 8, 14)
+    hammer = Pic()
+    hammer.stroke(4.0, 2.0, 15.0, 11.0, 2.2, 'W')
+    hammer.poly([(12.0, 12.5), (17.5, 5.5), (21.5, 8.5), (16.0, 15.5)], 'S')
+    over(p, hammer)
+    for x, y, ch in [(9, 10, 'y'), (8, 8, 'o'), (6, 11, 'o'), (22, 12, 'y'), (23, 10, 'o'),
+                     (21, 2, 'o'), (19, 1, 'y')]:
+        p.put(x, y, ch)
+    return render(p)
+
+
+def ui_blackout():
+    """암전: the candle's light eclipsed, a black disc with only a sliver of pale rim on its lit
+    side and a hard violet corona round the dark side (the hidden intent's violet)."""
+    p = Pic()
+    # the corona: a hard violet ring round the dark side
+    p.disc(13.6, 12.5, 10.8, 'v')
+    moon = Pic().disc(11.4, 12.5, 9.6, 'm')
+    moon.disc(11.4, 12.5, 8.8, 'p')
+    over(p, moon, 'w')
+    disc = Pic().disc(13.4, 12.5, 9.0, 'K')
+    over(p, disc, 'w')
+    return render(p)
+
+
+def ui_reveal():
+    """심지 돋우기: a gilt magnifying glass, candlelight caught in its lens."""
+    p = Pic()
+    p.stroke(15.5, 15.5, 22.5, 22.5, 3.6, 'W')
+    lens = Pic().disc(10.0, 10.0, 9.2, 'G')
+    lens.disc(10.0, 10.0, 6.4, 'L')
+    over(p, lens)
+    p.rows(['.hh', 'h..', 'h..'], 5, 5)
+    p.rows(['o', 'y'], 12, 10)
+    p.rows(['nn'], 16, 16)
+    return render(p)
+
+
+def ui_special():
+    """특수 행동: a gilt lozenge stamped with a bold '?'. Unlike the hidden intent (a dark disc,
+    violet '?': nothing is known), the move is seen, only unusual."""
+    p = Pic()
+    p.poly([(12.5, -0.5), (25.5, 12.5), (12.5, 25.5), (-0.5, 12.5)], 'G')
+    inner = Pic().poly([(12.5, 3.0), (22.0, 12.5), (12.5, 22.0), (3.0, 12.5)], 'G')
+    over(p, inner, 'n')
+    p.rows(['.kkkk.',
+            'kkkkkk',
+            'kk..kk',
+            '....kk',
+            '...kk.',
+            '..kk..',
+            '..kk..',
+            '......',
+            '..kk..',
+            '..kk..'], 10, 7)
+    return render(p)
+
+
 SCREENS = {
     'trophy': ui_trophy,
     'remove': ui_remove,
     'crown': ui_crown,
     'tombstone': ui_tombstone,
     'heart': ui_heart,
+    'sleep': ui_sleep,
+    'upgrade': ui_upgrade,
+    'blackout': ui_blackout,
+    'reveal': ui_reveal,
+    'special': ui_special,
 }
 
 
