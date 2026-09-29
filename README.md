@@ -14,9 +14,9 @@ that hit harder but burn it (see [The candle system](#the-candle-촛불-system))
 > Status: **first playable scaffold.** A full run (Act 1 → Act 3 → victory/defeat summary) can be
 > played start-to-finish. Portraits, key art, gameplay and status icons and scene backgrounds are
 > palette-locked pixel art, and so is all of the UI chrome (buttons, panels, card faces, gauges,
-> the top bar and the scene scrims), designed in a Figma pixel UI kit (see
-> [Art pipeline](#art-pipeline)); all text is set in the Galmuri pixel font
-> ([Typography](#typography)). Some relic and node glyphs are still emoji. UI text is Korean.
+> the top bar and the scene scrims) and the map-node, relic and event icons, designed in a Figma
+> pixel UI kit (see [Art pipeline](#art-pipeline)); all text is set in the Galmuri pixel font
+> ([Typography](#typography)). UI text is Korean.
 
 ## Quick start
 
@@ -42,8 +42,9 @@ dropped on GitHub Pages, Netlify, itch.io, or any static host.
 1. **Main menu**: start a new run (optionally with a numeric seed for a reproducible run), or
    continue a saved one. Progress is saved to `localStorage` automatically after every action, so
    refreshing the page never loses a run.
-2. **Map**: start from any bottom node and climb toward the boss. Node types: ⚔️ combat,
-   😈 elite (mid-boss, always drops a relic), ❓ event, 💰 shop, 🔥 rest site, 💀 boss.
+2. **Map**: start from any bottom node and climb toward the boss. Node types (the legend beside
+   the map shows their icons): combat (crossed swords), elite (a horned demon; mid-boss, always
+   drops a relic), event (?), shop (coins), rest site (campfire), boss (skull).
 3. **Combat**: you have **3 energy** and draw **5 cards** each turn. Click a card to play it. If it
    needs a target and there are several enemies, click an enemy (right-click or Esc cancels).
    Enemies show their **intent** (🗡️ attack for N, 🛡️ block, ⬆️ buff, 🌀 debuff) above their heads.
@@ -193,7 +194,8 @@ irrelevant or impossible to sustain fail CI.
   key, together with small lifetime stats (runs, wins, best floor). `SAVE_VERSION` in
   `engine/run.ts` discards incompatible saves after breaking changes.
 - **Theming.** All colors live as CSS custom properties in `styles/global.css`, and components use
-  CSS Modules. All art is registered in `ui/art.ts`: icons, portraits, key art and the full-bleed
+  CSS Modules. All art is registered in `ui/art.ts`: icons (including the map-node, relic and
+  event icons, keyed by node type, relic id and event id), portraits, key art and the full-bleed
   scene backgrounds (`SCENES`, drawn by `components/Backdrop` behind each screen). The shared
   chrome (`.panel` / `.panel-sm` stone slabs, `.btn` plaques) lives in `global.css`, the rest in
   the component stylesheets, all as pixel-art `assets/ui/*.png` (see [UI chrome](#ui-chrome)).
@@ -224,13 +226,15 @@ their frames), icons and status icons 32px, scenes 256×144. The UI draws them w
 The chrome is designed as pixel art in the Figma file
 [Endless Cellar — Pixel UI Kit](https://www.figma.com/design/m2OXVtN1pXojVj6c7EKelg): a Style
 Guide page (grid, rules, the palette as variables, the dither ramp) and one page per family
-(Buttons, Panels & Frames, Card Chrome, Bars & Gauges, Top Bar, Scrims & Shading). Every asset
+(Buttons, Panels & Frames, Card Chrome, Bars & Gauges, Top Bar, Scrims & Shading, Icons). Every asset
 is a component drawn 1 Figma unit = 1 art pixel, one vector layer per colour bound to the
 "Pixel palette" variables: the locked palette of `pxlib.py` (22 colours) plus a few 50/50
 midpoints of two locked steps (the same rule as the scene palette). 9-slice components are split
 into nine regions with stretch constraints, so resizing an instance in Figma previews exactly
 what the CSS `border-image` does. Each page's "Export sheet" frame exports at 2x, so every art
-pixel is 2×2 CSS px, the scale of the portraits and icons, and the CSS shows the PNGs 1:1.
+pixel is 2×2 CSS px, the scale of the portraits and icons, and the CSS shows the PNGs 1:1. The
+Icons page is the exception: its icons are on the gameplay icons' 32px grid and export at 4x
+(128px files), exactly like `src/assets/icons/*.png`.
 
 `scripts/pixelart/uikit.py` holds the drawings the kit was seeded from and the round trip:
 
@@ -240,6 +244,13 @@ pixel is 2×2 CSS px, the scale of the portraits and icons, and the CSS shows th
   by its sheet position, checks every pixel against the palette and the 2×2 grid, and writes
   `src/assets/ui/` (card faces in `ui/card/`, the corner ornaments in `art/`).
 - `uikit.py check` re-verifies the committed PNGs and names any that were edited in Figma.
+
+The Icons page's drawings live in `scripts/pixelart/icons.py` (`python3 scripts/pixelart/icons.py`
+writes a quick preview sheet): each icon is a character map where lowercase letters are fixed
+palette colours placed by hand and uppercase letters are materials shaded automatically on the
+shared light (lit top/left edge, deep bottom/right edge, ordered-dither shade toward the lower
+right), then outlined in d0 and centred on the 32px grid. `uikit.py` seeds and imports them like
+the rest of the kit.
 
 What is in it:
 
@@ -261,6 +272,10 @@ What is in it:
   pixels line up), the combat field in dim light and blackout, the hand's ledge, the shadow pool
   behind each combatant and the map-node shading, all d0 in alpha steps of 16 with ordered
   dither between steps.
+- Icons: the six map-node icons (`assets/nodes/`), the 16 relics (`assets/relics/`) and the six
+  event rooms (`assets/events/`), keyed by node type, relic id and event id. The altar and the
+  chandler's workshop are both candle rooms, so one is a stone altar with a single candle and
+  old blood, the other tapers hanging over a pot of wax.
 
 Other effects around the chrome follow the same rule: shadows and glows are hard offsets or
 rings (never blurred), and hover and pressed states move whole pixels (cards lift without
