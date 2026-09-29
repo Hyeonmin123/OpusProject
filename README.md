@@ -275,7 +275,11 @@ What is in it:
 - Icons: the six map-node icons (`assets/nodes/`), the 16 relics (`assets/relics/`) and the six
   event rooms (`assets/events/`), keyed by node type, relic id and event id. The altar and the
   chandler's workshop are both candle rooms, so one is a stone altar with a single candle and
-  old blood, the other tapers hanging over a pot of wax.
+  old blood, the other tapers hanging over a pot of wax. Beside them are the screen icons (in
+  `assets/icons/`, registered in `ICONS`): the reward trophy, the shop's card removal (a card
+  struck through in blood red), the victory crown (clean gold, unlike the cursed-crown relic),
+  the defeat headstone and the top bar's HP heart (`r1`, kept apart from the candle's golds). The
+  rest and shop screens head their pages with the rest and shop map-node icons.
 
 Other effects around the chrome follow the same rule: shadows and glows are hard offsets or
 rings (never blurred), and hover and pressed states move whole pixels (cards lift without
@@ -345,7 +349,8 @@ cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets r
 
 - **Acts 2 and 3 content depth**: they reuse the Act 1 monster roster with more HP and starting
   Strength. Only their bosses (_뼈의 여왕_, _심연의 눈_) are unique.
-- **Art, animation and sound**: relics, map-node and a few UI glyphs are still emoji, and the map
+- **Art, animation and sound**: a few UI glyphs (the rest-site choices, the blackout banner, the
+  raise-the-wick button, the special intent) are still emoji, and the map
   chart, the map-node and portrait frame outlines (CSS circles and arches, with pixel shading on
   the nodes) and the buff/debuff intent glyphs are still Figma vector art or CSS rather than
   pixel art. Animation is
