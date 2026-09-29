@@ -212,10 +212,10 @@ function changeCandle(ctx: Ctx, delta: number): number {
   if (before > 0 && p.candle === 0) {
     log(
       ctx,
-      `🕯️ 촛불이 꺼졌습니다 — 암전! (턴마다 체력 ${BLACKOUT_DAMAGE} 잃음, 적 피해 +${BLACKOUT_ENEMY_DAMAGE_BONUS}%)`,
+      `촛불이 꺼졌습니다 — 암전! (턴마다 체력 ${BLACKOUT_DAMAGE} 잃음, 적 피해 +${BLACKOUT_ENEMY_DAMAGE_BONUS}%)`,
     );
   } else if (before === 0 && p.candle > 0) {
-    log(ctx, '🕯️ 촛불이 다시 타오릅니다. 암전이 걷혔습니다.');
+    log(ctx, '촛불이 다시 타오릅니다. 암전이 걷혔습니다.');
   }
   if (lightLevel(p) === 'bright' && revealAll(ctx)) {
     log(ctx, '밝아진 불빛에 적의 의도가 드러났습니다.');
