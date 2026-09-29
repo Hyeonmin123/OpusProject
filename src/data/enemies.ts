@@ -41,9 +41,9 @@ const ENEMY_LIST: EnemyDef[] = [
     name: '굶주린 쥐',
     icon: '🐀',
     tier: 'normal',
-    hp: [11, 15],
+    hp: [12, 16],
     moves: {
-      bite: { id: 'bite', name: '물어뜯기', effects: [{ type: 'damage', amount: 5 }] },
+      bite: { id: 'bite', name: '물어뜯기', effects: [{ type: 'damage', amount: 6 }] },
       scratch: {
         id: 'scratch',
         name: '할퀴기',
@@ -64,7 +64,7 @@ const ENEMY_LIST: EnemyDef[] = [
     name: '동굴 박쥐',
     icon: '🦇',
     tier: 'normal',
-    hp: [12, 16],
+    hp: [13, 17],
     moves: {
       swoop: {
         id: 'swoop',
@@ -116,7 +116,7 @@ const ENEMY_LIST: EnemyDef[] = [
     name: '산성 점액',
     icon: '🟢',
     tier: 'normal',
-    hp: [28, 32],
+    hp: [30, 34],
     moves: {
       spit: {
         id: 'spit',
