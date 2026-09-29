@@ -72,7 +72,7 @@ describe('combat engine', () => {
 
   it('block absorbs enemy damage and resets at the start of the next turn', () => {
     const base = combatRun(['rottingGolem'], 'boss');
-    // Turn 1 intent is "corrupt" (no damage); skip to the 18-damage slam.
+    // Turn 1 intent is "corrupt" (no damage); skip to the 16-damage slam.
     let s = endTurn(base);
     expect(s.combat!.enemies[0].intent).toBe('slam');
     const { run, hand } = withHand(s, ['defend', 'defend']);
@@ -82,16 +82,20 @@ describe('combat engine', () => {
     expect(s.combat!.player.block).toBe(6);
     const hp = s.player.hp;
     s = endTurn(s);
-    expect(s.player.hp).toBe(hp - (18 - 6));
+    expect(s.player.hp).toBe(hp - (16 - 6));
     expect(s.combat!.player.block).toBe(0);
   });
 
   it('debuffs applied by enemies last through the player next turn', () => {
     const base = combatRun(['rottingGolem'], 'boss');
-    const s = endTurn(base); // golem: Weak 2 + Frail 1
-    expect(s.combat!.player.statuses.weak).toBe(2);
+    const s = endTurn(base); // golem: Weak 1 + Frail 1
+    // Applied during the enemy turn, so it skips that round's decay...
+    expect(s.combat!.player.statuses.weak).toBe(1);
+    expect(s.combat!.player.statuses.frail).toBe(1);
+    // ...and wears off at the end of the player's next round.
     const s2 = endTurn(s);
-    expect(s2.combat!.player.statuses.weak).toBe(1);
+    expect(s2.combat!.player.statuses.weak).toBeUndefined();
+    expect(s2.combat!.player.statuses.frail).toBeUndefined();
   });
 
   it('Cultist gains Strength from Ritual on later turns', () => {
