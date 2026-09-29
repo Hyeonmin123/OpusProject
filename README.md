@@ -374,8 +374,10 @@ cut, letter-spacing is whole pixels, and text shadows are hard 1–3px offsets r
   chart, the map-node and portrait frame outlines (CSS circles and arches, with pixel shading on
   the nodes) and the buff/debuff intent glyphs are still Figma vector art or CSS rather than
   pixel art. Animation is
-  CSS only: the enemy-turn replay (lunges, impact frames, floating numbers) and small
-  transitions (intents, card hover/deal-in, targeting, turn change).
+  CSS only: the enemy-turn replay (lunges, impact frames, floating numbers), screen
+  transitions (every screen enters with the shared `fade-in`; the map fades out behind the
+  picked room's node, and the room you return to rings once) and small transitions (intents,
+  card hover/deal-in, targeting, turn change).
   There is no sound.
 - **Balance**: tuned with the bot simulation. The candle-aware greedy bot reaches Act 2 in about
   three quarters of runs, Act 3 in about two fifths, and wins about a fifth of them. Each boss is

@@ -16,7 +16,7 @@ export function TopBar({ run }: { run: RunState }) {
   const p = run.player;
 
   return (
-    <header className={styles.bar}>
+    <header className={`${styles.bar} fade-in`}>
       <span className={styles.who}>
         <Icon src={ICONS.attack} size={18} /> {p.className}
       </span>

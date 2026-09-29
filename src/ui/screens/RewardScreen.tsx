@@ -24,7 +24,7 @@ export function RewardScreen({ run }: { run: RunState }) {
     : '지도로 돌아가기';
 
   return (
-    <div className={`${styles.screen} fade-in`}>
+    <div className={styles.screen}>
       <div className={`${styles.box} panel`}>
         <div className={styles.head}>
           <div className={styles.icon}>

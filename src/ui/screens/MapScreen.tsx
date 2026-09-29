@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect } from 'react';
+import { type CSSProperties, useEffect, useState } from 'react';
 import { getAct } from '../../data/acts';
 import { reachableNodeIds } from '../../engine';
 import { useGame } from '../../store/gameStore';
@@ -13,6 +13,8 @@ const ROW_H = 74;
 const PAD_X = 50;
 const PAD_TOP = 70;
 const PAD_BOTTOM = 40;
+/** The picked room's node flashes and the map fades out for this long before the room opens. */
+const DEPART_MS = 180;
 
 /** Small deterministic offset so the grid looks hand-drawn rather than rigid. */
 function jitter(id: string, axis: number): number {
@@ -37,6 +39,7 @@ function layout(run: RunState) {
 
 export function MapScreen({ run }: { run: RunState }) {
   const selectNode = useGame((s) => s.selectNode);
+  const [departing, setDeparting] = useState<string | null>(null);
   const { map } = run;
   const reachable = new Set(reachableNodeIds(map, run.currentNodeId));
   const visited = new Set(run.visitedNodeIds);
@@ -49,6 +52,12 @@ export function MapScreen({ run }: { run: RunState }) {
     target?.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }, [run.currentNodeId]);
 
+  useEffect(() => {
+    if (!departing) return;
+    const t = setTimeout(() => selectNode(departing), DEPART_MS);
+    return () => clearTimeout(t);
+  }, [departing, selectNode]);
+
   const edgeClass = (from: string, to: string) => {
     if (visited.has(from) && visited.has(to)) return `${styles.edge} ${styles.edgeTaken}`;
     if (from === run.currentNodeId && reachable.has(to)) return `${styles.edge} ${styles.edgeOpen}`;
@@ -56,7 +65,7 @@ export function MapScreen({ run }: { run: RunState }) {
   };
 
   return (
-    <div className={`${styles.screen} fade-in`}>
+    <div className={`${styles.screen} ${departing ? 'fade-out' : ''}`}>
       <div className={styles.mapWrap}>
         <div className={styles.header}>
           <h2>
@@ -100,6 +109,7 @@ export function MapScreen({ run }: { run: RunState }) {
               canGo && styles.reachable,
               visited.has(n.id) && styles.visited,
               n.id === run.currentNodeId && styles.current,
+              n.id === departing && styles.departing,
             ]
               .filter(Boolean)
               .join(' ');
@@ -109,7 +119,7 @@ export function MapScreen({ run }: { run: RunState }) {
                 className={classes}
                 style={{ left: x, top: y, '--node-color': info.color } as CSSProperties}
                 disabled={!canGo}
-                onClick={() => selectNode(n.id)}
+                onClick={() => setDeparting((d) => d ?? n.id)}
                 title={info.label}
                 aria-label={`${info.label}${canGo ? ' (이동 가능)' : ''}`}
                 data-node-reachable={canGo}

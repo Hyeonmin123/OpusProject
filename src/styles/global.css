@@ -349,6 +349,28 @@ button:disabled {
   }
 }
 
+/* Screen transitions. Every screen enters with `fade-in` (App keys <main> by screen, the
+   menu and the top bar carry it themselves); the map leaves with `fade-out` once a room is
+   picked, so moving between rooms reads as one motion out and one in. */
 .fade-in {
   animation: fade-in 0.25s ease-out;
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.fade-out {
+  animation: fade-out 0.18s ease-in forwards;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .fade-out {
+    animation-duration: 1ms;
+  }
 }

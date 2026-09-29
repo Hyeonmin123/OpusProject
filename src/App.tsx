@@ -77,7 +77,9 @@ export default function App() {
       <Backdrop scene={sceneFor(run)} />
       {/* During an enemy-turn replay the top bar follows the frame on screen, not the result. */}
       <TopBar run={replay && run.screen === 'combat' ? replayView(replay).run : run} />
-      <main>
+      {/* Keyed by screen (and act, for the next act's map) so every change of room replays
+          the shared `fade-in` entrance. */}
+      <main key={`${run.screen}:${run.act}`} className="fade-in">
         <ScreenFor run={run} />
       </main>
     </>

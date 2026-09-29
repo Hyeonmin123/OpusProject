@@ -172,6 +172,70 @@
     0 0 0 8px rgb(240 184 74 / 35%);
 }
 
+/* Arriving back on the map: the room just cleared rings out once in stepped candle-gold
+   rings. */
+.current::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  border: 2px solid var(--candle);
+  opacity: 0;
+  animation: arrive 0.6s steps(4, end) 0.15s;
+  pointer-events: none;
+}
+
+@keyframes arrive {
+  from {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* The room just picked: it lights up (whole-frame steps) while the map fades out. */
+.departing,
+.departing:hover,
+.departing:focus-visible {
+  animation: depart 0.18s steps(1, end) forwards;
+  opacity: 1;
+  filter: none;
+}
+
+.departing::after {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes depart {
+  0% {
+    transform: translate(-50%, -50%) scale(1.18);
+    box-shadow:
+      0 0 0 2px var(--hi),
+      0 0 0 4px var(--light),
+      0 0 0 6px #0b0a0d;
+    filter: brightness(1.5);
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(1.25);
+    box-shadow:
+      0 0 0 2px var(--light),
+      0 0 0 4px #0b0a0d,
+      0 0 0 8px var(--light);
+    filter: brightness(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.25);
+    box-shadow:
+      0 0 0 2px var(--light),
+      0 0 0 4px #0b0a0d,
+      0 0 0 8px var(--light);
+  }
+}
+
 @keyframes ripple {
   from {
     transform: scale(0.92);
@@ -250,7 +314,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .edgeOpen,
-  .reachable::after {
+  .reachable::after,
+  .current::after {
     animation: none;
   }
 }

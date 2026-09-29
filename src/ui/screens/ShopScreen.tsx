@@ -30,7 +30,7 @@ export function ShopScreen({ run }: { run: RunState }) {
   const canBuyCandle = !shop.candleUsed && gold >= shop.candlePrice && p.candle < p.maxCandle;
 
   return (
-    <div className={`${styles.screen} fade-in`}>
+    <div className={styles.screen}>
       <div className={`${styles.box} panel`}>
         <div className={styles.head}>
           <div className={styles.icon}>

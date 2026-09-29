@@ -20,7 +20,7 @@ export function RestScreen({ run }: { run: RunState }) {
   const waxAmount = Math.min(restRekindleAmount(run), p.maxCandle - p.candle);
 
   return (
-    <div className={`${styles.screen} fade-in`}>
+    <div className={styles.screen}>
       <div className={`${styles.box} panel`}>
         <div className={styles.head}>
           <div className={styles.icon}>
