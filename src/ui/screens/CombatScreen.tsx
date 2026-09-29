@@ -48,7 +48,8 @@ export function CombatScreen({ run: live }: { run: RunState }) {
   const [hoverEnemy, setHoverEnemy] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [pileView, setPileView] = useState<PileView>(null);
-  const [jab, setJab] = useState(0);
+  /** The player's attack motion: `n` restarts it, `target` is the enemy it strikes. */
+  const [jab, setJab] = useState<{ n: number; target: number | null }>({ n: 0, target: null });
   const logRef = useRef<HTMLDivElement>(null);
 
   const living = combat.enemies.map((e, i) => ({ e, i })).filter(({ e }) => e.hp > 0);
@@ -81,7 +82,8 @@ export function CombatScreen({ run: live }: { run: RunState }) {
   }, [replay, beatMs, advanceReplay]);
 
   function play(card: CardInstance, target?: number) {
-    if (getCardDef(card.defId).type === 'attack') setJab((n) => n + 1);
+    if (getCardDef(card.defId).type === 'attack')
+      setJab((j) => ({ n: j.n + 1, target: target ?? null }));
     playCard(card.uid, target);
   }
 
@@ -186,8 +188,8 @@ export function CombatScreen({ run: live }: { run: RunState }) {
             statuses={combat.player.statuses}
             variant="player"
             cues={cuesFor(cues, 'player')}
-            motion={jab > 0 ? 'attack' : null}
-            motionKey={jab}
+            motion={jab.n > 0 ? 'attack' : null}
+            motionKey={jab.n}
           />
           <div className={styles.candlePanel}>
             <CandleGauge
@@ -229,6 +231,7 @@ export function CombatScreen({ run: live }: { run: RunState }) {
               targetable={!!selected}
               cues={cuesFor(cues, i)}
               motion={beat?.actor === i ? beat.motion : null}
+              aimed={jab.target === i}
               onClick={() => onEnemyClick(i)}
               onHover={(h) => setHoverEnemy(h ? i : null)}
             />

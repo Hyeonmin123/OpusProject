@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { STATUSES } from '../../data/statuses';
 import type { IntentView } from '../../engine';
 import type { CombatFx, StatusMap } from '../../types';
@@ -29,6 +29,8 @@ interface Props {
   /** Set while this combatant acts; `motionKey` restarts the motion for a new action. */
   motion?: CreatureMotion | null;
   motionKey?: number;
+  /** The enemy the player's current attack is aimed at (the player's strike lands on it). */
+  aimed?: boolean;
   onClick?: () => void;
   onHover?: (hovering: boolean) => void;
 }
@@ -84,6 +86,57 @@ function toFloat(cue: CombatFx): Float | null {
       };
     }
   }
+}
+
+/** How far (px) a striking portrait runs into the target's frame at the moment of contact. */
+const STRIKE_OVERLAP = 12;
+/** Strike offsets snap to this step, so every keyframe (eighths of the reach) is whole pixels. */
+const STRIKE_STEP = 8;
+
+function snapStrike(v: number) {
+  return Math.round(v / STRIKE_STEP) * STRIKE_STEP;
+}
+
+/**
+ * Where an attacking portrait must travel to strike the other side: from its resting place to
+ * where its leading edge runs `STRIKE_OVERLAP` px into the target's frame, level with it.
+ * Measured from the (untransformed) creature roots and the portraits' layout offsets, so the
+ * motion's own transform never skews it. The player strikes the aimed enemy (or the first one
+ * standing); an enemy strikes the player. Null when there is nothing to aim at.
+ */
+function strikeReach(root: HTMLElement, isPlayer: boolean): { x: number; y: number } | null {
+  const target = isPlayer
+    ? (document.querySelector<HTMLElement>('[data-combatant="enemy"][data-aimed="true"]') ??
+      document.querySelector<HTMLElement>('[data-combatant="enemy"]:not([data-dead="true"])'))
+    : document.querySelector<HTMLElement>('[data-combatant="player"]');
+  if (!target) return null;
+  const frame = (el: HTMLElement) => {
+    const portrait = el.querySelector<HTMLElement>('[data-portrait]');
+    const body = portrait?.parentElement;
+    if (!portrait || !body) return null;
+    const r = el.getBoundingClientRect();
+    const w = portrait.offsetWidth;
+    const h = portrait.offsetHeight;
+    return {
+      cx: r.left + body.offsetLeft + portrait.offsetLeft + w / 2,
+      cy: r.top + body.offsetTop + portrait.offsetTop + h / 2,
+      w,
+      h,
+    };
+  };
+  const a = frame(root);
+  const b = frame(target);
+  if (!a || !b) return null;
+  const dx = b.cx - a.cx;
+  const dy = b.cy - a.cy;
+  // Side by side (the normal stage): close the horizontal gap and come level with the target.
+  // Stacked (the narrow layout): close the vertical gap instead.
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    const gap = Math.max(0, Math.abs(dx) - (a.w + b.w) / 2);
+    return { x: snapStrike(Math.sign(dx) * (gap + STRIKE_OVERLAP)), y: snapStrike(dy) };
+  }
+  const gap = Math.max(0, Math.abs(dy) - (a.h + b.h) / 2);
+  return { x: snapStrike(dx), y: snapStrike(Math.sign(dy) * (gap + STRIKE_OVERLAP)) };
 }
 
 type Flash = 'hit' | 'hitBlocked' | 'guard';
@@ -168,11 +221,26 @@ export function Creature({
   cues,
   motion,
   motionKey,
+  aimed,
   onClick,
   onHover,
 }: Props) {
   const { floats, flash } = useCues(cues);
   const dead = hp <= 0;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  // An attack's reach is measured before the first frame paints and handed to the keyframes
+  // as --reach-x / --reach-y (the CSS defaults cover a failed measurement).
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    const body = bodyRef.current;
+    if (motion !== 'attack' || !root || !body) return;
+    const reach = strikeReach(root, variant === 'player');
+    if (!reach) return;
+    body.style.setProperty('--reach-x', `${reach.x}px`);
+    body.style.setProperty('--reach-y', `${reach.y}px`);
+  }, [motion, motionKey, variant]);
   const classes = [
     styles.creature,
     styles[variant],
@@ -194,7 +262,11 @@ export function Creature({
 
   return (
     <div
+      ref={rootRef}
       className={classes}
+      data-combatant={variant === 'player' ? 'player' : 'enemy'}
+      data-aimed={aimed ? 'true' : undefined}
+      data-dead={dead ? 'true' : undefined}
       onClick={targetable && !dead ? onClick : undefined}
       onMouseEnter={() => onHover?.(true)}
       onMouseLeave={() => onHover?.(false)}
@@ -202,9 +274,10 @@ export function Creature({
       {variant !== 'player' && (
         <div className={styles.intent}>{!dead && <IntentBadges intent={intent ?? null} />}</div>
       )}
-      <div key={motionKey} className={`${styles.body} ${motionClass}`}>
+      <div key={motionKey} ref={bodyRef} className={`${styles.body} ${motionClass}`}>
         <div
           className={`${styles.portrait} ${portrait ? styles.hasArt : ''} ${flashClass}`}
+          data-portrait
           aria-hidden
         >
           {portrait ? (

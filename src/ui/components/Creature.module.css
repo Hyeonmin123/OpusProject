@@ -205,7 +205,8 @@
    Every beat is drawn in hard frames (`steps(1, end)` between keyframes, so each value holds
    until the next one) like a sprite animation, instead of smooth tweens, to match the pixel
    art: an impact is one white silhouette frame, a red frame, then a shake that settles in
-   whole pixels. */
+   whole pixels. The shake is sized to the strikes below, which cross the whole stage: a
+   smaller one read as the attacker passing through rather than connecting. */
 
 /* Hit flash on the portrait. The A/B twins are identical; alternating between them restarts
    the animation when hits land back to back. A hit fully soaked by block keeps the white
@@ -228,19 +229,19 @@
 
 @keyframes hit-a {
   0% {
-    transform: translateX(-4px);
+    transform: translateX(-8px);
     filter: brightness(0) invert(1);
   }
   14% {
-    transform: translateX(6px);
+    transform: translateX(10px);
     filter: sepia(1) saturate(5) hue-rotate(-50deg) brightness(0.85);
   }
   32% {
-    transform: translateX(-4px);
+    transform: translateX(-6px);
     filter: none;
   }
   50% {
-    transform: translateX(2px);
+    transform: translateX(4px);
   }
   68% {
     transform: none;
@@ -249,19 +250,19 @@
 
 @keyframes hit-b {
   0% {
-    transform: translateX(-4px);
+    transform: translateX(-8px);
     filter: brightness(0) invert(1);
   }
   14% {
-    transform: translateX(6px);
+    transform: translateX(10px);
     filter: sepia(1) saturate(5) hue-rotate(-50deg) brightness(0.85);
   }
   32% {
-    transform: translateX(-4px);
+    transform: translateX(-6px);
     filter: none;
   }
   50% {
-    transform: translateX(2px);
+    transform: translateX(4px);
   }
   68% {
     transform: none;
@@ -270,11 +271,11 @@
 
 @keyframes hit-blocked-a {
   0% {
-    transform: translateX(-2px);
+    transform: translateX(-4px);
     filter: brightness(0) invert(1);
   }
   16% {
-    transform: translateX(2px);
+    transform: translateX(4px);
     filter: none;
   }
   40% {
@@ -284,11 +285,11 @@
 
 @keyframes hit-blocked-b {
   0% {
-    transform: translateX(-2px);
+    transform: translateX(-4px);
     filter: brightness(0) invert(1);
   }
   16% {
-    transform: translateX(2px);
+    transform: translateX(4px);
     filter: none;
   }
   40% {
@@ -365,41 +366,47 @@
   z-index: 2;
 }
 
-/* Enemy attack, 0.5s: wind back, then a lunge toward the player that lands at 34% (the
-   0.17s beat where the combat screen shows the hit), hold, and recoil home. */
+/* Enemy attack, 0.5s: crouch back, then leap across the gap and strike the player, landing on
+   34% (the 0.17s beat where the combat screen shows the hit), then hop back home in whole
+   frames. The reach (--reach-x / --reach-y: from here to where the portrait runs a few pixels
+   into the target's frame, level with it) is measured in Creature.tsx and snapped to 8px, so
+   every keyframe (whole eighths of it) is whole pixels. The defaults cover a failed
+   measurement. */
 .lunge {
+  --reach-x: -160px;
+  --reach-y: 0px;
   animation: lunge 0.5s steps(1, end);
 }
 
 @keyframes lunge {
   0% {
-    transform: translate(4px, 0);
+    transform: translate(8px, 0);
   }
   8% {
-    transform: translate(8px, 2px);
+    transform: translate(16px, 4px);
   }
   18% {
-    transform: translate(10px, 2px);
+    transform: translate(24px, 6px);
   }
   26% {
-    transform: translate(-24px, -4px);
+    transform: translate(calc(var(--reach-x) * 0.5), calc(var(--reach-y) * 0.5 - 16px));
   }
   34% {
-    transform: translate(-56px, -8px);
+    transform: translate(var(--reach-x), var(--reach-y));
   }
   50% {
-    transform: translate(-50px, -6px);
+    transform: translate(calc(var(--reach-x) * 0.875), var(--reach-y));
   }
-  62% {
-    transform: translate(-36px, -4px);
+  60% {
+    transform: translate(calc(var(--reach-x) * 0.625), calc(var(--reach-y) * 0.75 - 8px));
   }
-  72% {
-    transform: translate(-22px, -2px);
+  70% {
+    transform: translate(calc(var(--reach-x) * 0.375), calc(var(--reach-y) * 0.5 - 8px));
   }
-  82% {
-    transform: translate(-10px, 0);
+  80% {
+    transform: translate(calc(var(--reach-x) * 0.125), calc(var(--reach-y) * 0.125));
   }
-  92% {
+  90% {
     transform: translate(-4px, 0);
   }
   100% {
@@ -459,25 +466,39 @@
   }
 }
 
-/* The player's attack card: a short jab toward the enemies. */
+/* The player's attack card, 0.4s: the hit lands the moment the card is played, so the warrior
+   is already mid-leap on the first frame and strikes the target on the second (32ms, while the
+   target flashes), holds against it, and hops back in whole frames. Same measured reach as the
+   enemies' lunge, toward the aimed enemy. */
 .jab {
-  animation: jab 0.26s steps(1, end);
+  --reach-x: 160px;
+  --reach-y: 0px;
+  animation: jab 0.4s steps(1, end);
 }
 
 @keyframes jab {
   0% {
-    transform: translate(10px, -2px);
+    transform: translate(calc(var(--reach-x) * 0.5), calc(var(--reach-y) * 0.5 - 16px));
   }
-  15% {
-    transform: translate(24px, -4px);
+  8% {
+    transform: translate(var(--reach-x), var(--reach-y));
   }
-  45% {
-    transform: translate(14px, -2px);
+  30% {
+    transform: translate(calc(var(--reach-x) * 0.875), var(--reach-y));
   }
-  70% {
-    transform: translate(6px, 0);
+  44% {
+    transform: translate(calc(var(--reach-x) * 0.625), calc(var(--reach-y) * 0.75 - 8px));
   }
-  85% {
+  56% {
+    transform: translate(calc(var(--reach-x) * 0.375), calc(var(--reach-y) * 0.5 - 8px));
+  }
+  68% {
+    transform: translate(calc(var(--reach-x) * 0.125), calc(var(--reach-y) * 0.125));
+  }
+  80% {
+    transform: translate(4px, 0);
+  }
+  90% {
     transform: none;
   }
 }
