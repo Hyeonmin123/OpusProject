@@ -1,4 +1,6 @@
-"""Map-node, relic and event icons: hand-built pixel grids on the gameplay icons' 32px grid.
+"""Map-node, relic, event and screen icons: hand-built pixel grids on the gameplay icons' 32px
+grid. The screen icons are the few glyphs the screens drew as emoji: the reward trophy, the
+shop's card removal, the run summary's crown and headstone, and the top bar's HP heart.
 
 Seeded into the "Icons" page of the Figma pixel UI kit by `uikit.py seed` and imported back
 from its export sheet (exported @4x, like `src/assets/icons/*.png`) by `uikit.py import`; see
@@ -932,10 +934,113 @@ EVENTS = {
 }
 
 
+# --------------------------------------------------------------------------------------------
+# Screen icons (screen headers in the room niche, the shop's card removal, the top bar's HP)
+# --------------------------------------------------------------------------------------------
+
+
+def ui_trophy():
+    """전리품: a gilt two-handled cup on a stepped foot."""
+    p = Pic()
+    # handles: open loops on either side of the bowl
+    p.fill(lambda x, y: x < 8.0 and 2.3 ** 2 <= (x - 5.0) ** 2 + (y - 7.0) ** 2 <= 4.0 ** 2, 'G')
+    p.fill(lambda x, y: x > 17.0 and 2.3 ** 2 <= (x - 20.0) ** 2 + (y - 7.0) ** 2 <= 4.0 ** 2,
+           'G')
+    cup = Pic()
+    cup.fill(lambda x, y: 2.0 <= y <= 8.0 and abs(x - 12.5) <= 7.6, 'G')
+    cup.fill(lambda x, y: y >= 8.0 and ((x - 12.5) / 7.6) ** 2 + ((y - 8.0) / 6.4) ** 2 <= 1, 'G')
+    cup.rows(['G' * 19], 3, 1)
+    cup.rows(['n' * 17], 4, 3)
+    cup.rows(['h', 'h', 'h', '.h'], 6, 5)
+    over(p, cup)
+    p.rows(['GGG'] * 3, 11, 15)
+    p.rows(['.GGGGG.', 'GGGGGGG'], 9, 18)
+    p.rows(['GGGGGGGGGGG', 'GGGGGGGGGGG', 'nnnnnnnnnnn'], 7, 20)
+    p.rows(['nnnnnnn'], 9, 19)
+    return render(p)
+
+
+def ui_remove():
+    """카드 제거: a card struck through with a blood-red X."""
+    p = Pic()
+    p.rows(['B' * 16] * 22, 3, 1)
+    p.rows(['k' * 12] + ['k' + 'T' * 10 + 'k'] * 7 + ['k' * 12], 5, 3)
+    p.rows(['uuuuuuuuuu'], 6, 4)
+    p.rows(['pppppppppppp', '............', 'pppppppppp..', '............', 'pppppppppppp'],
+           5, 14)
+    x = Pic()
+    x.stroke(9.0, 8.5, 22.5, 22.0, 3.0, 'R')
+    x.stroke(22.5, 8.5, 9.0, 22.0, 3.0, 'R')
+    over(p, x)
+    return render(p)
+
+
+def ui_crown():
+    """승리: an untarnished gold crown, a ruby at its brow."""
+    p = Pic()
+    p.poly([(2.0, 16.0), (2.0, 5.0), (7.5, 11.0), (12.5, 3.0), (17.5, 11.0), (23.0, 5.0),
+            (23.0, 16.0)], 'G')
+    for cx, cy, r in [(2.5, 4.0, 1.7), (12.5, 2.2, 1.9), (22.5, 4.0, 1.7)]:
+        p.disc(cx, cy, r, 'G')
+    band = Pic().rows(['G' * 23] * 6, 1, 16)
+    band.rows(['y' * 23], 1, 16)
+    band.rows(['n' * 23], 1, 21)
+    over(p, band)
+    p.rows(['.rr.', 'rrrr', 'rrqr', '.qq.'], 11, 17)
+    p.put(12, 17, 'h')
+    for gx in (5, 19):
+        p.rows(['bb', 'bk'], gx, 18)
+    return render(p)
+
+
+def ui_tombstone():
+    """탐험 실패: a rounded headstone with a carved cross, sunk in a mound of earth."""
+    p = Pic()
+    p.fill(lambda x, y: abs(x - 12.5) <= 7.6 and (y >= 8.5 or
+                                                    (x - 12.5) ** 2 + (y - 8.5) ** 2 <= 7.6 ** 2)
+           and y <= 21.0, 'T')
+    # carved cross: a d0 groove whose lower / right wall catches the light
+    for y in range(4, 14):
+        p.put(12, y, 'k')
+        p.put(13, y, 'p')
+    p.rows(['kkkkkkk', 'ppppppp'], 9, 7)
+    p.put(12, 8, 'k')
+    # a crack down the lower right
+    p.rows(['u.', '.u', 'u.', 'u.'], 16, 14)
+    mound = Pic()
+    mound.fill(lambda x, y: y >= 19.0 and ((x - 12.5) / 12.0) ** 2 + ((y - 23.5) / 4.6) ** 2 <= 1,
+               'W')
+    over(p, mound)
+    for x, y in [(3, 21), (6, 19), (20, 19), (22, 21)]:
+        p.put(x, y, 'x')
+    return render(p)
+
+
+def ui_heart():
+    """체력: a heart of blood red, a glint on its upper left."""
+    p = Pic()
+    p.disc(8.0, 9.0, 5.8, 'R')
+    p.disc(17.0, 9.0, 5.8, 'R')
+    p.poly([(2.2, 10.5), (22.8, 10.5), (12.5, 22.5)], 'R')
+    p.fill(lambda x, y: 8.0 < y < 14.0 and abs(x - 12.5) < 10.3 - (y - 8.0) * 0.2, 'R')
+    p.rows(['.hh', 'h..', 'h..'], 5, 6)
+    return render(p)
+
+
+SCREENS = {
+    'trophy': ui_trophy,
+    'remove': ui_remove,
+    'crown': ui_crown,
+    'tombstone': ui_tombstone,
+    'heart': ui_heart,
+}
+
+
 def all_icons():
     """[(group, id, 32x32 key grid)] for every icon, in sheet order."""
     out = []
-    for group, table in (('node', NODES), ('relic', RELICS), ('event', EVENTS)):
+    for group, table in (('node', NODES), ('relic', RELICS), ('event', EVENTS),
+                         ('ui', SCREENS)):
         for k, fn in table.items():
             out.append((group, k, fn()))
     return out

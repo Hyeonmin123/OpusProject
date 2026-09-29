@@ -16,7 +16,7 @@ Figma at 2x (PNG, the sheets' export setting), crops each component out, checks 
 pixel is on the palette and on the 2x2 grid, and writes src/assets/ui/*.png (and the card
 ornaments in src/assets/art/). Nothing is ever resampled: the PNGs are 2x and shown 1:1 in the
 CSS (`image-rendering: pixelated` keeps them hard on high-DPI screens). The one exception is
-the Icons page (map nodes, relics, events; drawn in icons.py): those are on the gameplay icons'
+the Icons page (map nodes, relics, events, screen icons; drawn in icons.py): those are on the gameplay icons'
 32px grid and export at 4x, like `src/assets/icons/*.png`. `check` reports any
 asset that no longer matches its drawing here (i.e. was edited in Figma).
 
@@ -802,10 +802,12 @@ def build_scrims():
 
 
 # ---- Icons ----------------------------------------------------------------------------------
-# Map-node, relic and event icons, drawn in icons.py on the gameplay icons' 32px grid.
+# Map-node, relic, event and screen icons, drawn in icons.py on the gameplay icons' 32px grid.
+# The screen icons (screen headers, card removal, HP) sit with the gameplay icons in icons/.
 
-ICON_DIRS = {'node': 'nodes', 'relic': 'relics', 'event': 'events'}
-ICON_NOTES = {'node': 'map node icon', 'relic': 'relic icon', 'event': 'event icon'}
+ICON_DIRS = {'node': 'nodes', 'relic': 'relics', 'event': 'events', 'ui': 'icons'}
+ICON_NOTES = {'node': 'map node icon', 'relic': 'relic icon', 'event': 'event icon',
+              'ui': 'screen icon'}
 
 
 def build_icons():
