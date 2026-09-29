@@ -1175,10 +1175,13 @@ SCREENS = {
 
 
 def all_icons():
-    """[(group, id, 32x32 key grid)] for every icon, in sheet order."""
+    """[(group, id, 32x32 key grid)] for every icon, in sheet order. The card icons (drawn in
+    card_icons.py) come last, so adding one never moves the others on the export sheet."""
+    import card_icons
+
     out = []
     for group, table in (('node', NODES), ('relic', RELICS), ('event', EVENTS),
-                         ('ui', SCREENS)):
+                         ('ui', SCREENS), ('card', card_icons.CARDS)):
         for k, fn in table.items():
             out.append((group, k, fn()))
     return out

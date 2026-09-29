@@ -7,7 +7,7 @@ import {
   getCardStats,
 } from '../../engine';
 import type { CardInstance, CardResonance, CardType } from '../../types';
-import { CARD_TYPE_ICONS, ICONS } from '../art';
+import { CARD_ICONS, CARD_TYPE_ICONS, ICONS } from '../art';
 import styles from './CardView.module.css';
 import { Icon } from './Icon';
 
@@ -97,7 +97,7 @@ export function CardView({
         {def.name}
         {card.upgraded ? '+' : ''}
       </div>
-      <div className={styles.art}>
+      <div className={`${styles.art} ${stats.candle ? styles.artWithWax : ''}`}>
         {stats.candle ? (
           <span
             className={`${styles.wax} ${stats.candle > 0 ? styles.waxGain : styles.waxBurn}`}
@@ -108,7 +108,12 @@ export function CardView({
             {stats.candle}
           </span>
         ) : null}
-        <Icon src={CARD_TYPE_ICONS[def.type]} size={size === 'small' ? 24 : 30} />
+        {CARD_ICONS[def.id] ? (
+          // The card's own icon, 1:1 on its 32px grid (2x on large cards, via their zoom).
+          <Icon src={CARD_ICONS[def.id]} size={32} />
+        ) : (
+          <Icon src={CARD_TYPE_ICONS[def.type]} size={size === 'small' ? 24 : 30} />
+        )}
         {resonance !== 'neutral' && (
           <span className={styles.resonanceGlyph}>
             <Icon src={RESONANCE_ICON[resonance]} size={14} />

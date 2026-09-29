@@ -21,6 +21,10 @@
  * eclipse, the raise-the-wick glass, the special intent, the buff and debuff intents and the
  * status-card glyph), exported into `assets/icons/`.
  *
+ * Every card has its own icon too (`CARD_ICONS`, keyed by card id), drawn on the same grid by
+ * `scripts/pixelart/card_icons.py`, round-tripped through the same "Icons" page and exported
+ * into `assets/cards/`.
+ *
  * The map's vellum chart is pixel art too, drawn on its own grid by `scripts/pixelart/chart.py`.
  * No vector art is left. Status and enemy components fall back to the emoji in `data/` when an
  * entry is missing.
@@ -187,13 +191,24 @@ export const STATUS_ICONS: Record<StatusId, string> = {
   kindle,
 };
 
-/** Card-type glyph shown in the card's art box. */
+/** Card-type glyph: the fallback for a card that has no icon of its own in `CARD_ICONS`. */
 export const CARD_TYPE_ICONS: Record<CardType, string> = {
   attack: sword,
   skill: shield,
   power,
   status,
 };
+
+/**
+ * Card icons by card id (32×32 grid: 1× in a card's art well, 2× on the large reward cards),
+ * one per card, depicting what it does. Picked up from `assets/cards/<card id>.png`, so a new
+ * card only needs its drawing in card_icons.py.
+ */
+export const CARD_ICONS: Record<string, string> = Object.fromEntries(
+  Object.entries(
+    import.meta.glob<string>('../assets/cards/*.png', { eager: true, import: 'default' }),
+  ).map(([path, url]) => [path.slice(path.lastIndexOf('/') + 1, -'.png'.length), url]),
+);
 
 /**
  * Portraits by player class / enemy def id (52×52 grid, bosses 66×66: 2× in their frames).

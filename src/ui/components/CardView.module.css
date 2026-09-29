@@ -166,6 +166,11 @@
   position: relative;
 }
 
+/* The wax badge sits at the well's top right, so the card's icon moves left to clear it. */
+.artWithWax {
+  padding-right: 36px;
+}
+
 .resonanceGlyph {
   position: absolute;
   right: 3px;

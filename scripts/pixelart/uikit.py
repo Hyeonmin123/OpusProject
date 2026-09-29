@@ -16,9 +16,10 @@ Figma at 2x (PNG, the sheets' export setting), crops each component out, checks 
 pixel is on the palette and on the 2x2 grid, and writes src/assets/ui/*.png (and the card
 ornaments in src/assets/art/). Nothing is ever resampled: the PNGs are 2x and shown 1:1 in the
 CSS (`image-rendering: pixelated` keeps them hard on high-DPI screens). The one exception is
-the Icons page (map nodes, relics, events, screen icons; drawn in icons.py): those are on the gameplay icons'
-32px grid and export at 4x, like `src/assets/icons/*.png`. `check` reports any
-asset that no longer matches its drawing here (i.e. was edited in Figma).
+the Icons page (map nodes, relics, events and screen icons, drawn in icons.py, and the card
+icons, drawn in card_icons.py): those are on the gameplay icons' 32px grid and export at 4x,
+like `src/assets/icons/*.png`. `check` reports any asset that no longer matches its drawing
+here (i.e. was edited in Figma).
 
 Rules every asset follows (the same discipline as the Gemini-derived portraits, icons and
 scenes): hard 1px outlines, flat fills from the locked palette in pxlib.py (plus a handful of
@@ -802,12 +803,14 @@ def build_scrims():
 
 
 # ---- Icons ----------------------------------------------------------------------------------
-# Map-node, relic, event and screen icons, drawn in icons.py on the gameplay icons' 32px grid.
+# Map-node, relic, event and screen icons, drawn in icons.py on the gameplay icons' 32px grid,
+# and one icon per card (card_icons.py), exported to cards/<card id>.png.
 # The screen icons (screen headers, card removal, HP) sit with the gameplay icons in icons/.
 
-ICON_DIRS = {'node': 'nodes', 'relic': 'relics', 'event': 'events', 'ui': 'icons'}
+ICON_DIRS = {'node': 'nodes', 'relic': 'relics', 'event': 'events', 'ui': 'icons',
+             'card': 'cards'}
 ICON_NOTES = {'node': 'map node icon', 'relic': 'relic icon', 'event': 'event icon',
-              'ui': 'screen icon'}
+              'ui': 'screen icon', 'card': 'card icon'}
 
 
 def build_icons():
